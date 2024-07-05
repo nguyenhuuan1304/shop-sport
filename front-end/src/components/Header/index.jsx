@@ -85,15 +85,15 @@ function MenuLink({ Icon, title, to }) {
 
 export default function Header() {
   return (
-    <div className=" border-b flex flex-row h-32 w-full gap-10 items-center justify-center">
+    <div className=" border-b flex flex-row h-32 w-full gap-10 items-center justify-between">
       <Link to="/">
         <img
-          className="w-32 scale-105 h-auto ml-8 object-cover"
+          className="w-32 scale-105 h-auto ml-8 object-cover grow"
           src={logo}
           alt=""
         />
       </Link>
-      <div className=" gap-6 flex flex-col p-4">
+      <div className=" gap-6 flex flex-col p-4 grow">
         <div className="flex flex-row gap-10 flex-auto items-center justify-between">
           <Search
             placeholder="Nhập sản phẩm tìm kiếm"
