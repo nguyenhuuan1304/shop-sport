@@ -10,9 +10,9 @@ export default function AdsCard({ Icon, title, description }) {
             className="bg-red-500 p-1 rounded-full overflow-hidden text-white"
           />
         </div>
-        <span className="text-xl">{title}</span>
+        <span className="text-lg font-semibold text-neutral-700">{title}</span>
       </div>
-      <p className="text-sm mt-2 pb-5">{description}</p>
+      <p className="text-sm mt-2 pb-5 text-neutral-500">{description}</p>
     </div>
   );
 }
