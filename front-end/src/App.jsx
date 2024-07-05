@@ -9,6 +9,7 @@ import Layout from "./layout/Layout";
 import ProductPage from "./pages/ProductPage";
 import LoginPage from "./pages/LoginPage";
 import UserProfilePage from "./pages/UserProfilePage";
+import NotFoundPage from "./pages/NotFoundPage";
 function App() {
   return (
     <BrowserRouter>
@@ -21,6 +22,7 @@ function App() {
         </Route>
         <Route path="login" element={<LoginPage />}></Route>
         <Route path="cart" element={<CartPage />}></Route>
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );
