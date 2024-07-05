@@ -1,5 +1,11 @@
 import React from "react";
+import _Breadcrumb from "../components/Breadcrumb";
 
 export default function ContactPage() {
-  return <div>Contact Page</div>;
+  return (
+    <div>
+      <_Breadcrumb title={"Liên hệ"} />
+      Contact Page
+    </div>
+  );
 }
