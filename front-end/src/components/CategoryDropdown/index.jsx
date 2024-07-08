@@ -51,11 +51,11 @@ const data = [
     ],
   },
 ];
-export default function CategoryDropdown() {
+export default function CategoryDropdown({ isbordered }) {
   return (
     <List
+      bordered={isbordered !== undefined ? isbordered : false}
       size="small"
-      bordered
       dataSource={data}
       renderItem={(item) => {
         const menuItems = item.children.map((subItem) => ({
