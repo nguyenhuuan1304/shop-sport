@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import _Carousel from "../components/Carousel";
 import AdsCard from "../components/AdsCard";
 import homeImage1 from "../assets/home-image1.jpg";
 import homeImage2 from "../assets/home-image2.png";
 import { CiMedal } from "react-icons/ci";
 import CategoryDropdown from "../components/CategoryDropdown";
-import { Button } from "antd";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Button, message } from "antd";
 
 const adsList = [
   {
@@ -38,27 +39,36 @@ const adsList = [
 ];
 
 export default function HomePage() {
+  const currentUser = useSelector((state) => state.auth.currentUser);
   return (
     <div>
-      <div className="flex flex-row justify-between gap-2">
-        <div className="w-56">
-          <CategoryDropdown />
+      <div className="flex flex-col justify-between gap-2 sm:flex-row">
+        <div className="hidden sm:block w-56">
+          <CategoryDropdown isbordered={true} />
         </div>
         <div className="flex flex-col items-center justify-around">
           <_Carousel />
-          <div className="flex flex-col items-center mt-32">
+          <div className="flex flex-col items-center mt-32 justify-center">
             <span className="text-red-500">Quần áo thể thao KAWIN</span>
-            <span className="text-2xl font-semibold text-neutral-700">
+            <span className="text-2xl font-semibold text-neutral-700 text-center">
               Chào mừng quý khách đã đến trang đặt hàng.
             </span>
           </div>
         </div>
-        <div className="flex flex-col gap-2">
-          <img src={homeImage1} alt="" className="w-72 h-auto rounded-lg" />
-          <img src={homeImage2} alt="" className="w-72 h-auto rounded-lg" />
+        <div className="flex flex-row sm:flex-col justify-center gap-2">
+          <img
+            src={homeImage1}
+            alt=""
+            className="sm:w-72 w-52 h-full rounded-lg"
+          />
+          <img
+            src={homeImage2}
+            alt=""
+            className="sm:w-72 w-52 h-full rounded-lg"
+          />
         </div>
       </div>
-      <div className="flex flex-row justify-around gap-5 mt-5">
+      <div className="sm:flex-row flex flex-col items-center sm:items-stretch justify-between gap-5 mt-5">
         {adsList.map((item, index) => (
           <AdsCard
             key={index}
@@ -68,9 +78,9 @@ export default function HomePage() {
           />
         ))}
       </div>
-      <div className="mt-10 mb-40">
-        <div className="bg-gradient-to-r from-red-500 to-white p-10 gap-5 flex flex-col items-center">
-          <span className="text-white text-3xl drop-shadow-lg">
+      <div className="my-2">
+        <div className="bg-gradient-to-r from-red-500 to-slate-400 p-10 gap-5 flex flex-col items-center">
+          <span className="text-white text-3xl drop-shadow-lg text-center">
             Đăng ký, đăng nhập để mua hàng sỉ
           </span>
           <div className="flex gap-5">
