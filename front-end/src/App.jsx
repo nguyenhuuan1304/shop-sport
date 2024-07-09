@@ -1,17 +1,12 @@
-import { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Provider } from "react-redux";
-import store from "./redux/store";
-import HomePage from "./pages/HomePage";
-import ProductDetailPage from "./pages/ProductDetailPage";
-import SearchPage from "./pages/SearchPage";
-import ContactPage from "./pages/ContactPage";
-import CartPage from "./pages/CartPage";
 import Layout from "./layout/Layout";
-import ProductPage from "./pages/ProductPage";
+import CartPage from "./pages/CartPage";
+import ContactPage from "./pages/ContactPage";
+import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
-import UserProfilePage from "./pages/UserProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
+import ProductListPage from "./pages/ProductListPage";
+import SearchPage from "./pages/SearchPage";
 function App() {
   return (
     <Provider store={store}>
