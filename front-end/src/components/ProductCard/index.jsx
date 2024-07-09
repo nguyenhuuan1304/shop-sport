@@ -1,4 +1,5 @@
 import Link from "antd/es/typography/Link";
+import PropTypes from "prop-types";
 import React from "react";
 
 const onMouseEnterImg = () => {
@@ -18,7 +19,7 @@ const onMouseEnterImg = () => {
     }
   };
 
-export default function ProductCard({ product }) {
+const ProductCard = ({ product }) => {
   return (
     <div className="pt-8 pl-4 p-2 justify-between items-start h-2/4 rounded-xl text-center flex-row gap-3 inline-flex shadow-lg" onMouseEnter={onMouseEnterImg} onMouseLeave={onMouseLeaveImg}>
       <div className="flex flex-col gap-3 flex-basis-2/3 flex-grow-2">
@@ -28,7 +29,7 @@ export default function ProductCard({ product }) {
         ></img>
         <div className="">
           <div className=" text-base truncate overflow-hidden w-52 font-bold ">
-            ARGENTINA SỌC XANH TRẺ EM 2024-2025 MK
+            {product.name}
           </div>
           <p className="text-left text-red-500 text-sm font-semibold">
             Đăng nhập để xem giá
@@ -77,3 +78,14 @@ export default function ProductCard({ product }) {
     </div>
   );
 }
+
+ProductCard.propTypes = {
+  product: PropTypes.shape({
+    imageUrl: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    // Các thuộc tính khác của sản phẩm cần thiết
+  }).isRequired,
+};
+
+export default ProductCard;

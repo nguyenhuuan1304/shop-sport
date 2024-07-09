@@ -1,12 +1,16 @@
 import React from "react";
 import logo from "../../assets/logo.jpg";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { Divider } from "antd";
+import { useSelector, useDispatch } from "react-redux";
 import { FaHome, FaHeadphones, FaShoppingCart } from "react-icons/fa";
 import { IoPersonCircle, IoPersonAddSharp } from "react-icons/io5";
 import { PiNotepadFill } from "react-icons/pi";
 import { Input, Space } from "antd";
 import { Badge } from "antd";
+import { logout } from "../../features/authSlice";
+import { FaUser } from "react-icons/fa";
+import { IoLogOut } from "react-icons/io5";
 const { Search } = Input;
 
 const menuItems = [
@@ -23,29 +27,6 @@ const menuItems = [
     Icon: FaHeadphones,
     title: "LIÊN HỆ",
     to: "contact",
-  },
-];
-
-const navElements = [
-  {
-    Icon: PiNotepadFill,
-    title: "Kiểm tra đơn hàng",
-    to: "",
-  },
-  {
-    Icon: IoPersonAddSharp,
-    title: "Đăng ký",
-    to: "",
-  },
-  {
-    Icon: IoPersonCircle,
-    title: "Đăng nhập",
-    to: "login",
-  },
-  {
-    Icon: FaShoppingCart,
-    title: "Giỏ hàng",
-    to: "cart",
   },
 ];
 
@@ -84,8 +65,12 @@ function MenuLink({ Icon, title, to }) {
 }
 
 export default function Header() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const currentUser = useSelector((state) => state.auth.currentUser);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   return (
-    <div className=" border-b flex flex-row h-32 w-full gap-10 items-center justify-between">
+    <div className="sm:flex hidden border-b flex-row h-32 w-full gap-10 items-center justify-between">
       <Link to="/">
         <img
           className="w-32 scale-105 h-auto ml-8 object-cover grow"
@@ -101,16 +86,36 @@ export default function Header() {
             className="w-96 h-auto"
           />
           <div className="flex flex-row items-center gap-5">
-            {navElements.map((item, index) => {
-              return (
-                <NavigationLink
-                  key={index}
-                  title={item.title}
-                  Icon={item.Icon}
-                  to={item.to}
-                />
-              );
-            })}
+            <NavigationLink
+              title="Kiểm tra đơn hàng"
+              Icon={PiNotepadFill}
+              to=""
+            />
+            {isAuthenticated && currentUser ? (
+              <NavigationLink
+                title={`Xin chào, ${currentUser?.username}`}
+                Icon={FaUser}
+                to="profile"
+              />
+            ) : (
+              <NavigationLink title="Đăng ký" Icon={IoPersonAddSharp} to="" />
+            )}
+            {isAuthenticated && currentUser ? (
+              <Link
+                className="text-sm flex flex-row gap-2 items-center"
+                onClick={() => dispatch(logout())}
+              >
+                <IoLogOut size={35} className="text-red-500" />
+                Đăng xuất
+              </Link>
+            ) : (
+              <NavigationLink
+                title="Đăng nhập"
+                Icon={IoPersonCircle}
+                to="login"
+              />
+            )}
+            <NavigationLink title="Giỏ hàng" Icon={FaShoppingCart} to="cart" />
           </div>
         </div>
         <div className="bg-blue-800 flex flex-row items-center">
