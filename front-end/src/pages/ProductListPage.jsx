@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import _Breadcrumb from '../components/Breadcrumb';
-import ProductCard from '../components/ProductCard';
+import ProductList from '../components/ProductList';
 
 const className = "hover:text-blue-500 duration-150 border-b-2 hover:border-blue-500 border-transparent p-4";
 
@@ -35,7 +35,7 @@ export default function ProductPage() {
           return <NavLink key={index} to={item?.to} className={className}>{item?.title}</NavLink>
         })}
       </div>      
-      <ProductCard></ProductCard>
+      <ProductList />
     </div>
   );
 }
