@@ -21,7 +21,7 @@ export default function ProductList() {
         <p>{error}</p>
       ) : (
         productList?.map((product) => (
-          <ProductCard key={product._id} product={product} />
+          <ProductCard key={product.id} product={product} />
         ))
       )}
     </div>

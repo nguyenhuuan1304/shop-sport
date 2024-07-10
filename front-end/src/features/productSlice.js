@@ -1,15 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { request } from '../redux/request';
 
-// Tạo async thunks để thực hiện các tác vụ không đồng bộ
 export const fetchProductList = createAsyncThunk(
     'products/fetchProductList',
-    async ({ entity, page, itemsPerPage }, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
       try {
-        const response = await request.List(entity, { page, itemsPerPage });
-        return response.data; // Trả về dữ liệu response chính từ API
+        const response = await request.List();
+        return response.data; 
       } catch (error) {
-        return rejectWithValue(error.message); // Xử lý lỗi và trả về message lỗi
+        return rejectWithValue(error.message); 
       }
     }
   );
