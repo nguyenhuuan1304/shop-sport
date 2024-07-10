@@ -4,7 +4,8 @@
   "info": {
     "singularName": "product",
     "pluralName": "products",
-    "displayName": "Product"
+    "displayName": "Product",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -12,41 +13,47 @@
   "pluginOptions": {},
   "attributes": {
     "name": {
-      "type": "string"
+      "type": "text",
+      "required": true
     },
     "image": {
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ],
       "type": "media",
-      "multiple": true
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["images", "files", "videos", "audios"]
     },
     "price": {
-      "type": "integer"
+      "type": "integer",
+      "required": true
     },
     "state": {
-      "type": "boolean"
+      "type": "boolean",
+      "default": false,
+      "required": true
     },
-    "sizeList": {
-      "type": "json"
+    "size_list": {
+      "type": "json",
+      "required": false
     },
     "description": {
       "type": "text"
     },
+    "discounted_price": {
+      "type": "integer",
+      "default": 0
+    },
+    "is_discount_active": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
     "category": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "brand": {
-      "type": "string"
-    },
-    "is_discounted_active": {
-      "type": "boolean"
-    },
-    "discounted_price": {
-      "type": "integer"
+      "type": "string",
+      "required": false
     }
   }
 }

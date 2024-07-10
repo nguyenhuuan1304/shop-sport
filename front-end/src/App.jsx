@@ -1,3 +1,4 @@
+import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./layout/Layout";
 import CartPage from "./pages/CartPage";
@@ -9,7 +10,6 @@ import ProductListPage from "./pages/ProductListPage";
 import ProductPage from "./pages/ProductListPage";
 import SearchPage from "./pages/SearchPage";
 import UserProfilePage from "./pages/UserProfilePage";
-import { Provider } from "react-redux";
 import store from "../src/redux/store";
 import ProductDetailPage from "./pages/ProductDetailPage";
 function App() {
