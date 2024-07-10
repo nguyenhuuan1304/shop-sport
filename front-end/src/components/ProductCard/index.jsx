@@ -2,27 +2,30 @@ import Link from "antd/es/typography/Link";
 import React from "react";
 
 const onMouseEnterImg = () => {
-    const imgElement = document.getElementById('img-product');
-    console.log('a')
-    if (imgElement) {
-      imgElement.style.transform = 'scale(1.1)'; // Phóng to hình ảnh lên 110%
-    }
-  };
+  const imgElement = document.getElementById("img-product");
+  if (imgElement) {
+    imgElement.style.transform = "scale(1.1)"; // Phóng to hình ảnh lên 110%
+  }
+};
 
-  const onMouseLeaveImg = () => {
-    const imgElement = document.getElementById('img-product');
-    console.log('b')
+const onMouseLeaveImg = () => {
+  const imgElement = document.getElementById("img-product");
 
-    if (imgElement) {
-      imgElement.style.transform = 'scale(1)'; // Phục hồi kích thước ban đầu của hình ảnh
-    }
-  };
+  if (imgElement) {
+    imgElement.style.transform = "scale(1)"; // Phục hồi kích thước ban đầu của hình ảnh
+  }
+};
 
 export default function ProductCard({ product }) {
   return (
-    <div className="pt-8 pl-4 p-2 justify-between items-start h-2/4 rounded-xl text-center flex-row gap-3 inline-flex shadow-lg" onMouseEnter={onMouseEnterImg} onMouseLeave={onMouseLeaveImg}>
+    <div
+      className="pt-8 pl-4 p-2 bg-white justify-between items-start h-2/4 rounded-xl text-center flex-row gap-3 inline-flex shadow-lg"
+      onMouseEnter={onMouseEnterImg}
+      onMouseLeave={onMouseLeaveImg}
+    >
       <div className="flex flex-col gap-3 flex-basis-2/3 flex-grow-2">
-        <img id="img-product"
+        <img
+          id="img-product"
           src="https://cdn2-retail-images.kiotviet.vn/locsporthcm/230ac5ac6e6344e98dcefac9d73043a3.jpg"
           className="w-60 h-64 transition-transform duration-500"
         ></img>
@@ -71,7 +74,9 @@ export default function ProductCard({ product }) {
               <span className="ml-16">&#128065;</span>
             </li>
           </ul>{" "}
-          <button className="bg-blue-400 rounded-md p-2 text-white hover:text-blue-400 hover:bg-white border-blue-400 border duration-500">Đăng nhập</button>
+          <button className="bg-blue-400 rounded-md p-2 text-white hover:text-blue-400 hover:bg-white border-blue-400 border duration-500">
+            Đăng nhập
+          </button>
         </div>
       </div>
     </div>

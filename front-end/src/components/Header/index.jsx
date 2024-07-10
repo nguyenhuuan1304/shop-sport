@@ -3,13 +3,12 @@ import logo from "../../assets/logo.jpg";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { Divider } from "antd";
 import { useSelector, useDispatch } from "react-redux";
-import { FaHome, FaHeadphones, FaShoppingCart } from "react-icons/fa";
+import { FaHome, FaHeadphones, FaShoppingCart, FaUser } from "react-icons/fa";
 import { IoPersonCircle, IoPersonAddSharp } from "react-icons/io5";
 import { PiNotepadFill } from "react-icons/pi";
 import { Input, Space } from "antd";
 import { Badge } from "antd";
 import { logout } from "../../features/authSlice";
-import { FaUser } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
 const { Search } = Input;
 
