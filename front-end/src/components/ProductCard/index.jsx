@@ -32,7 +32,7 @@ const ProductCard = ({ product }) => {
         ></img>
         <div className="">
           <div className=" text-base truncate overflow-hidden w-52 font-bold ">
-            {product.name}
+            {product?.name}
           </div>
           <p className="text-left text-red-500 text-sm font-semibold">
             Đăng nhập để xem giá
@@ -82,15 +82,15 @@ const ProductCard = ({ product }) => {
       </div>
     </div>
   );
-}
-
-ProductCard.propTypes = {
-  product: PropTypes.shape({
-    imageUrl: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    // Các thuộc tính khác của sản phẩm cần thiết
-  }).isRequired,
 };
+
+// ProductCard.propTypes = {
+//   product: PropTypes.shape({
+//     imageUrl: PropTypes.string.isRequired,
+//     name: PropTypes.string.isRequired,
+//     price: PropTypes.number.isRequired,
+//     // Các thuộc tính khác của sản phẩm cần thiết
+//   }).isRequired,
+// };
 
 export default ProductCard;

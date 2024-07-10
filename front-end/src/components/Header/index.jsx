@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import logo from "../../assets/logo.jpg";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { Divider } from "antd";
@@ -8,7 +8,7 @@ import { IoPersonCircle, IoPersonAddSharp } from "react-icons/io5";
 import { PiNotepadFill } from "react-icons/pi";
 import { Input, Space } from "antd";
 import { Badge } from "antd";
-import { logout } from "../../features/authSlice";
+import { fetchUserDetail, logout } from "../../features/authSlice";
 import { IoLogOut } from "react-icons/io5";
 const { Search } = Input;
 
@@ -68,6 +68,9 @@ export default function Header() {
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.auth.currentUser);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  useEffect(() => {
+    dispatch(fetchUserDetail());
+  }, []);
   return (
     <div className="sm:flex hidden border-b flex-row h-32 w-full gap-10 items-center justify-between">
       <Link to="/">

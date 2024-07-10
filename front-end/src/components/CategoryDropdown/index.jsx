@@ -9,11 +9,11 @@ const data = [
     to: "quan-ao-bong-da-thuong-hieu",
     children: [
       {
-        title: "BULBAL - HD",
+        title: "ADIDAS",
         to: "bulbal-hd",
       },
       {
-        title: "RIKI - CV",
+        title: "NIKE",
         to: "riki-cv",
       },
     ],
@@ -23,11 +23,11 @@ const data = [
     to: "quan-ao-bong-da-cau-lac-bo-doi-tuyen",
     children: [
       {
-        title: "QUẦN ÁO CLB MÈ HD-KL",
+        title: "MANCHESTER UNITED",
         to: "quan-ao-clb-me-hd-kl",
       },
       {
-        title: "QUẦN ÁO CLB JUSTPLAY",
+        title: "REAL MARID",
         to: "quan-ao-clb-justplay",
       },
     ],
