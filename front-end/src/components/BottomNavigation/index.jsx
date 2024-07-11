@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "antd";
+import { motion } from "framer-motion";
 import {
   CiShoppingBasket,
   CiViewTable,

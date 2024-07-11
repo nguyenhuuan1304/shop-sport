@@ -58,7 +58,7 @@ export default function CategoryDropdown({ isbordered }) {
       size="small"
       dataSource={data}
       renderItem={(item) => {
-        const menuItems = item.children.map((subItem) => ({
+        const menuItems = item.children.map((subItem, index) => ({
           key: subItem.to,
           label: (
             <>
@@ -66,12 +66,10 @@ export default function CategoryDropdown({ isbordered }) {
             </>
           ),
         }));
-
-        const menu = <Menu items={menuItems} />;
         return (
           <List.Item>
             <Dropdown
-              dropdownRender={() => menu}
+              dropdownRender={() => <Menu items={menuItems} />}
               trigger={["hover"]}
               placement="right"
               autoAdjustOverflow

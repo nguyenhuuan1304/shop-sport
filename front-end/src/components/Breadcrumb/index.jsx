@@ -10,7 +10,7 @@ export default function _Breadcrumb({ title }) {
   return (
     <div className="bg-gray-500 flex flex-col items-center justify-center w-full h-40 gap-5">
       <motion.span
-        initial={{ opacity: 0, y: -100 }}
+        initial={{ opacity: 0, y: -80 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
         className="text-4xl text-white font-bold"
@@ -18,7 +18,7 @@ export default function _Breadcrumb({ title }) {
         {title}
       </motion.span>
       <motion.div
-        initial={{ opacity: 0, y: 100 }}
+        initial={{ opacity: 0, y: 80 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >

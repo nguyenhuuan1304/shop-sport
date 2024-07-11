@@ -9,6 +9,7 @@ import { PiNotepadFill } from "react-icons/pi";
 import { Input, Space } from "antd";
 import { Badge } from "antd";
 import { fetchUserDetail, logout } from "../../features/authSlice";
+import { fetchCartData } from "../../features/cartSlice";
 import { IoLogOut } from "react-icons/io5";
 const { Search } = Input;
 
@@ -29,11 +30,11 @@ const menuItems = [
   },
 ];
 
-function NavigationLink({ Icon, title, to }) {
+function NavigationLink({ Icon, title, to, count }) {
   return (
     <Link className="text-sm flex flex-row gap-2 items-center" to={to}>
       {title === "Giỏ hàng" ? (
-        <Badge count={0} showZero>
+        <Badge count={count} showZero>
           <Icon size={30} className="text-red-500" />
         </Badge>
       ) : (
@@ -68,9 +69,13 @@ export default function Header() {
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.auth.currentUser);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
+  //số lượng sản phẩm có trong giỏ hàng
+  const products = useSelector((state) => state.cart.products);
   useEffect(() => {
     dispatch(fetchUserDetail());
-  }, []);
+    dispatch(fetchCartData(currentUser?.id));
+  }, [dispatch, currentUser?.id]);
   return (
     <div className="sm:flex hidden border-b flex-row h-32 w-full gap-10 items-center justify-between">
       <Link to="/">
@@ -117,7 +122,12 @@ export default function Header() {
                 to="login"
               />
             )}
-            <NavigationLink title="Giỏ hàng" Icon={FaShoppingCart} to="cart" />
+            <NavigationLink
+              count={products?.length ? products?.length : 0}
+              title="Giỏ hàng"
+              Icon={FaShoppingCart}
+              to="cart"
+            />
           </div>
         </div>
         <div className="bg-blue-800 flex flex-row items-center">

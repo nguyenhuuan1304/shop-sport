@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProductDetail } from "../features/productSlice";
 import { motion } from "framer-motion";
 import ProductCard from "../components/ProductCard";
+import CartDrawer from "../components/CartDrawer";
 const { Search } = Input;
 
 const carouselResponsiveSetting = [
@@ -20,61 +21,53 @@ const carouselResponsiveSetting = [
   },
 ];
 
-const QuantityEditor = ({ max, min }) => {
+const QuantityEditor = ({ max, min, onChange }) => {
   const [value, setValue] = useState(0);
+
+  const handleIncrease = () => {
+    if (value < max) {
+      setValue(value + 1);
+      onChange(value + 1);
+    }
+  };
+
+  const handleDecrease = () => {
+    if (value > min) {
+      setValue(value - 1);
+      onChange(value - 1);
+    }
+  };
+
   return (
-    <div className="flex flex-row gap-1">
+    <div className="flex flex-row gap-1 items-center justify-center">
       <InputNumber
-        max={max}
+        readOnly
+        className="w-28 text-center"
         min={min}
-        controls
-        className="w-40"
-        defaultValue={value}
+        max={max}
         value={value}
-        onChange={setValue}
-        disabled={value >= max}
+        onChange={(val) => {
+          setValue(val);
+          onChange(val);
+        }}
       />
       <Button
         type="primary"
         shape="circle"
         icon={<FaPlus />}
-        onClick={() => {
-          setValue(value + 1);
-        }}
+        onClick={handleIncrease}
         disabled={value >= max}
       />
       <Button
+        type="primary"
         shape="circle"
         icon={<FaMinus />}
-        onClick={() => {
-          setValue(value - 1);
-        }}
-        disabled={value == 0}
+        onClick={handleDecrease}
+        disabled={value <= min}
       />
     </div>
   );
 };
-
-const columns = [
-  {
-    title: "Sản phẩm",
-    key: "size",
-    dataIndex: "size",
-    align: "center",
-  },
-  {
-    title: "Tồn kho",
-    key: "quantity",
-    dataIndex: "quantity",
-    align: "center",
-  },
-  {
-    title: "Số lượng",
-    key: "count",
-    width: 300,
-    render: (record) => <QuantityEditor max={record.quantity} min={0} />,
-  },
-];
 
 function CustomArrow(props) {
   const { className, style, onClick } = props;
@@ -103,10 +96,90 @@ export default function ProductDetailPage() {
     key: `${item.size}-${index}`,
     count: 0,
   }));
+  const [cart, setCart] = useState([]);
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const showDrawer = () => {
+    setDrawerOpen(true);
+  };
+  const closeDrawer = () => {
+    setDrawerOpen(false);
+  };
   useEffect(() => {
     dispatch(fetchProductDetail(productId));
   }, [dispatch, productId]);
+
+  // +/ sản phẩm để thêm vào giỏ hàng
+  const handleQuantityChange = (key, count) => {
+    // Kiểm tra xem sản phẩm có trong cart chưa
+    const existingItem = cart.find((item) => item.key === key);
+
+    if (existingItem) {
+      // Nếu sản phẩm đã có trong cart, cập nhật count
+      const updatedCart = cart
+        .map((item) =>
+          item.key === key
+            ? {
+                ...item,
+                product: product,
+                count: item.count + 1,
+                size: item.key?.split("-")[0],
+              }
+            : item
+        )
+        .filter((item) => item.count > 0); // Lọc ra các mục có count > 0
+      setCart(updatedCart);
+    } else {
+      // Nếu sản phẩm chưa có trong cart, thêm mới vào
+      // key là "M-1" , tạo trường size để lấy size M
+      const newItem = {
+        key,
+        count: 1,
+        product: product,
+        size: key?.split("-")[0],
+      };
+      const updatedCart = [...cart, newItem].filter((item) => item.count > 0); // Lọc ra các mục có count > 0
+      setCart(updatedCart);
+    }
+  };
+
+  //xử lý thêm sản phẩm đã chọn vào giỏ hàng
+  const addToCart = () => {
+    showDrawer();
+    console.log(cart);
+    // console.log(dataSource);
+  };
+
+  const columns = [
+    {
+      title: "Sản phẩm",
+      width: 120,
+      dataIndex: "size",
+      align: "center",
+      key: "size",
+    },
+    {
+      title: "Tồn kho",
+      dataIndex: "quantity",
+      width: 150,
+      align: "center",
+      key: "quantity",
+    },
+    {
+      title: "Số lượng",
+      dataIndex: "count",
+      width: 150,
+      align: "center",
+      key: "count",
+      render: (text, record) => (
+        <QuantityEditor
+          min={0}
+          max={record.quantity}
+          onChange={() => handleQuantityChange(record.key, 1)}
+        />
+      ),
+    },
+  ];
 
   return (
     <div className="flex flex-col gap-10">
@@ -132,7 +205,12 @@ export default function ProductDetailPage() {
                 alt=""
               />
             </motion.div>
-            <div className="flex flex-col gap-5">
+            <motion.div
+              initial={{ opacity: 0, x: 200 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              className="flex flex-col gap-5"
+            >
               <span className="text-2xl font-semibold">
                 {product?.attributes?.name}
               </span>
@@ -140,7 +218,7 @@ export default function ProductDetailPage() {
                 <Rate defaultValue={0} />{" "}
                 <span className="text-sm text-yellow-400">(0 đánh giá)</span>
               </div>
-              <span className="text-red-500 font-semibold text-base">
+              <span className="text-red-500 font-semibold text-lg">
                 {isAuthenticated
                   ? `${product?.attributes?.price.toLocaleString()}đ`
                   : "Đăng nhập để xem giá"}
@@ -165,8 +243,13 @@ export default function ProductDetailPage() {
                     bordered
                     pagination={false}
                   />
-                  <div className="flex flex-row gap-2 w-full items-center justify-center absolute sm:static bottom-20 z-50">
-                    <Button className="w-full" type="primary" size="large">
+                  <div className="flex flex-row gap-2 w-full items-center justify-center absolute sm:static bottom-20 z-40">
+                    <Button
+                      onClick={addToCart}
+                      className="w-full"
+                      type="primary"
+                      size="large"
+                    >
                       <div className="flex flex-col">
                         <span>Thêm vào giỏ</span>
                         <span className="text-xs pb-1">
@@ -198,7 +281,7 @@ export default function ProductDetailPage() {
                 />
                 <Button type="primary">Gửi</Button>
               </div>
-            </div>
+            </motion.div>
           </div>
         </>
       )}
@@ -227,9 +310,7 @@ export default function ProductDetailPage() {
               <div className="flex flex-col">
                 <span className="text-slate-700">EAGLE HỒNG</span>
                 <span className="text-red-500 text-lg font-semibold">
-                  {isAuthenticated
-                    ? product?.attributes?.price.toLocaleString()
-                    : "Đăng nhập để xem giá"}
+                  {isAuthenticated ? "89,000đ" : "Đăng nhập để xem giá"}
                 </span>
               </div>
             </div>
@@ -258,23 +339,9 @@ export default function ProductDetailPage() {
               <ProductCard />
             </div>
           </div>
-          <div className="flex justify-center items-center pb-2">
-            <div className="w-full flex justify-center">
-              <ProductCard />
-            </div>
-          </div>
-          <div className="flex justify-center items-center pb-2">
-            <div className="w-full flex justify-center">
-              <ProductCard />
-            </div>
-          </div>
-          <div className="flex justify-center items-center pb-2">
-            <div className="w-full flex justify-center">
-              <ProductCard />
-            </div>
-          </div>
         </Carousel>
       </div>
+      <CartDrawer open={drawerOpen} onClose={closeDrawer} />
     </div>
   );
 }
