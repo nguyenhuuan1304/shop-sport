@@ -1,11 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../redux/request";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { request } from "../redux/request";
 
 export const fetchProductList = createAsyncThunk(
   "products/fetchProductList",
-  async ({sortParam, titleParam}, { rejectWithValue }) => {
+  async ({ sortParam, titleParam }, { rejectWithValue }) => {
     try {
       console.log("fetchProductList ", sortParam, titleParam);
       if (sortParam || titleParam) {
@@ -17,17 +15,6 @@ export const fetchProductList = createAsyncThunk(
       }
     } catch (error) {
       return rejectWithValue(error.response.data);
-    }
-  }
-);
-
-  "products/fetchProductList",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await request.List();
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.message);
     }
   }
 );
@@ -45,17 +32,32 @@ export const fetchProductDetail = createAsyncThunk(
   }
 );
 
+//lấy các sản phẩm giảm giá
+export const fetchSaleProductList = createAsyncThunk(
+  "products/fetchSaleProductList",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await request.ListSaleProduct();
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: "products",
   initialState: {
     productList: [],
     productDetails: null,
+    saleProductList: [],
     loading: false,
     error: null,
   },
   reducers: {
     setProductList: (state, action) => {
-      state.productList = action.payload;
+      state.productList = action.payload.data;
+      // console.log("setProductList", action.payload.result.data);
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -72,7 +74,7 @@ const productSlice = createSlice({
       })
       .addCase(fetchProductList.fulfilled, (state, action) => {
         state.loading = false;
-        state.productList = action.payload;
+        state.productList = action.payload.result.data;
       })
       .addCase(fetchProductList.rejected, (state, action) => {
         state.loading = false;
@@ -90,6 +92,18 @@ const productSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       });
+    // .addCase(fetchSaleProductList.pending, (state) => {
+    //   state.loading = true;
+    //   state.error = null;
+    // })
+    // .addCase(fetchSaleProductList.fulfilled, (state, action) => {
+    //   state.loading = false;
+    //   state.saleProductList = action.payload;
+    // })
+    // .addCase(fetchSaleProductList.rejected, (state, action) => {
+    //   state.loading = false;
+    //   state.error = action.payload;
+    // });
   },
 });
 
@@ -97,4 +111,3 @@ export default productSlice.reducer;
 
 // Export các actions nếu cần (optional)
 export const { setProductList, setLoading, setError } = productSlice.actions;
-

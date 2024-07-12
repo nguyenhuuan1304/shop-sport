@@ -62,6 +62,10 @@
     },
     "products": {
       "type": "json"
+    },
+    "isHot": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

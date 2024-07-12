@@ -6,7 +6,7 @@ import productSlice from "../features/productSlice";
 export default configureStore({
   reducer: {
     auth: authReducer,
-    product: productSlice,
+    products: productSlice,
     cart: cartReducer,
   },
 });

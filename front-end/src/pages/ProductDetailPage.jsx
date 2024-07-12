@@ -3,7 +3,11 @@ import { Input, Button, Rate, Image, Table, InputNumber, Carousel } from "antd";
 import { Link, useParams } from "react-router-dom";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductDetail } from "../features/productSlice";
+import {
+  fetchProductDetail,
+  fetchProductList,
+  fetchSaleProductList,
+} from "../features/productSlice";
 import { motion } from "framer-motion";
 import ProductCard from "../components/ProductCard";
 import CartDrawer from "../components/CartDrawer";
@@ -88,9 +92,10 @@ function CustomArrow(props) {
 export default function ProductDetailPage() {
   const { productId } = useParams();
   const dispatch = useDispatch();
-  const product = useSelector((state) => state.product.productDetails);
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const loading = useSelector((state) => state.product.loading);
+  const product = useSelector((state) => state.products?.productDetails);
+  const saleProducts = useSelector((state) => state.products?.productList);
+  const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
+  const loading = useSelector((state) => state.products?.loading);
   const dataSource = product?.attributes?.size_list?.map((item, index) => ({
     ...item,
     key: `${item.size}-${index}`,
@@ -107,6 +112,8 @@ export default function ProductDetailPage() {
   };
   useEffect(() => {
     dispatch(fetchProductDetail(productId));
+    dispatch(fetchProductList({ sortParam: "true", titleParam: "NoHot" }));
+    console.log(saleProducts);
   }, [dispatch, productId]);
 
   // +/ sản phẩm để thêm vào giỏ hàng
@@ -335,9 +342,13 @@ export default function ProductDetailPage() {
           prevArrow={<CustomArrow />}
         >
           <div className="flex justify-center items-center pb-2">
-            <div className="w-full flex justify-center">
-              <ProductCard />
-            </div>
+            {saleProducts.map((item) => {
+              return (
+                <div className="w-full flex justify-center">
+                  <ProductCard product={item} displayQuantity={false} />
+                </div>
+              );
+            })}
           </div>
         </Carousel>
       </div>
