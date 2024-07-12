@@ -25,7 +25,7 @@ const successHandler = (response, typeNotification = {}) => {
   if (response.data.success === false) {
     const message = response.data.message || codeMessage[response.status];
     notification.config({
-      duration: 10,
+      duration: 3,
     });
     notification.error({
       message: `Request error ${response.status}`,
@@ -34,7 +34,7 @@ const successHandler = (response, typeNotification = {}) => {
   } else {
     const message = response.data.message || codeMessage[response.status];
     notification.config({
-      duration: 10,
+      duration: 3,
     });
     notification.success({
       message: `Request success`,
