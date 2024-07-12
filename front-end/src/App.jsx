@@ -6,11 +6,11 @@ import ContactPage from "./pages/ContactPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import ProductPage from "./pages/ProductListPage";
+import ProductListPage from "./pages/ProductListPage";
 import SearchPage from "./pages/SearchPage";
 import UserProfilePage from "./pages/UserProfilePage";
-import store from "./redux/store";
-
+import store from "../src/redux/store";
+import ProductDetailPage from "./pages/ProductDetailPage";
 function App() {
   return (
     <Provider store={store}>
@@ -18,7 +18,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<HomePage />} />
-            <Route path="products" element={<ProductPage />} />
+            <Route path="products" element={<ProductListPage />} />
+            <Route path="product/:productId" element={<ProductDetailPage />} />
             <Route path="search" element={<SearchPage />} />
             <Route path="contact" element={<ContactPage />} />
             <Route path="profile" element={<UserProfilePage />} />
