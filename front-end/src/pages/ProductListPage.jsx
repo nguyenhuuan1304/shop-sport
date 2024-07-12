@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import _Breadcrumb from "../components/Breadcrumb";
 import ProductList from "../components/ProductList";
 
@@ -9,31 +9,39 @@ const className =
 const FilterOption = [
   {
     title: "Mới nhất",
-    to: "products",
+    sort: "createdAt:DESC",
   },
   {
     title: "New",
-    to: "products",
+    sort: "createdAt:ASC",
   },
   {
     title: "Sale",
-    to: "products",
+    sort: "true",
   },
   {
     title: "Hot",
-    to: "products",
+    sort: "true",
   },
   {
     title: "Giá Thấp",
-    to: "products",
+    sort: "price:ASC",
   },
   {
-    title: "Giá CAO",
-    to: "products",
+    title: "Giá cao",
+    sort: "price:DESC",
   },
 ];
 
 export default function ProductPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const sortParam = searchParams.get("sort");
+  const titleParam = searchParams.get("title");
+  // console.log("aaa",sortParam + titleParam)
+  const handleFilterChange = (item) => {
+    setSearchParams(item);
+  };
+
   return (
     <div>
       <_Breadcrumb title={"a"}></_Breadcrumb>
@@ -41,13 +49,17 @@ export default function ProductPage() {
         <span className="p-4">Sắp xếp theo</span>
         {FilterOption.map((item, index) => {
           return (
-            <NavLink key={index} to={item?.to} className={className}>
-              {item?.title}
-            </NavLink>
+            <button
+              key={index}
+              onClick={() => handleFilterChange(item)}
+              className={className}
+            >
+              {item.title}
+            </button>
           );
         })}
       </div>
-      <ProductList />
+      <ProductList sortParam={sortParam} titleParam={titleParam} />
     </div>
   );
 }

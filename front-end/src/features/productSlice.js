@@ -1,7 +1,26 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../redux/request";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { request } from "../redux/request";
 
 export const fetchProductList = createAsyncThunk(
+  "products/fetchProductList",
+  async ({sortParam, titleParam}, { rejectWithValue }) => {
+    try {
+      console.log("fetchProductList ", sortParam, titleParam);
+      if (sortParam || titleParam) {
+        console.log("fetchProductList có sortParam hoặc titleParam");
+        return await request.ListSort({ sort: sortParam, title: titleParam });
+      } else {
+        console.log("fetchProductList không có sortParam hoặc titleParam");
+        return await request.List();
+      }
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
   "products/fetchProductList",
   async (_, { rejectWithValue }) => {
     try {
@@ -78,3 +97,4 @@ export default productSlice.reducer;
 
 // Export các actions nếu cần (optional)
 export const { setProductList, setLoading, setError } = productSlice.actions;
+
