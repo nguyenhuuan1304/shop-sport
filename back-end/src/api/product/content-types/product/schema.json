@@ -59,6 +59,10 @@
     "brand": {
       "type": "string",
       "required": false
+    },
+    "isHot": {
+      "type": "boolean",
+      "default": false
     }
   }
 }
