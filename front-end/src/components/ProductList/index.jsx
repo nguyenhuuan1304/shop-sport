@@ -4,29 +4,29 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProductList } from "../../features/productSlice";
 import ProductCard from "../ProductCard/";
 
-
 export default function ProductList({ sortParam, titleParam }) {
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.products?.productList);
   const loading = useSelector((state) => state.products?.loading);
   const error = useSelector((state) => state.products?.error);
 
-
   useEffect(() => {
     if (sortParam) {
       // console.log("title ", titleParam)
       if (titleParam == "Hot" || titleParam == "Sale") {
-        console.log("vào hot và sale")
-        console.log("title ", titleParam, sortParam)
+        console.log("vào hot và sale");
+        console.log("title ", titleParam, sortParam);
         dispatch(fetchProductList({ sortParam, titleParam }));
       } else {
-        console.log("vào sort param")
-        dispatch(fetchProductList({ sortParam, titleParam : ''}));
+        console.log("vào sort param");
+        dispatch(fetchProductList({ sortParam, titleParam: "" }));
       }
     } else {
-      console.log("vào get all")
-      dispatch(fetchProductList({ sortParam: '', titleParam : ''}));
+      console.log("vào get all");
+      dispatch(fetchProductList({ sortParam: "", titleParam: "" }));
+      console.log(productList);
     }
+    // console.log(productList);
   }, [dispatch, sortParam, titleParam]);
 
   // Thêm console.log để kiểm tra dữ liệu
@@ -44,8 +44,12 @@ export default function ProductList({ sortParam, titleParam }) {
         ) : error ? (
           <p>{error}</p>
         ) : (
-          productList.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          productList?.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              displayQuantity={true}
+            />
           ))
         )}
       </div>

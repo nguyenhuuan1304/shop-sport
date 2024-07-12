@@ -386,6 +386,7 @@ export interface ApiProductProduct extends Schema.CollectionType {
       Attribute.DefaultTo<false>;
     category: Attribute.String & Attribute.Required;
     brand: Attribute.String;
+    products: Attribute.JSON;
     isHot: Attribute.Boolean & Attribute.DefaultTo<false>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -785,7 +786,6 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
   options: {
     draftAndPublish: false;
-    timestamps: true;
   };
   attributes: {
     username: Attribute.String &
@@ -814,6 +814,7 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.role'
     >;
+    cart: Attribute.JSON;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
