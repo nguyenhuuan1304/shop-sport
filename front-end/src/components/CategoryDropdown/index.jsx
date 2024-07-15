@@ -67,7 +67,7 @@ export default function CategoryDropdown({ isbordered }) {
           ),
         }));
         return (
-          <List.Item>
+          <List.Item key={item.to}>
             <Dropdown
               dropdownRender={() => <Menu items={menuItems} />}
               trigger={["hover"]}

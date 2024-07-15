@@ -113,7 +113,6 @@ export default function ProductDetailPage() {
   useEffect(() => {
     dispatch(fetchProductDetail(productId));
     dispatch(fetchProductList({ sortParam: "true", titleParam: "NoHot" }));
-    console.log(saleProducts);
   }, [dispatch, productId]);
 
   // +/ sản phẩm để thêm vào giỏ hàng
@@ -344,8 +343,12 @@ export default function ProductDetailPage() {
           <div className="flex justify-center items-center pb-2">
             {saleProducts.map((item) => {
               return (
-                <div className="w-full flex justify-center">
-                  <ProductCard product={item} displayQuantity={false} />
+                <div key={item.id} className="w-full flex justify-center">
+                  <ProductCard
+                    key={item.id}
+                    product={item}
+                    displayQuantity={false}
+                  />
                 </div>
               );
             })}

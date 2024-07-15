@@ -57,6 +57,7 @@ const authSlice = createSlice({
       state.currentUser = null;
       state.isAuthenticated = false;
       state.jwt = null;
+      state.errorMessages = null;
       localStorage.removeItem("jwt");
     },
   },

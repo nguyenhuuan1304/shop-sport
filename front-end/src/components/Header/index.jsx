@@ -69,13 +69,8 @@ export default function Header() {
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.auth.currentUser);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-
   //số lượng sản phẩm có trong giỏ hàng
   const products = useSelector((state) => state.cart.products);
-  useEffect(() => {
-    dispatch(fetchUserDetail());
-    dispatch(fetchCartData(currentUser?.id));
-  }, [dispatch, currentUser?.id]);
   return (
     <div className="sm:flex hidden border-b flex-row h-32 w-full gap-10 items-center justify-between">
       <Link to="/">

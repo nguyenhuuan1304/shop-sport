@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import placeholder from "../../assets/playholder.png";
@@ -6,18 +6,16 @@ import saletag from "../../assets/saleTag.png";
 import { FaRegEyeSlash } from "react-icons/fa6";
 
 //thuộc tính displayQuantity = true : hiển thị số lượng tồn kho của sản phẩm
-const ProductCard = ({ product, displayQuantity }) => {
+const ProductCard = React.memo(({ product, displayQuantity }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isDisCountActive, setIsDisCountActibe] = useState(false);
   let isSale = product?.attributes?.is_discount_active;
   let islogIN = useSelector((state) => state.auth.isAuthenticated);
-
-  console.log(product);
   const imageUrl = product?.attributes?.image?.data?.[0]?.attributes?.url
     ? import.meta.env.VITE_IMG_URL +
       product?.attributes?.image?.data?.[0]?.attributes?.url
     : placeholder;
-
+  console.log(product);
   return (
     <div className="p-4 justify-center items-start h-full rounded-xl text-center flex-row inline-flex shadow-xl ring-1 ring-gray-300 ring-opacity-50">
       <div className="flex flex-col gap-3 flex-basis-2/3 flex-grow-2">
@@ -25,7 +23,7 @@ const ProductCard = ({ product, displayQuantity }) => {
           <img
             id="img-product"
             src={imageUrl}
-            className="w-60 h-64 transition-transform duration-1000 block ${
+            className="w-60 h-auto transition-transform duration-1000 block ${
             isHovered ? 'scale-110' : 'scale-100'"
             alt={
               product?.attributes?.image?.data?.[0]?.attributes?.name ||
@@ -55,10 +53,10 @@ const ProductCard = ({ product, displayQuantity }) => {
                     {product?.attributes?.price} VND
                   </span>
                   {product?.attributes?.is_discount_active && (
-                    <p className="text-left text-green-500 text-sm font-semibold">
+                    <span className="text-left text-green-500 text-sm font-semibold block">
                       {product?.attributes?.discounted_price.toLocaleString()}{" "}
                       VND
-                    </p>
+                    </span>
                   )}
                 </p>
               ) : (
@@ -127,6 +125,6 @@ const ProductCard = ({ product, displayQuantity }) => {
       )}
     </div>
   );
-};
+});
 
 export default ProductCard;

@@ -53,38 +53,47 @@ const QuantityEditor = () => {
   return (
     <Space className="flex items-center">
       <Button icon={<FaMinus />} onClick={decrement} disabled={value <= 1} />
-      <InputNumber min={1} value={value} className="text-center" />
+      <InputNumber min={1} value={value} readOnly className="text-center" />
       <Button icon={<FaPlus />} onClick={increment} />
     </Space>
   );
 };
 
-const CartProduct = () => {
+const CartProduct = ({ product, size }) => {
+  const foundItem = product?.attributes?.size_list?.find(
+    (item) => item.size === size
+  );
   return (
     <div className="flex flex-row gap-3">
-      <div className="grow">
+      <div className="">
         <Image
           className="rounded-2xl"
           width={150}
-          height={200}
-          src="https://cdn-images.kiotviet.vn/locsporthcm/7271554fd6af4a0ca26858ddf8b6c1a5.jpg"
+          height={150}
+          src={
+            import.meta.env.VITE_IMG_URL +
+            product?.attributes?.image?.data?.[0]?.attributes?.url
+          }
         />
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex flex-row justify-between items-center gap-2">
-          <span className="font-semibold">
-            ARSENAL XANH DA TRẺ EM 2024-2025 CP
-          </span>
+          <span className="font-semibold">{product?.attributes?.name}</span>
           {/* <Button size="small" type="text" danger>
             <FaTrashAlt size={15} />
           </Button> */}
           <DeleteConfirmButton />
         </div>
-        <span>7</span>
+        <span>{size}</span>
         <span className="text-xs text-green-600">
-          Số lượng sản phẩm trong kho còn <span className="font-bold">14</span>
+          Số lượng sản phẩm trong kho còn{" "}
+          <span className="font-bold">
+            {foundItem ? foundItem.quantity : 0}
+          </span>
         </span>
-        <span className="font-semibold text-red-500">47,000đ</span>
+        <span className="font-semibold text-red-500">
+          {product?.attributes?.price?.toLocaleString()}đ
+        </span>
         <div className="flex flex-row justify-between items-center">
           <QuantityEditor />
         </div>
@@ -97,17 +106,22 @@ const DrawerFooter = () => {
   return (
     <div className="flex flex-row gap-2 items-center justify-center">
       <Button size="large" type="primary" className="w-full">
-        Chọn thêm
+        <Link to="/products">Chọn thêm</Link>
       </Button>
       <Button size="large" danger type="primary" className="w-full">
-        Đặt ngay
+        <Link to="/cart">Đặt ngay</Link>
       </Button>
     </div>
   );
 };
 
-export default function CartDrawer({ open, onClose }) {
-  const products = useSelector((state) => state.cart.products);
+export default function CartDrawer({ open, onClose, size }) {
+  // const products = useSelector((state) => state.cart.products);
+  const dispatch = useDispatch();
+  const userId = useSelector((state) => state.auth?.currentUser?.id);
+  const cartData = useSelector((state) => state.cart?.products);
+  //tổng giá tiền sản phẩm của giỏ hàng
+  const total = useSelector((state) => state.cart.total);
   return (
     <>
       <Drawer
@@ -116,11 +130,18 @@ export default function CartDrawer({ open, onClose }) {
         footer={<DrawerFooter />}
         onClose={onClose}
         open={open}
+        size={size}
       >
         {/* Product Area */}
         <div className="flex flex-col gap-2">
           <div className="flex flex-col items-center gap-2">
-            <CartProduct />
+            {cartData?.map((item) => (
+              <CartProduct
+                key={item.product.id}
+                product={item.product}
+                size={item.size}
+              />
+            ))}
           </div>
         </div>
       </Drawer>

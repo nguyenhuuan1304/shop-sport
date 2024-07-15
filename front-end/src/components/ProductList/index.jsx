@@ -24,11 +24,10 @@ export default function ProductList({ sortParam, titleParam }) {
     } else {
       console.log("vào get all");
       dispatch(fetchProductList({ sortParam: "", titleParam: "" }));
-      console.log(productList);
+      // console.log(productList);
     }
     // console.log(productList);
   }, [dispatch, sortParam, titleParam]);
-
   // Thêm console.log để kiểm tra dữ liệu
   // console.log("Product List:", productList);
   // console.log("Loading:", loading);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { NavLink, useSearchParams } from "react-router-dom";
 import _Breadcrumb from "../components/Breadcrumb";
 import ProductList from "../components/ProductList";
@@ -44,7 +44,7 @@ export default function ProductPage() {
 
   return (
     <div>
-      <_Breadcrumb title={"a"}></_Breadcrumb>
+      <_Breadcrumb title={"Sản phẩm"}></_Breadcrumb>
       <div className="flex gap-10 border-b">
         <span className="p-4">Sắp xếp theo</span>
         {FilterOption.map((item, index) => {
