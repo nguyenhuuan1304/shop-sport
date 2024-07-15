@@ -1,8 +1,7 @@
 import React from "react";
-import { NavLink, useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import _Breadcrumb from "../components/Breadcrumb";
 import ProductList from "../components/ProductList";
-
 const className =
   "hover:text-blue-500 duration-150 border-b-2 hover:border-blue-500 border-transparent p-4";
 
@@ -33,11 +32,17 @@ const FilterOption = [
   },
 ];
 
+const useQuery = () => {
+  return new URLSearchParams(useLocation().search);
+};
+
 export default function ProductPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const sortParam = searchParams.get("sort");
   const titleParam = searchParams.get("title");
   // console.log("aaa",sortParam + titleParam)
+  const searchParam = useQuery().get('search') || '';
+  // console.log(searchParam)
   const handleFilterChange = (item) => {
     setSearchParams(item);
   };
@@ -59,7 +64,7 @@ export default function ProductPage() {
           );
         })}
       </div>
-      <ProductList sortParam={sortParam} titleParam={titleParam} />
+      <ProductList sortParam={sortParam} titleParam={titleParam} searchParam={searchParam} />
     </div>
   );
 }

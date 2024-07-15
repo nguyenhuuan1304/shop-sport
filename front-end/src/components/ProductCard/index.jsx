@@ -1,9 +1,9 @@
 import React, { useState } from "react";
+import { FaRegEyeSlash } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import placeholder from "../../assets/playholder.png";
 import saletag from "../../assets/saleTag.png";
-import { FaRegEyeSlash } from "react-icons/fa6";
 
 //thuộc tính displayQuantity = true : hiển thị số lượng tồn kho của sản phẩm
 const ProductCard = ({ product, displayQuantity }) => {
@@ -12,7 +12,7 @@ const ProductCard = ({ product, displayQuantity }) => {
   let isSale = product?.attributes?.is_discount_active;
   let islogIN = useSelector((state) => state.auth.isAuthenticated);
 
-  console.log(product);
+  // console.log(product);
   const imageUrl = product?.attributes?.image?.data?.[0]?.attributes?.url
     ? import.meta.env.VITE_IMG_URL +
       product?.attributes?.image?.data?.[0]?.attributes?.url

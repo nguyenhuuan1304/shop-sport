@@ -1,33 +1,50 @@
+import { Pagination } from "antd";
 import PropTypes from "prop-types";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductList } from "../../features/productSlice";
 import ProductCard from "../ProductCard/";
 
-export default function ProductList({ sortParam, titleParam }) {
+export default function ProductList({ sortParam, titleParam, searchParam }) {
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.products?.productList);
   const loading = useSelector((state) => state.products?.loading);
   const error = useSelector((state) => state.products?.error);
+
+  //pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = useSelector((state) => state.products?.pageSize) || 4;
+  const totalProductItems = useSelector((state) => state.products?.totalProductItems)
+
+  console.log("pageSize ", pageSize+ " totalProductItems "+ totalProductItems +" currentPage "+ currentPage)
 
   useEffect(() => {
     if (sortParam) {
       // console.log("title ", titleParam)
       if (titleParam == "Hot" || titleParam == "Sale") {
         console.log("vào hot và sale");
-        console.log("title ", titleParam, sortParam);
-        dispatch(fetchProductList({ sortParam, titleParam }));
+        // console.log("title ", titleParam, sortParam);
+        dispatch(fetchProductList({ sortParam, titleParam, searchParam: "" ,currentPage ,pageSize}));
       } else {
         console.log("vào sort param");
-        dispatch(fetchProductList({ sortParam, titleParam: "" }));
+        dispatch(
+          fetchProductList({ sortParam, titleParam: "", searchParam: "" ,currentPage ,pageSize})
+        );
       }
+    } else if (searchParam) {
+      console.log("đã vào search");
+      dispatch(
+        fetchProductList({ sortParam: "", titleParam: "", searchParam ,currentPage ,pageSize})
+      );
     } else {
       console.log("vào get all");
-      dispatch(fetchProductList({ sortParam: "", titleParam: "" }));
+      dispatch(
+        fetchProductList({ sortParam: "", titleParam: "", searchParam: "" ,currentPage ,pageSize})
+      );
       console.log(productList);
     }
     // console.log(productList);
-  }, [dispatch, sortParam, titleParam]);
+  }, [dispatch, sortParam, titleParam, searchParam, pageSize, currentPage]);
 
   // Thêm console.log để kiểm tra dữ liệu
   // console.log("Product List:", productList);
@@ -53,6 +70,17 @@ export default function ProductList({ sortParam, titleParam }) {
           ))
         )}
       </div>
+      <div className="p-6">
+        <Pagination
+          total={totalProductItems}
+          showTotal={(total, range) =>
+            `${range[0]}-${range[1]} of ${total} items`
+          }
+          pageSize={pageSize}
+          current={currentPage}
+          onChange={(page, pageSize) => setCurrentPage(page)}
+        />
+      </div>
     </div>
   );
 }
@@ -60,4 +88,5 @@ export default function ProductList({ sortParam, titleParam }) {
 ProductList.propTypes = {
   sortParam: PropTypes.string,
   titleParam: PropTypes.string,
+  searchParam: PropTypes.string,
 };

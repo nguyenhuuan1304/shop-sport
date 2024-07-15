@@ -1,17 +1,29 @@
+import { Avatar, Badge, Divider, Input, List } from "antd";
 import React, { useEffect } from "react";
-import logo from "../../assets/logo.jpg";
-import { NavLink, Link, useNavigate } from "react-router-dom";
-import { Divider } from "antd";
-import { useSelector, useDispatch } from "react-redux";
-import { FaHome, FaHeadphones, FaShoppingCart, FaUser } from "react-icons/fa";
-import { IoPersonCircle, IoPersonAddSharp } from "react-icons/io5";
+import { FaHeadphones, FaHome, FaShoppingCart, FaUser } from "react-icons/fa";
+import { IoLogOut, IoPersonAddSharp, IoPersonCircle } from "react-icons/io5";
 import { PiNotepadFill } from "react-icons/pi";
-import { Input, Space } from "antd";
-import { Badge } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import logo from "../../assets/logo.jpg";
 import { fetchUserDetail, logout } from "../../features/authSlice";
 import { fetchCartData } from "../../features/cartSlice";
-import { IoLogOut } from "react-icons/io5";
 const { Search } = Input;
+
+const data = [
+  {
+    title: "Ant Design Title 1",
+  },
+  {
+    title: "Ant Design Title 2",
+  },
+  {
+    title: "Ant Design Title 3",
+  },
+  {
+    title: "Ant Design Title 4",
+  },
+];
 
 const menuItems = [
   {
@@ -67,8 +79,15 @@ function MenuLink({ Icon, title, to }) {
 export default function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  // const [searchTerm, setSearchTeam] = useState("");
   const currentUser = useSelector((state) => state.auth.currentUser);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
+  
+  const handleSearch = (value) => {
+    // setSearchTeam(value);
+    navigate(`/products?search=${value}`);
+  };
 
   //số lượng sản phẩm có trong giỏ hàng
   const products = useSelector((state) => state.cart.products);
@@ -76,6 +95,7 @@ export default function Header() {
     dispatch(fetchUserDetail());
     dispatch(fetchCartData(currentUser?.id));
   }, [dispatch, currentUser?.id]);
+
   return (
     <div className="sm:flex hidden border-b flex-row h-32 w-full gap-10 items-center justify-between">
       <Link to="/">
@@ -87,11 +107,35 @@ export default function Header() {
       </Link>
       <div className=" gap-6 flex flex-col p-4 grow">
         <div className="flex flex-row gap-10 flex-auto items-center justify-between">
-          <Search
-            placeholder="Nhập sản phẩm tìm kiếm"
-            enterButton
-            className="w-96 h-auto"
-          />
+          <div className="flex flex-col w-full relative">
+            <Search
+              placeholder="Nhập sản phẩm tìm kiếm"
+              enterButton
+              className="w-96 h-auto"
+              onSearch={handleSearch}
+            />
+            <div className="absolute top-10 w-1/2 z-50">
+            <List className=" bg-white w-full rounded-lg border border-blue-200 opacity-100  overflow-auto"
+              itemLayout="vertical"
+              dataSource={data}
+              header={<span className="p-2">Sản phẩm gợi ý</span>}
+              renderItem={(item, index) => (
+                <List.Item className="">
+                  <List.Item.Meta
+                    avatar={
+                      <Avatar
+                        src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
+                      />
+                    }
+                    title={<a href="https://ant.design">{item.title}</a>}
+                    description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                  />
+                </List.Item>
+              )}
+            />
+            </div>
+          </div>
+
           <div className="flex flex-row items-center gap-5">
             <NavigationLink
               title="Kiểm tra đơn hàng"

@@ -3,15 +3,17 @@ import { request } from "../redux/request";
 
 export const fetchProductList = createAsyncThunk(
   "products/fetchProductList",
-  async ({ sortParam, titleParam }, { rejectWithValue }) => {
+  async ({ sortParam, titleParam, searchParam ,currentPage ,pageSize}, { rejectWithValue }) => {
     try {
       console.log("fetchProductList ", sortParam, titleParam);
       if (sortParam || titleParam) {
         console.log("fetchProductList có sortParam hoặc titleParam");
-        return await request.ListSort({ sort: sortParam, title: titleParam });
+        return await request.ListSort({ sort: sortParam, title: titleParam ,currentPage ,pageSize});
+      } else if (searchParam) {
+        return await request.listProductSearch({ keyWord: searchParam ,currentPage ,pageSize});
       } else {
         console.log("fetchProductList không có sortParam hoặc titleParam");
-        return await request.List();
+        return await request.List(currentPage ,pageSize);
       }
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -53,6 +55,8 @@ const productSlice = createSlice({
     saleProductList: [],
     loading: false,
     error: null,
+    pageSize: 6,
+    totalProductItems: null,
   },
   reducers: {
     setProductList: (state, action) => {
@@ -75,6 +79,8 @@ const productSlice = createSlice({
       .addCase(fetchProductList.fulfilled, (state, action) => {
         state.loading = false;
         state.productList = action.payload.result.data;
+        state.totalProductItems = action.payload.result.meta.pagination.total;
+        state.pageSize = action.payload.result.meta.pagination.pageSize;
       })
       .addCase(fetchProductList.rejected, (state, action) => {
         state.loading = false;

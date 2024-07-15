@@ -1,11 +1,10 @@
-import axios from "axios";
 import axiosInstance from "../../axios/axios";
 import errorHandler from "../request/errorHandler";
 import successHandler from "./successHandler";
 const request = {
-  List: async () => {
+  List: async (currentPage ,pageSize) => {
     try {
-      const response = await axiosInstance.get("/products?populate=*");
+      const response = await axiosInstance.get(`/products?populate=*&pagination[page]=${currentPage}&pagination[pageSize]=${pageSize}`);
       console.log("Response data:", response.data);
       return successHandler(response);
     } catch (error) {
@@ -13,7 +12,17 @@ const request = {
     }
   },
 
-  ListSort: async ({ sort, title }) => {
+  listProductSearch: async({keyWord,currentPage ,pageSize}) => {
+    try {
+      const response = await axiosInstance.get(`/products?populate=*&filters[name][$containsi]=${keyWord}&pagination[page]=${currentPage}&pagination[pageSize]=${pageSize}`);
+      // console.log("Response data:", response.data);
+      return successHandler(response);
+    } catch (error) {
+      return errorHandler(error);
+    }
+  },
+
+  ListSort: async ({ sort, title,currentPage ,pageSize }) => {
     console.log("listsort ", sort);
     try {
       let url = "/products?populate=*";
@@ -28,7 +37,7 @@ const request = {
         }
         url += `&filters[${title}][$eq]=${sort}`;
       }
-      const response = await axiosInstance.get(url);
+      const response = await axiosInstance.get(url+`&pagination[page]=${currentPage}&pagination[pageSize]=${pageSize}`);
       console.log("Response data:", response.data);
       return successHandler(response);
     } catch (error) {
@@ -37,7 +46,7 @@ const request = {
   },
 
   ListSaleProduct: async () => {
-    console.log("listsort ", sort);
+    // console.log("listsort ", sort);
     try {
       const response = await axiosInstance.get(
         `/products?populate=*&is_discount_active=true`
@@ -80,28 +89,28 @@ const request = {
       throw error;
     }
   },
-  AddToCart: async (userId, product, total) => {
-    try {
-      //get current user cart
-      const userCart = await axiosInstance.get(
-        `/users/${userId}?fields[0]=cart`
-      );
-      //add product to cart
-      const updatedProducts = [...userCart.cart.products, product];
-      const updatedTotal = userCart.cart.total + total;
-      //updated cart
-      const response = await axiosInstance.put(
-        `/users/${userId}?fields[0]=cart`,
-        {
-          cart: {
-            products: updatedProducts,
-            total: updatedTotal,
-          },
-        }
-      );
-    } catch (error) {
-      throw error;
-    }
-  },
+  // AddToCart: async (userId, product, total) => {
+  //   try {
+  //     //get current user cart
+  //     const userCart = await axiosInstance.get(
+  //       `/users/${userId}?fields[0]=cart`
+  //     );
+  //     //add product to cart
+  //     const updatedProducts = [...userCart.cart.products, product];
+  //     const updatedTotal = userCart.cart.total + total;
+  //     //updated cart
+  //     const response = await axiosInstance.put(
+  //       `/users/${userId}?fields[0]=cart`,
+  //       {
+  //         cart: {
+  //           products: updatedProducts,
+  //           total: updatedTotal,
+  //         },
+  //       }
+  //     );
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // },
 };
 export default request;
