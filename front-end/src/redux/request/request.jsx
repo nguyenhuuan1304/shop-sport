@@ -80,15 +80,42 @@ const request = {
       throw error;
     }
   },
-  AddToCart: async (userId, product, total) => {
+  //add a product to cart
+  AddToCart: async (userId, product) => {
     try {
       //get current user cart
       const userCart = await axiosInstance.get(
         `/users/${userId}?fields[0]=cart`
       );
-      //add product to cart
-      const updatedProducts = [...userCart.cart.products, product];
-      const updatedTotal = userCart.cart.total + total;
+      //check product is in cart (size === size and id === id)
+      let existingProduct = userCart?.data?.cart?.products.find((item) => {
+        return (
+          item.product?.id === product?.id &&
+          item.size &&
+          item.product?.attributes?.size_list?.some(
+            (sizeItem) => sizeItem.size === item.size
+          )
+        );
+      });
+      let updatedProducts;
+      //if exist
+      if (existingProduct) {
+        existingProduct = {
+          ...existingProduct,
+          count: existingProduct.count + 1,
+        };
+        updatedProducts = userCart.data.cart.products.map((item) =>
+          item.product.id === existingProduct.product.id
+            ? existingProduct
+            : item
+        );
+      } else {
+        updatedProducts = [...userCart.data.cart.products, product];
+      }
+      //updated total value
+      const updatedTotal =
+        userCart?.data?.cart?.total + product?.attributes?.price;
+
       //updated cart
       const response = await axiosInstance.put(
         `/users/${userId}?fields[0]=cart`,
@@ -99,6 +126,58 @@ const request = {
           },
         }
       );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  RemoveFromCart: async (userId, product) => {
+    try {
+      //get current user cart
+      const userCart = await axiosInstance.get(
+        `/users/${userId}?fields[0]=cart`
+      );
+      //check product is in cart (size === size and id === id)
+      let existingProduct = userCart?.data?.cart?.products.find((item) => {
+        return (
+          item.product?.id === product?.id &&
+          item.size &&
+          item.product?.attributes?.size_list?.some(
+            (sizeItem) => sizeItem.size === item.size
+          )
+        );
+      });
+      let updatedProducts;
+      //if exist
+      if (existingProduct) {
+        existingProduct = {
+          ...existingProduct,
+          count: existingProduct.count - 1,
+        };
+        updatedProducts = userCart.data.cart.products.map((item) =>
+          item.product.id === existingProduct.product.id
+            ? existingProduct
+            : item
+        );
+      } else {
+        updatedProducts = [...userCart.data.cart.products, product];
+      }
+      //updated total value
+      const updatedTotal =
+        userCart?.data?.cart?.total - product?.attributes?.price;
+
+      //updated cart
+      const response = await axiosInstance.put(
+        `/users/${userId}?fields[0]=cart`,
+        {
+          cart: {
+            products: updatedProducts,
+            total: updatedTotal,
+          },
+        }
+      );
+      return response.data;
     } catch (error) {
       throw error;
     }

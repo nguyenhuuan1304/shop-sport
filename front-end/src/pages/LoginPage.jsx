@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { Alert } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../features/authSlice";
 import logo from "../assets/logo.jpg";
@@ -117,7 +118,13 @@ export default function LoginPage() {
                   className="block pl-4 h-16 focus:outline-none w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                 />
               </div>
-              <div className="text-red-500">{errorMessages}</div>
+              <div className="text-red-500 mt-2">
+                {errorMessages ? (
+                  <Alert message={errorMessages} type="error" />
+                ) : (
+                  ""
+                )}
+              </div>
             </div>
 
             <div className="flex flex-col gap-4 text-center">

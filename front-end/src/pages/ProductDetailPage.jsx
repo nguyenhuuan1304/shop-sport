@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Input, Button, Rate, Image, Table, InputNumber, Carousel } from "antd";
+import {
+  Input,
+  Button,
+  Rate,
+  Image,
+  Table,
+  InputNumber,
+  Carousel,
+  message,
+} from "antd";
 import { Link, useParams } from "react-router-dom";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
@@ -101,6 +110,13 @@ export default function ProductDetailPage() {
     key: `${item.size}-${index}`,
     count: 0,
   }));
+  const [messageApi, contextHolder] = message.useMessage();
+  const error = () => {
+    messageApi.open({
+      type: "error",
+      content: "Bạn chưa chọn sản phẩm!",
+    });
+  };
   const [cart, setCart] = useState([]);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -151,8 +167,11 @@ export default function ProductDetailPage() {
 
   //xử lý thêm sản phẩm đã chọn vào giỏ hàng
   const addToCart = () => {
-    showDrawer();
-    console.log(cart);
+    // if cart not empty
+    if (cart && cart?.length > 0) {
+      showDrawer();
+      console.log(cart);
+    } else error();
     // console.log(dataSource);
   };
 
@@ -189,6 +208,7 @@ export default function ProductDetailPage() {
 
   return (
     <div className="flex flex-col gap-10">
+      {contextHolder}
       {loading && <div className="flex flex-col items-center">Loading...</div>}
       {!loading && !product ? (
         <div>Không có sản phẩm này!</div>

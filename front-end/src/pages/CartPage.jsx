@@ -10,7 +10,12 @@ import {
 } from "antd";
 import { Link } from "react-router-dom";
 import { CiWarning } from "react-icons/ci";
-import { fetchCartData } from "../features/cartSlice";
+import {
+  fetchCartData,
+  addToCart,
+  removeFromCart,
+  setTotalProduct,
+} from "../features/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { FaTrashAlt, FaPlus, FaMinus } from "react-icons/fa";
 const { TextArea } = Input;
@@ -40,22 +45,47 @@ const NotLoginScreen = () => {
   );
 };
 
-const QuantityEditor = () => {
-  const [value, setValue] = useState(1);
+const QuantityEditor = ({ max, min, value, onIncrement, onDecrement }) => {
+  const [currentValue, setCurrentValue] = useState(value);
+
+  useEffect(() => {
+    setCurrentValue(value);
+  }, [value]);
 
   const increment = () => {
-    setValue((prevValue) => prevValue + 1);
+    if (currentValue < max) {
+      const newValue = currentValue + 1;
+      setCurrentValue(newValue);
+      onIncrement(newValue);
+    }
   };
 
   const decrement = () => {
-    setValue((prevValue) => (prevValue > 0 ? prevValue - 1 : 0));
+    if (currentValue > min) {
+      const newValue = currentValue - 1;
+      setCurrentValue(newValue);
+      onDecrement(newValue);
+    }
   };
 
   return (
     <Space className="flex items-center">
-      <Button icon={<FaMinus />} onClick={decrement} disabled={value <= 1} />
-      <InputNumber min={1} value={value} readOnly className="text-center" />
-      <Button icon={<FaPlus />} onClick={increment} />
+      <Button
+        icon={<FaMinus />}
+        onClick={decrement}
+        disabled={currentValue <= min}
+      />
+      <InputNumber
+        min={min}
+        value={currentValue}
+        readOnly
+        className="text-center"
+      />
+      <Button
+        icon={<FaPlus />}
+        onClick={increment}
+        disabled={currentValue >= max}
+      />
     </Space>
   );
 };
@@ -86,7 +116,14 @@ const DeleteConfirmButton = () => {
   );
 };
 
-const CartProduct = ({ product, size }) => {
+const CartProduct = ({
+  productQuantity,
+  product,
+  size,
+  addToCart,
+  removeFromCart,
+}) => {
+  const [quantity, setQuantity] = useState(productQuantity);
   const foundItem = product?.attributes?.size_list?.find(
     (item) => item.size === size
   );
@@ -122,7 +159,14 @@ const CartProduct = ({ product, size }) => {
           {product?.attributes?.price?.toLocaleString()}đ
         </span>
         <div className="flex flex-row justify-between items-center">
-          <QuantityEditor />
+          <QuantityEditor
+            max={foundItem?.quantity}
+            min={1}
+            value={productQuantity}
+            setValue={setQuantity}
+            onIncrement={(newQuantity) => addToCart(product, newQuantity)}
+            onDecrement={(newQuantity) => removeFromCart(product, newQuantity)}
+          />
         </div>
       </div>
     </div>
@@ -136,16 +180,24 @@ export default function CartPage() {
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
   //tổng giá tiền sản phẩm của giỏ hàng
   const total = useSelector((state) => state.cart.total);
+  // tổng số lượng sản phẩm có trong giỏ hàng (tính cả size)
+  const totalProduct = useSelector((state) => state.cart.totalProduct);
+  // xử lý thêm sản phẩm vào giỏ hàng trên strapi
+  const handleAddToCart = (userId, product) => {
+    dispatch(addToCart({ userId, product }));
+  };
+  const handleRemoveFromCart = (userId, product) => {
+    dispatch(removeFromCart({ userId, product }));
+  };
+
   useEffect(() => {
-    // console.log("user id", userId);
-    if (userId) dispatch(fetchCartData(userId));
-    // console.log("cart data", cartData);
-    // console.log("total", total);
+    dispatch(fetchCartData(userId));
   }, [dispatch, userId]);
+
   return (
     <>
       {" "}
-      {!isAuthenticated ? (
+      {!isAuthenticated || cartData?.products?.length ? (
         <NotLoginScreen />
       ) : (
         <div className="flex flex-col sm:flex-row gap-2 p-5">
@@ -208,6 +260,11 @@ export default function CartPage() {
                 key={item.id}
                 product={item.product}
                 size={item.size}
+                productQuantity={item.count}
+                addToCart={(product) => handleAddToCart(userId, product)}
+                removeFromCart={(product) =>
+                  handleRemoveFromCart(userId, product)
+                }
               />
             ))}
             {/* tổng tiền */}
