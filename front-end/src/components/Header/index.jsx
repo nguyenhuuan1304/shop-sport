@@ -1,29 +1,14 @@
-import { Avatar, Badge, Divider, Input, List } from "antd";
+import { Badge, Divider } from "antd";
 import React, { useEffect } from "react";
 import { FaHeadphones, FaHome, FaShoppingCart, FaUser } from "react-icons/fa";
 import { IoLogOut, IoPersonAddSharp, IoPersonCircle } from "react-icons/io5";
 import { PiNotepadFill } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import logo from "../../assets/logo.jpg";
 import { fetchUserDetail, logout } from "../../features/authSlice";
 import { fetchCartData } from "../../features/cartSlice";
-const { Search } = Input;
-
-const data = [
-  {
-    title: "Ant Design Title 1",
-  },
-  {
-    title: "Ant Design Title 2",
-  },
-  {
-    title: "Ant Design Title 3",
-  },
-  {
-    title: "Ant Design Title 4",
-  },
-];
+import SearchBar from "../SearchBar";
 
 const menuItems = [
   {
@@ -78,16 +63,9 @@ function MenuLink({ Icon, title, to }) {
 
 export default function Header() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  // const [searchTerm, setSearchTeam] = useState("");
   const currentUser = useSelector((state) => state.auth.currentUser);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-  
-  const handleSearch = (value) => {
-    // setSearchTeam(value);
-    navigate(`/products?search=${value}`);
-  };
 
   //số lượng sản phẩm có trong giỏ hàng
   const products = useSelector((state) => state.cart.products);
@@ -95,6 +73,7 @@ export default function Header() {
     dispatch(fetchUserDetail());
     dispatch(fetchCartData(currentUser?.id));
   }, [dispatch, currentUser?.id]);
+
 
   return (
     <div className="sm:flex hidden border-b flex-row h-32 w-full gap-10 items-center justify-between">
@@ -107,35 +86,59 @@ export default function Header() {
       </Link>
       <div className=" gap-6 flex flex-col p-4 grow">
         <div className="flex flex-row gap-10 flex-auto items-center justify-between">
-          <div className="flex flex-col w-full relative">
+          {/* <div className="flex flex-col relative">
             <Search
               placeholder="Nhập sản phẩm tìm kiếm"
               enterButton
               className="w-96 h-auto"
               onSearch={handleSearch}
+              onChange={onChangeHandleSearch}
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
+              value={keyWordSearch}
             />
-            <div className="absolute top-10 w-1/2 z-50">
-            <List className=" bg-white w-full rounded-lg border border-blue-200 opacity-100  overflow-auto"
-              itemLayout="vertical"
-              dataSource={data}
-              header={<span className="p-2">Sản phẩm gợi ý</span>}
-              renderItem={(item, index) => (
-                <List.Item className="">
-                  <List.Item.Meta
-                    avatar={
-                      <Avatar
-                        src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
-                      />
-                    }
-                    title={<a href="https://ant.design">{item.title}</a>}
-                    description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+            {isOpenDropDown && keyWordSearch && (
+              <div className="absolute top-10 w-full z-50 bg-white rounded-lg border opacity-100">
+                <div className="p-2 sticky top-0 bg-gray-100 z-10 w-full rounded-t-lg">
+                  Sản phẩm gợi ý
+                </div>
+                <div className="bg-white w-full border opacity-100 overflow-auto h-80 rounded-b-lg border-b last:border-b">
+                  <List
+                    className="bg-white p-3"
+                    itemLayout="vertical"
+                    dataSource={productList}
+                    split={true} // Thuộc tính split để thêm đường kẻ
+                    renderItem={(item, index) => (
+                      <Link to={`/product/${item?.id}`} key={item?.id}>
+                        <List.Item className="w-full border-b border-gray-300 last:border-b-0">
+                          <List.Item.Meta
+                            avatar={
+                              <Avatar
+                                src={urlImg(item)}
+                                className="w-20 h-20 rounded-full shadow-xl border-4 border-neutral-100"
+                              />
+                            }
+                            title={<a>{item?.attributes?.name}</a>}
+                            description={
+                              isAuthenticated ? (
+                                <p>{item?.attributes?.price} $</p>
+                              ) : (
+                                <p className="font-semibold">
+                                  Đăng nhập để xem giá
+                                </p>
+                              )
+                            }
+                          />
+                          <Divider />
+                        </List.Item>
+                      </Link>
+                    )}
                   />
-                </List.Item>
-              )}
-            />
-            </div>
-          </div>
-
+                </div>
+              </div>
+            )}
+          </div> */}
+          <SearchBar></SearchBar>
           <div className="flex flex-row items-center gap-5">
             <NavigationLink
               title="Kiểm tra đơn hàng"

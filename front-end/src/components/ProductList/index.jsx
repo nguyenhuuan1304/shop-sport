@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProductList } from "../../features/productSlice";
 import ProductCard from "../ProductCard/";
 
-export default function ProductList({ sortParam, titleParam, searchParam }) {
+function ProductList({ sortParam, titleParam, searchParam }) {
+  // console.log("rrender")
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.products?.productList);
   const loading = useSelector((state) => state.products?.loading);
@@ -16,7 +17,7 @@ export default function ProductList({ sortParam, titleParam, searchParam }) {
   const pageSize = useSelector((state) => state.products?.pageSize) || 4;
   const totalProductItems = useSelector((state) => state.products?.totalProductItems)
 
-  console.log("pageSize ", pageSize+ " totalProductItems "+ totalProductItems +" currentPage "+ currentPage)
+  // console.log("pageSize ", pageSize+ " totalProductItems "+ totalProductItems +" currentPage "+ currentPage)
 
   useEffect(() => {
     if (sortParam) {
@@ -26,22 +27,22 @@ export default function ProductList({ sortParam, titleParam, searchParam }) {
         // console.log("title ", titleParam, sortParam);
         dispatch(fetchProductList({ sortParam, titleParam, searchParam: "" ,currentPage ,pageSize}));
       } else {
-        console.log("vào sort param");
+        // console.log("vào sort param");
         dispatch(
           fetchProductList({ sortParam, titleParam: "", searchParam: "" ,currentPage ,pageSize})
         );
       }
     } else if (searchParam) {
-      console.log("đã vào search");
+      // console.log("đã vào search");
       dispatch(
         fetchProductList({ sortParam: "", titleParam: "", searchParam ,currentPage ,pageSize})
       );
     } else {
-      console.log("vào get all");
+      // console.log("vào get all");
       dispatch(
         fetchProductList({ sortParam: "", titleParam: "", searchParam: "" ,currentPage ,pageSize})
       );
-      console.log(productList);
+      // console.log(productList);
     }
     // console.log(productList);
   }, [dispatch, sortParam, titleParam, searchParam, pageSize, currentPage]);
@@ -90,3 +91,4 @@ ProductList.propTypes = {
   titleParam: PropTypes.string,
   searchParam: PropTypes.string,
 };
+export default ProductList;

@@ -1,16 +1,15 @@
+import { Button, Carousel, Image, Input, InputNumber, Rate, Table } from "antd";
+import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
-import { Input, Button, Rate, Image, Table, InputNumber, Carousel } from "antd";
-import { Link, useParams } from "react-router-dom";
-import { FaPlus, FaMinus } from "react-icons/fa";
+import { FaMinus, FaPlus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import CartDrawer from "../components/CartDrawer";
+import ProductCard from "../components/ProductCard";
 import {
   fetchProductDetail,
-  fetchProductList,
-  fetchSaleProductList,
+  fetchProductList
 } from "../features/productSlice";
-import { motion } from "framer-motion";
-import ProductCard from "../components/ProductCard";
-import CartDrawer from "../components/CartDrawer";
 const { Search } = Input;
 
 const carouselResponsiveSetting = [
@@ -112,7 +111,7 @@ export default function ProductDetailPage() {
   };
   useEffect(() => {
     dispatch(fetchProductDetail(productId));
-    dispatch(fetchProductList({ sortParam: "true", titleParam: "NoHot" }));
+    dispatch(fetchProductList({ sortParam: "true", titleParam: "NoHot", searchParam: "", currentPage: 0, pageSize: 0}));
     console.log(saleProducts);
   }, [dispatch, productId]);
 
@@ -344,7 +343,7 @@ export default function ProductDetailPage() {
           <div className="flex justify-center items-center pb-2">
             {saleProducts.map((item) => {
               return (
-                <div className="w-full flex justify-center">
+                <div key={item.id} className="w-full flex justify-center">
                   <ProductCard product={item} displayQuantity={false} />
                 </div>
               );

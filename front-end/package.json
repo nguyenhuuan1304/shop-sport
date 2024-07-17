@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.6",
+    "@uidotdev/usehooks": "^2.4.1",
     "antd": "^5.19.0",
     "axios": "^1.7.2",
     "framer-motion": "^11.2.14",

@@ -11,10 +11,17 @@ const request = {
       return errorHandler(error);
     }
   },
-
+  searchFiveProduct: async(keyWord)=>{
+    try {
+      const response = await axiosInstance.get(`/products?populate=*&filters[name][$containsi]=${keyWord.toUpperCase()}&pagination[limit]=5&sort[0]=createdAt:asc`);
+      return successHandler(response);
+    } catch (error) {
+      return errorHandler(error);
+    }
+  },
   listProductSearch: async({keyWord,currentPage ,pageSize}) => {
     try {
-      const response = await axiosInstance.get(`/products?populate=*&filters[name][$containsi]=${keyWord}&pagination[page]=${currentPage}&pagination[pageSize]=${pageSize}`);
+      const response = await axiosInstance.get(`/products?populate=*&filters[name][$containsi]=${keyWord.toUpperCase()}&pagination[page]=${currentPage}&pagination[pageSize]=${pageSize}`);
       // console.log("Response data:", response.data);
       return successHandler(response);
     } catch (error) {
@@ -89,28 +96,28 @@ const request = {
       throw error;
     }
   },
-  // AddToCart: async (userId, product, total) => {
-  //   try {
-  //     //get current user cart
-  //     const userCart = await axiosInstance.get(
-  //       `/users/${userId}?fields[0]=cart`
-  //     );
-  //     //add product to cart
-  //     const updatedProducts = [...userCart.cart.products, product];
-  //     const updatedTotal = userCart.cart.total + total;
-  //     //updated cart
-  //     const response = await axiosInstance.put(
-  //       `/users/${userId}?fields[0]=cart`,
-  //       {
-  //         cart: {
-  //           products: updatedProducts,
-  //           total: updatedTotal,
-  //         },
-  //       }
-  //     );
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // },
+  AddToCart: async (userId, product, total) => {
+    // try {
+    //   //get current user cart
+    //   const userCart = await axiosInstance.get(
+    //     `/users/${userId}?fields[0]=cart`
+    //   );
+    //   //add product to cart
+    //   const updatedProducts = [...userCart.cart.products, product];
+    //   const updatedTotal = userCart.cart.total + total;
+    //   //updated cart
+    //   const response = await axiosInstance.put(
+    //     `/users/${userId}?fields[0]=cart`,
+    //     {
+    //       cart: {
+    //         products: updatedProducts,
+    //         total: updatedTotal,
+    //       },
+    //     }
+    //   );
+    // } catch (error) {
+    //   throw error;
+    // }
+  },
 };
 export default request;
