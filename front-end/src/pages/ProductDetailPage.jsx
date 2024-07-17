@@ -17,6 +17,7 @@ import {
   fetchProductList,
   fetchSaleProductList,
 } from "../features/productSlice";
+import { addManyToCart } from "../features/cartSlice";
 import { motion } from "framer-motion";
 import ProductCard from "../components/ProductCard";
 import CartDrawer from "../components/CartDrawer";
@@ -101,6 +102,7 @@ function CustomArrow(props) {
 export default function ProductDetailPage() {
   const { productId } = useParams();
   const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.auth?.currentUser);
   const product = useSelector((state) => state.products?.productDetails);
   const saleProducts = useSelector((state) => state.products?.productList);
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
@@ -169,10 +171,10 @@ export default function ProductDetailPage() {
   const addToCart = () => {
     // if cart not empty
     if (cart && cart?.length > 0) {
+      dispatch(addManyToCart({ userId: currentUser?.id, products: cart }));
       showDrawer();
-      console.log(cart);
+      console.log("cart: ", cart);
     } else error();
-    // console.log(dataSource);
   };
 
   const columns = [

@@ -36,6 +36,30 @@ export const removeFromCart = createAsyncThunk(
   }
 );
 
+export const addManyToCart = createAsyncThunk(
+  "cart/addManyToCart",
+  async ({ userId, products }, { rejectWithValue }) => {
+    try {
+      const response = await request.AddManyToCart(userId, products);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const deleteFromCart = createAsyncThunk(
+  "cart/deleteFromCart",
+  async ({ userId, cartItem }, { rejectWithValue }) => {
+    try {
+      const response = await request.DeleteFromCart(userId, cartItem);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const initialState = {
   userId: null,
   //danh sách sản phẩm trong giỏ hàng
@@ -77,6 +101,7 @@ const cartSlice = createSlice({
       .addCase(addToCart.fulfilled, (state, action) => {
         state.loading = false;
         state.total = action.payload?.cart?.total;
+        state.products = action.payload?.cart?.products;
       })
       .addCase(addToCart.rejected, (state, action) => {
         state.loading = false;
@@ -91,6 +116,32 @@ const cartSlice = createSlice({
         state.total = action.payload?.cart?.total;
       })
       .addCase(removeFromCart.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(addManyToCart.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addManyToCart.fulfilled, (state, action) => {
+        state.loading = false;
+        state.total = action.payload?.cart?.total;
+        state.products = action.payload?.cart?.products;
+      })
+      .addCase(addManyToCart.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteFromCart.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteFromCart.fulfilled, (state, action) => {
+        state.loading = false;
+        state.total = action.payload?.cart?.total;
+        state.products = action.payload?.cart?.products;
+      })
+      .addCase(deleteFromCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

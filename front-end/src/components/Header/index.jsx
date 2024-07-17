@@ -6,11 +6,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { FaHome, FaHeadphones, FaShoppingCart, FaUser } from "react-icons/fa";
 import { IoPersonCircle, IoPersonAddSharp } from "react-icons/io5";
 import { PiNotepadFill } from "react-icons/pi";
-import { Input, Space } from "antd";
-import { Badge } from "antd";
+import { Input, Space, Badge } from "antd";
 import { fetchUserDetail, logout } from "../../features/authSlice";
 import { fetchCartData, setTotalProduct } from "../../features/cartSlice";
 import { IoLogOut } from "react-icons/io5";
+import { motion } from "framer-motion";
 const { Search } = Input;
 
 const menuItems = [

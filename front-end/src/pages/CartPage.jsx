@@ -15,9 +15,11 @@ import {
   addToCart,
   removeFromCart,
   setTotalProduct,
+  deleteFromCart,
 } from "../features/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { FaTrashAlt, FaPlus, FaMinus } from "react-icons/fa";
+import { motion } from "framer-motion";
 const { TextArea } = Input;
 import {
   CiShoppingBasket,
@@ -31,7 +33,14 @@ import {
 const NotLoginScreen = () => {
   return (
     <div className="flex flex-col items-center gap-5 h-screen">
-      <CiShoppingBasket className="text-neutral-500" size={150} />
+      <motion.div
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 50 }}
+        transition={{ duration: 0.7 }}
+      >
+        <CiShoppingBasket className="text-neutral-500" size={150} />
+      </motion.div>
       <span className="font-semibold text-xl">
         Chưa có sản phẩm nào trong giỏ hàng.
       </span>
@@ -77,6 +86,7 @@ const QuantityEditor = ({ max, min, value, onIncrement, onDecrement }) => {
       />
       <InputNumber
         min={min}
+        max={max}
         value={currentValue}
         readOnly
         className="text-center"
@@ -90,13 +100,13 @@ const QuantityEditor = ({ max, min, value, onIncrement, onDecrement }) => {
   );
 };
 
-const DeleteConfirmButton = () => {
+const DeleteConfirmButton = ({ onConfirm }) => {
   return (
     <Popconfirm
       title="Xóa sản phẩm này khỏi giỏ hàng?"
       placement="left"
       // description="Xác nhận xóa sản phẩm ra khỏi giỏ hàng?"
-      // onConfirm={confirm}
+      onConfirm={onConfirm}
       // onCancel={cancel}
       icon={
         <CiWarning
@@ -116,47 +126,79 @@ const DeleteConfirmButton = () => {
   );
 };
 
-const CartProduct = ({
+const CartItem = ({
   productQuantity,
-  product,
+  cartItem,
   size,
   addToCart,
   removeFromCart,
+  deleteFromCart,
 }) => {
   const [quantity, setQuantity] = useState(productQuantity);
-  const foundItem = product?.attributes?.size_list?.find(
+  const foundItem = cartItem?.product?.attributes?.size_list?.find(
     (item) => item.size === size
   );
+  const handleIncrement = (newValue) => {
+    if (newValue <= foundItem.quantity) {
+      setQuantity(newValue);
+      addToCart(cartItem, newValue);
+    }
+  };
+
+  const handleDecrement = (newValue) => {
+    if (newValue >= 1) {
+      setQuantity(newValue);
+      removeFromCart(cartItem, newValue);
+    }
+  };
+  const handleDeleteCartItem = () => {
+    deleteFromCart(cartItem);
+  };
+
+  console.log("cart item count", quantity);
   return (
     <div className="flex flex-row gap-3">
       <div className="">
         <Image
           className="rounded-2xl"
-          width={150}
-          height={150}
+          width={170}
+          height={170}
           src={
             import.meta.env.VITE_IMG_URL +
-            product?.attributes?.image?.data?.[0]?.attributes?.url
+            cartItem?.product?.attributes?.image?.data?.[0]?.attributes?.url
           }
         />
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex flex-row justify-between items-center gap-2">
-          <span className="font-semibold">{product?.attributes?.name}</span>
+          <span className="font-semibold">
+            {cartItem?.product?.attributes?.name}
+          </span>
           {/* <Button size="small" type="text" danger>
             <FaTrashAlt size={15} />
           </Button> */}
-          <DeleteConfirmButton />
+          <DeleteConfirmButton onConfirm={handleDeleteCartItem} />
         </div>
         <span>{size}</span>
-        <span className="text-xs text-green-600">
-          Số lượng sản phẩm trong kho còn{" "}
-          <span className="font-bold">
-            {foundItem ? foundItem.quantity : 0}
+        {quantity > foundItem.quantity ? (
+          <span className="text-xs text-red-600">
+            Số lượng sản phẩm trong kho còn{" "}
+            <span className="font-bold ">
+              {foundItem ? foundItem.quantity : 0}
+            </span>{" "}
+            (vượt quá sản phẩm)
           </span>
-        </span>
+        ) : (
+          <span className="text-xs text-green-600">
+            Số lượng sản phẩm trong kho còn{" "}
+            <span className="font-bold ">
+              {foundItem ? foundItem.quantity : 0}
+            </span>
+          </span>
+        )}
+
         <span className="font-semibold text-red-500">
-          {product?.attributes?.price?.toLocaleString()}đ
+          {cartItem?.product?.attributes?.price?.toLocaleString()}đ
         </span>
         <div className="flex flex-row justify-between items-center">
           <QuantityEditor
@@ -164,8 +206,8 @@ const CartProduct = ({
             min={1}
             value={productQuantity}
             setValue={setQuantity}
-            onIncrement={(newQuantity) => addToCart(product, newQuantity)}
-            onDecrement={(newQuantity) => removeFromCart(product, newQuantity)}
+            onIncrement={handleIncrement}
+            onDecrement={handleDecrement}
           />
         </div>
       </div>
@@ -189,6 +231,9 @@ export default function CartPage() {
   const handleRemoveFromCart = (userId, product) => {
     dispatch(removeFromCart({ userId, product }));
   };
+  const handleDeleteFromCart = (userId, cartItem) => {
+    dispatch(deleteFromCart({ userId, cartItem }));
+  };
 
   useEffect(() => {
     dispatch(fetchCartData(userId));
@@ -197,12 +242,12 @@ export default function CartPage() {
   return (
     <>
       {" "}
-      {!isAuthenticated || cartData?.products?.length ? (
+      {!isAuthenticated || cartData?.length === 0 ? (
         <NotLoginScreen />
       ) : (
         <div className="flex flex-col sm:flex-row gap-2 p-5">
           {/* thông tin vận chuyển */}
-          <div className="flex flex-col gap-5 basis-1/2 h-screen">
+          <div className="flex flex-col gap-5 basis-1/2 h-full">
             <div>
               <span className="text-xl text-neutral-700 font-semibold">
                 THÔNG TIN VẬN CHUYỂN
@@ -248,22 +293,25 @@ export default function CartPage() {
           </div>
           {/* divider */}
           {/* giỏ hàng */}
-          <div className="basis-1/2 flex flex-col sm:border-l border-l-0 border-gray-300 pl-3  h-screen">
+          <div className=" basis-1/2 flex flex-col sm:border-l border-l-0 border-gray-300 pl-3">
             <div>
               <span className="text-xl text-neutral-700 font-semibold">
                 GIỎ HÀNG
               </span>
               <Divider />
             </div>
-            {cartData?.map((item) => (
-              <CartProduct
-                key={item.id}
-                product={item.product}
-                size={item.size}
-                productQuantity={item.count}
-                addToCart={(product) => handleAddToCart(userId, product)}
-                removeFromCart={(product) =>
-                  handleRemoveFromCart(userId, product)
+            {cartData?.map((cartItem) => (
+              <CartItem
+                key={cartItem.id}
+                cartItem={cartItem}
+                size={cartItem.size}
+                productQuantity={cartItem.count}
+                addToCart={(cartItem) => handleAddToCart(userId, cartItem)}
+                removeFromCart={(cartItem) =>
+                  handleRemoveFromCart(userId, cartItem)
+                }
+                deleteFromCart={(cartItem) =>
+                  handleDeleteFromCart(userId, cartItem)
                 }
               />
             ))}
