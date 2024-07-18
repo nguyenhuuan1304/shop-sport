@@ -1,8 +1,14 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 export default function AdsCard({ Icon, title, description }) {
   return (
-    <div className="bg-red-100 p-3 rounded-lg w-80 h-auto">
+    <motion.div
+      initial={{ opacity: 0, scale: 0 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4 }}
+      className="bg-red-100 p-3 rounded-lg w-80 h-auto"
+    >
       <div className="flex flex-row gap-2 items-center">
         <div>
           <Icon
@@ -13,6 +19,6 @@ export default function AdsCard({ Icon, title, description }) {
         <span className="text-lg font-semibold text-neutral-700">{title}</span>
       </div>
       <p className="text-sm mt-2 pb-5 text-neutral-500">{description}</p>
-    </div>
+    </motion.div>
   );
 }

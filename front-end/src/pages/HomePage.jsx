@@ -8,6 +8,7 @@ import CategoryDropdown from "../components/CategoryDropdown";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Button, message } from "antd";
+import { motion } from "framer-motion";
 
 const adsList = [
   {
@@ -41,7 +42,11 @@ const adsList = [
 export default function HomePage() {
   const currentUser = useSelector((state) => state.auth.currentUser);
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, x: -window.innerHeight }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.2 }}
+    >
       <div className="flex flex-col justify-between gap-2 sm:flex-row">
         <div className="hidden sm:block w-56">
           <CategoryDropdown isbordered={true} />
@@ -95,6 +100,6 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

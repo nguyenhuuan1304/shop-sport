@@ -12,6 +12,8 @@ import {
   CiViewList,
   CiMenuBurger,
 } from "react-icons/ci";
+import { useLocation, useNavigate } from "react-router-dom";
+import useRedirectToLogin from "../../custom hooks/useRedirectToLogin";
 
 const navLinks = [
   {
@@ -71,11 +73,21 @@ export default function BottomNavigation({ className }) {
   const [totalProduct, setTotalProduct] = useState(0);
   const [isCartDrawerOpen, setCartDrawOpen] = useState(false);
   const products = useSelector((state) => state.cart.products);
+  const redirectToLogin = useRedirectToLogin();
   const showCartDrawer = () => {
     setCartDrawOpen(true);
   };
   const closeCartDrawer = () => {
     setCartDrawOpen(false);
+  };
+
+  const handleProtectedAction = (to) => {
+    // Kiểm tra nếu người dùng chưa đăng nhập //
+    if (!currentUser) {
+      redirectToLogin();
+    } else {
+      navigate(to);
+    }
   };
   useEffect(() => {
     dispatch(fetchCartData(currentUser?.id));
@@ -97,7 +109,13 @@ export default function BottomNavigation({ className }) {
             title={item.title}
             to={item.to}
             count={totalProduct ? totalProduct : 0}
-            onClick={item.title === "Giỏ hàng" ? showCartDrawer : undefined}
+            onClick={
+              item.title === "Giỏ hàng"
+                ? showCartDrawer
+                : item.title === "Tài khoản"
+                ? () => handleProtectedAction(item.to)
+                : undefined
+            }
           />
         );
       })}

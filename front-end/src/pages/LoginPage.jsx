@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Alert } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../features/authSlice";
@@ -12,10 +12,13 @@ export default function LoginPage() {
   const errorMessages = useSelector((state) => state.auth.errorMessages);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
   const [payload, setPayload] = useState({
     identifier: "",
     password: "",
   });
+  const from = location.state?.from?.pathname || "/";
+  console.log(from);
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(login(payload));
@@ -23,7 +26,8 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isAuthenticated && currentUser) {
-      navigate("/");
+      // navigate("/");
+      navigate(from, { replace: true });
     }
   }, [isAuthenticated, currentUser, navigate]);
 

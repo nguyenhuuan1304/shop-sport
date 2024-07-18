@@ -386,7 +386,6 @@ export interface ApiProductProduct extends Schema.CollectionType {
       Attribute.DefaultTo<false>;
     category: Attribute.String & Attribute.Required;
     brand: Attribute.String;
-    products: Attribute.JSON;
     isHot: Attribute.Boolean & Attribute.DefaultTo<false>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
