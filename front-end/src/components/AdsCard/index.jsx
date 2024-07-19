@@ -4,9 +4,11 @@ import { motion } from "framer-motion";
 export default function AdsCard({ Icon, title, description }) {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.4 }}
+      initial={{ opacity: 0, scale: 0, x: -100, y: -100 }}
+      // animate={{ opacity: 1, scale: 1, x: 1 }}
+      whileInView={{ opacity: [0.2, 0.4, 0.6, 1], scale: 1, x: 0, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true }}
       className="bg-red-100 p-3 rounded-lg w-80 h-auto"
     >
       <div className="flex flex-row gap-2 items-center">

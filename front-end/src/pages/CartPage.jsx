@@ -19,7 +19,7 @@ import {
 } from "../features/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { FaTrashAlt, FaPlus, FaMinus } from "react-icons/fa";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 const { TextArea } = Input;
 import {
   CiShoppingBasket,
@@ -28,192 +28,11 @@ import {
   CiViewList,
   CiMenuBurger,
 } from "react-icons/ci";
-
-//Trang sẽ hiển thị nếu chưa đăng nhập
-const NotLoginScreen = () => {
-  return (
-    <div className="flex flex-col items-center gap-5 h-screen">
-      <motion.div
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 50 }}
-        transition={{ duration: 0.7 }}
-      >
-        <CiShoppingBasket className="text-neutral-500" size={150} />
-      </motion.div>
-      <span className="font-semibold text-xl">
-        Chưa có sản phẩm nào trong giỏ hàng.
-      </span>
-      <span className="text-sm">
-        Hãy quay lại và chọn cho mình sản phẩm yêu thích bạn nhé
-      </span>
-      <Link to="/products" className="underline">
-        TIẾP TỤC MUA HÀNG
-      </Link>
-    </div>
-  );
-};
-
-const QuantityEditor = ({ max, min, value, onIncrement, onDecrement }) => {
-  const [currentValue, setCurrentValue] = useState(value);
-
-  useEffect(() => {
-    setCurrentValue(value);
-  }, [value]);
-
-  const increment = () => {
-    if (currentValue < max) {
-      const newValue = currentValue + 1;
-      setCurrentValue(newValue);
-      onIncrement(newValue);
-    }
-  };
-
-  const decrement = () => {
-    if (currentValue > min) {
-      const newValue = currentValue - 1;
-      setCurrentValue(newValue);
-      onDecrement(newValue);
-    }
-  };
-
-  return (
-    <Space className="flex items-center">
-      <Button
-        icon={<FaMinus />}
-        onClick={decrement}
-        disabled={currentValue <= min}
-      />
-      <InputNumber
-        min={min}
-        max={max}
-        value={currentValue}
-        readOnly
-        className="text-center"
-      />
-      <Button
-        icon={<FaPlus />}
-        onClick={increment}
-        disabled={currentValue >= max}
-      />
-    </Space>
-  );
-};
-
-const DeleteConfirmButton = ({ onConfirm }) => {
-  return (
-    <Popconfirm
-      title="Xóa sản phẩm này khỏi giỏ hàng?"
-      placement="left"
-      // description="Xác nhận xóa sản phẩm ra khỏi giỏ hàng?"
-      onConfirm={onConfirm}
-      // onCancel={cancel}
-      icon={
-        <CiWarning
-          size={25}
-          style={{
-            color: "red",
-          }}
-        />
-      }
-      okText="Xóa"
-      cancelText="Hủy"
-    >
-      <Button size="small" type="text" danger>
-        <FaTrashAlt size={15} />
-      </Button>
-    </Popconfirm>
-  );
-};
-
-const CartItem = ({
-  productQuantity,
-  cartItem,
-  size,
-  addToCart,
-  removeFromCart,
-  deleteFromCart,
-}) => {
-  const [quantity, setQuantity] = useState(productQuantity);
-  const foundItem = cartItem?.product?.attributes?.size_list?.find(
-    (item) => item.size === size
-  );
-  const handleIncrement = (newValue) => {
-    if (newValue <= foundItem.quantity) {
-      setQuantity(newValue);
-      addToCart(cartItem, newValue);
-    }
-  };
-
-  const handleDecrement = (newValue) => {
-    if (newValue >= 1) {
-      setQuantity(newValue);
-      removeFromCart(cartItem, newValue);
-    }
-  };
-  const handleDeleteCartItem = () => {
-    deleteFromCart(cartItem);
-  };
-
-  console.log("cart item count", quantity);
-  return (
-    <div className="flex flex-row gap-3">
-      <div className="">
-        <Image
-          className="rounded-2xl"
-          width={170}
-          height={170}
-          src={
-            import.meta.env.VITE_IMG_URL +
-            cartItem?.product?.attributes?.image?.data?.[0]?.attributes?.url
-          }
-        />
-      </div>
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-row justify-between items-center gap-2">
-          <span className="font-semibold">
-            {cartItem?.product?.attributes?.name}
-          </span>
-          {/* <Button size="small" type="text" danger>
-            <FaTrashAlt size={15} />
-          </Button> */}
-          <DeleteConfirmButton onConfirm={handleDeleteCartItem} />
-        </div>
-        <span>{size}</span>
-        {quantity > foundItem.quantity ? (
-          <span className="text-xs text-red-600">
-            Số lượng sản phẩm trong kho còn{" "}
-            <span className="font-bold ">
-              {foundItem ? foundItem.quantity : 0}
-            </span>{" "}
-            (vượt quá sản phẩm)
-          </span>
-        ) : (
-          <span className="text-xs text-green-600">
-            Số lượng sản phẩm trong kho còn{" "}
-            <span className="font-bold ">
-              {foundItem ? foundItem.quantity : 0}
-            </span>
-          </span>
-        )}
-
-        <span className="font-semibold text-red-500">
-          {cartItem?.product?.attributes?.price?.toLocaleString()}đ
-        </span>
-        <div className="flex flex-row justify-between items-center">
-          <QuantityEditor
-            max={foundItem?.quantity}
-            min={1}
-            value={productQuantity}
-            setValue={setQuantity}
-            onIncrement={handleIncrement}
-            onDecrement={handleDecrement}
-          />
-        </div>
-      </div>
-    </div>
-  );
-};
+import CartItem, {
+  QuantityEditor,
+  DeleteConfirmButton,
+} from "../components/CartItem";
+import EmptyCart from "../components/EmptyCart";
 
 export default function CartPage() {
   const dispatch = useDispatch();
@@ -243,7 +62,7 @@ export default function CartPage() {
     <>
       {" "}
       {!isAuthenticated || cartData?.length === 0 ? (
-        <NotLoginScreen />
+        <EmptyCart />
       ) : (
         <div className="flex flex-col sm:flex-row gap-2 p-5">
           {/* thông tin vận chuyển */}
@@ -300,9 +119,9 @@ export default function CartPage() {
               </span>
               <Divider />
             </div>
-            {cartData?.map((cartItem) => (
+            {cartData?.map((cartItem, index) => (
               <CartItem
-                key={cartItem.id}
+                key={index}
                 cartItem={cartItem}
                 size={cartItem.size}
                 productQuantity={cartItem.count}
@@ -320,13 +139,29 @@ export default function CartPage() {
               <Divider />
               <div className="flex flex-row items-center justify-between">
                 <span>Tạm tính</span>
-                <span>{total?.toLocaleString()}đ</span>
+                <motion.span
+                  key={total}
+                  initial={{ scale: 1 }}
+                  animate={{ scale: [1.2, 1.3, 1] }}
+                  transition={{ duration: 0.4 }}
+                >
+                  {total?.toLocaleString()}đ
+                </motion.span>
               </div>
               <div className="flex flex-row items-center justify-between">
                 <span>Tổng</span>
-                <span className="text-red-500 text-lg font-semibold">
+                <motion.span
+                  key={total}
+                  initial={{ scale: 1 }}
+                  animate={{
+                    scale: [1.2, 1.3, 1],
+                    fontWeight: [800, 500],
+                  }}
+                  transition={{ duration: 0.3 }}
+                  className="text-red-500 text-lg font-semibold"
+                >
                   {total?.toLocaleString()}đ
-                </span>
+                </motion.span>
               </div>
               <Divider />
             </div>

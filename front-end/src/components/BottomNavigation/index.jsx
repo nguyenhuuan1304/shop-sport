@@ -12,7 +12,6 @@ import {
   CiViewList,
   CiMenuBurger,
 } from "react-icons/ci";
-import { useLocation, useNavigate } from "react-router-dom";
 import useRedirectToLogin from "../../custom hooks/useRedirectToLogin";
 
 const navLinks = [
@@ -47,7 +46,7 @@ const navLinks = [
 const NavigationLink = ({ Icon, title, to, count, onClick }) => {
   return (
     <div
-      className="flex flex-col hover:text-blue-500 items-center p-2"
+      className="cursor-pointer flex flex-col hover:text-blue-500 items-center p-2"
       onClick={onClick}
     >
       {title === "Giỏ hàng" ? (

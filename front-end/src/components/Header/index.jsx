@@ -82,7 +82,14 @@ export default function Header() {
   return (
     <div className="sm:flex hidden border-b flex-row h-32 w-full gap-10 items-center justify-between">
       <Link to="/">
-        <img
+        <motion.img
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{
+            opacity: [0.7, 0.8, 0.9, 1],
+            scale: [1.4, 1.3, 1.2, 1],
+          }}
+          whileHover={{ scale: 1.4 }}
+          transition={{ duration: 0.4 }}
           className="w-32 scale-105 h-auto ml-8 object-cover grow"
           src={logo}
           alt=""

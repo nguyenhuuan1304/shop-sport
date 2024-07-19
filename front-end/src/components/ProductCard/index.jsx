@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import placeholder from "../../assets/playholder.png";
 import saletag from "../../assets/saleTag.png";
 import { FaRegEyeSlash } from "react-icons/fa6";
-import { Button, Divider } from "antd";
+import { Button, Divider, Badge } from "antd";
 import { motion } from "framer-motion";
 
 //thuộc tính displayQuantity = true : hiển thị số lượng tồn kho của sản phẩm
@@ -24,18 +24,20 @@ const ProductCard = React.memo(({ product, displayQuantity }) => {
       // animate={{ opacity: 1, scale: 1, x: 1 }}
       whileInView={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.1 }}
+      whileHover={{ y: -10 }}
+      viewport={{ once: true }}
       className="hover:shadow-black duration-500 p-4 gap-4 justify-center items-start h-full rounded-xl text-center flex-row inline-flex shadow-md  ring-1 ring-gray-300 ring-opacity-50 bg-white"
     >
       <div className="flex flex-col gap-3 flex-basis-2/3 flex-grow-2">
-        <div className="relative inline-block w-full">
+        <div className="relative block w-full">
           <img
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             id="img-product"
             src={imageUrl}
-            className={`w-64 h-60 duration-500 rounded-s-3xl shadow-neutral-500 shadow-md transition-transform ${
-              isHovered && `scale-125`
-            }`}
+            className={`w-64 h-60 duration-500 rounded-s-3xl shadow-neutral-500 shadow-md transition-transform
+            
+            `}
             alt={
               product?.attributes?.image?.data?.[0]?.attributes?.name ||
               "default alt text"
@@ -48,13 +50,12 @@ const ProductCard = React.memo(({ product, displayQuantity }) => {
             //   src={saletag}
             //   className="absolute bottom-0 right-0 w-16 h-16 transition-transform duration-1000"
             // />
-            <span
-              className={`absolute bottom-2 right-2 bg-red-500 text-md text-white px-3 duration-500 ${
-                isHovered && `scale-125`
-              }`}
-            >
-              sale
-            </span>
+            <Badge.Ribbon
+              className="absolute -top-10 duration-500"
+              text="Sale"
+              color="red"
+              placement="end"
+            />
           )}
         </div>
         {/* Divider */}

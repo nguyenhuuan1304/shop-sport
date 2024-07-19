@@ -8,7 +8,7 @@ import ResponsiveHeader from "../components/ResponsiveHeader";
 
 export default function Layout() {
   return (
-    <div className="h-screen w-screen flex flex-col overflow-auto scroll-smooth">
+    <div className="h-full w-full flex flex-col scroll-smooth">
       <Header />
       <ResponsiveHeader />
       <_Menu />

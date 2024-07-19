@@ -73,7 +73,7 @@ export default function ProductPage() {
         })}
       </div>
       <ProductList sortParam={sortParam} titleParam={titleParam} />
-      <FloatButton.BackTop />
+      <FloatButton.BackTop type="primary" />
     </motion.div>
   );
 }
