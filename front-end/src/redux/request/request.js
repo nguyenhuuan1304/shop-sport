@@ -1,6 +1,6 @@
 import axios from "axios";
 import axiosInstance from "../../axios/axios";
-import errorHandler from "../request/errorHandler";
+import errorHandler from "./errorHandler";
 import successHandler from "./successHandler";
 const request = {
   List: async () => {
@@ -120,7 +120,10 @@ const request = {
       //updated total value
       const updatedTotal =
         userCart?.data?.cart?.total + cartItem?.product?.attributes?.price;
-
+      //number of product
+      const numberOfProduct = updatedProducts.reduce((accumulator, product) => {
+        return accumulator + product.count;
+      }, 0);
       //updated cart
       const response = await axiosInstance.put(
         `/users/${userId}?fields[0]=cart`,
@@ -128,6 +131,7 @@ const request = {
           cart: {
             products: updatedProducts,
             total: updatedTotal,
+            number_of_product: numberOfProduct,
           },
         }
       );
@@ -178,6 +182,9 @@ const request = {
       const updatedTotal =
         userCart?.data?.cart?.total - cartItem?.product?.attributes?.price;
 
+      const numberOfProduct = updatedProducts.reduce((accumulator, product) => {
+        return accumulator + product.count;
+      }, 0);
       //updated cart
       const response = await axiosInstance.put(
         `/users/${userId}?fields[0]=cart`,
@@ -185,6 +192,7 @@ const request = {
           cart: {
             products: updatedProducts,
             total: updatedTotal,
+            number_of_product: numberOfProduct,
           },
         }
       );
@@ -228,7 +236,12 @@ const request = {
 
       // Calculate the updated cart total
       const updatedCartTotal = userCart.total + productsTotal;
-
+      const numberOfProduct = updatedCartProducts.reduce(
+        (accumulator, product) => {
+          return accumulator + product.count;
+        },
+        0
+      );
       // Update cart on the strapi
       const response = await axiosInstance.put(
         `/users/${userId}?fields[0]=cart`,
@@ -236,6 +249,7 @@ const request = {
           cart: {
             products: updatedCartProducts,
             total: updatedCartTotal,
+            number_of_product: numberOfProduct,
           },
         }
       );
@@ -283,7 +297,9 @@ const request = {
       const productTotalPrice = productPrice * productCount;
       //updated total value
       const updatedTotal = userCart?.data?.cart?.total - productTotalPrice;
-
+      const numberOfProduct = updatedProducts.reduce((accumulator, product) => {
+        return accumulator + product.count;
+      }, 0);
       //updated cart
       const response = await axiosInstance.put(
         `/users/${userId}?fields[0]=cart`,
@@ -291,6 +307,7 @@ const request = {
           cart: {
             products: updatedProducts,
             total: updatedTotal,
+            number_of_product: numberOfProduct,
           },
         }
       );

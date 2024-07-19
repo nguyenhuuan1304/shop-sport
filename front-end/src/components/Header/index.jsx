@@ -65,24 +65,19 @@ function MenuLink({ Icon, title, to }) {
 }
 
 export default function Header() {
-  const [totalProduct, setTotalProduct] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.auth.currentUser);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const number_of_product = useSelector(
+    (state) => state.cart.number_of_product
+  );
   const products = useSelector((state) => state.cart.products);
 
   //fetch cart data để tính số lượng sản phẩm trong giỏ hàng
   useEffect(() => {
     dispatch(fetchCartData(currentUser?.id));
   }, [dispatch, currentUser]);
-  //tổng số lượng sản phẩm có trong giỏ hàng (tính cả size)
-  useEffect(() => {
-    const totalProductCount = products?.reduce((accumulator, product) => {
-      return accumulator + product.count;
-    }, 0);
-    setTotalProduct(totalProductCount);
-  }, [dispatch, products]);
 
   return (
     <div className="sm:flex hidden border-b flex-row h-32 w-full gap-10 items-center justify-between">
@@ -131,7 +126,7 @@ export default function Header() {
               />
             )}
             <NavigationLink
-              count={totalProduct ? totalProduct : 0}
+              count={number_of_product ? number_of_product : 0}
               title="Giỏ hàng"
               Icon={FaShoppingCart}
               to="cart"

@@ -70,7 +70,9 @@ const NavigationLink = ({ Icon, title, to, count, onClick }) => {
 export default function BottomNavigation({ className }) {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.currentUser);
-  const [totalProduct, setTotalProduct] = useState(0);
+  const number_of_product = useSelector(
+    (state) => state.cart.number_of_product
+  );
   const [isCartDrawerOpen, setCartDrawOpen] = useState(false);
   const products = useSelector((state) => state.cart.products);
   const redirectToLogin = useRedirectToLogin();
@@ -92,13 +94,6 @@ export default function BottomNavigation({ className }) {
   useEffect(() => {
     dispatch(fetchCartData(currentUser?.id));
   }, [dispatch, currentUser]);
-  //tổng số lượng sản phẩm có trong giỏ hàng (tính cả size)
-  useEffect(() => {
-    const totalProductCount = products?.reduce((accumulator, product) => {
-      return accumulator + product.count;
-    }, 0);
-    setTotalProduct(totalProductCount);
-  }, [dispatch, products]);
   return (
     <div className="border-t border-black p-1 fixed bottom-0 z-50 left-0 right-0 flex flex-row justify-between overflow-hidden bg-white gap-2 sm:hidden">
       {navLinks.map((item, index) => {
@@ -108,7 +103,7 @@ export default function BottomNavigation({ className }) {
             Icon={item.Icon}
             title={item.title}
             to={item.to}
-            count={totalProduct ? totalProduct : 0}
+            count={number_of_product ? number_of_product : 0}
             onClick={
               item.title === "Giỏ hàng"
                 ? showCartDrawer

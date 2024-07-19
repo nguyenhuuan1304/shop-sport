@@ -66,6 +66,8 @@ const initialState = {
   products: [],
   // tổng tiền
   total: 0,
+  // tổng số lượng sản phẩm có trong giỏ hàng
+  number_of_product: 0,
   loading: false,
   error: null,
 };
@@ -73,11 +75,7 @@ const initialState = {
 const cartSlice = createSlice({
   name: "cart",
   initialState: initialState,
-  reducers: {
-    setTotalProduct(state, action) {
-      state.totalProduct = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchCartData.pending, (state) => {
@@ -88,6 +86,7 @@ const cartSlice = createSlice({
         state.loading = false;
         state.products = action.payload.cart?.products;
         state.total = action.payload.cart?.total;
+        state.number_of_product = action.payload.cart?.number_of_product;
         state.userId = action.payload.id;
       })
       .addCase(fetchCartData.rejected, (state, action) => {
@@ -102,6 +101,7 @@ const cartSlice = createSlice({
         state.loading = false;
         state.total = action.payload?.cart?.total;
         state.products = action.payload?.cart?.products;
+        state.number_of_product = action.payload.cart?.number_of_product;
       })
       .addCase(addToCart.rejected, (state, action) => {
         state.loading = false;
@@ -114,6 +114,7 @@ const cartSlice = createSlice({
       .addCase(removeFromCart.fulfilled, (state, action) => {
         state.loading = false;
         state.total = action.payload?.cart?.total;
+        state.number_of_product = action.payload.cart?.number_of_product;
       })
       .addCase(removeFromCart.rejected, (state, action) => {
         state.loading = false;
@@ -127,6 +128,7 @@ const cartSlice = createSlice({
         state.loading = false;
         state.total = action.payload?.cart?.total;
         state.products = action.payload?.cart?.products;
+        state.number_of_product = action.payload.cart?.number_of_product;
       })
       .addCase(addManyToCart.rejected, (state, action) => {
         state.loading = false;
@@ -140,6 +142,7 @@ const cartSlice = createSlice({
         state.loading = false;
         state.total = action.payload?.cart?.total;
         state.products = action.payload?.cart?.products;
+        state.number_of_product = action.payload.cart?.number_of_product;
       })
       .addCase(deleteFromCart.rejected, (state, action) => {
         state.loading = false;
