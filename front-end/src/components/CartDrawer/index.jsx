@@ -12,14 +12,52 @@ import { FaTrashAlt, FaPlus, FaMinus } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { CiWarning } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCartData } from "../../features/cartSlice";
-const DeleteConfirmButton = () => {
+import {
+  fetchCartData,
+  addToCart,
+  removeFromCart,
+  deleteFromCart,
+} from "../../features/cartSlice";
+import { motion } from "framer-motion";
+import {
+  CiShoppingBasket,
+  CiViewTable,
+  CiUser,
+  CiViewList,
+  CiMenuBurger,
+} from "react-icons/ci";
+
+//Trang sẽ hiển thị nếu chưa đăng nhập
+const NotLoginScreen = () => {
+  return (
+    <div className="flex flex-col items-center gap-5 h-screen">
+      <motion.div
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 50 }}
+        transition={{ duration: 0.7 }}
+      >
+        <CiShoppingBasket className="text-neutral-500" size={150} />
+      </motion.div>
+      <span className="font-semibold text-xl">
+        Chưa có sản phẩm nào trong giỏ hàng.
+      </span>
+      <span className="text-sm">
+        Hãy quay lại và chọn cho mình sản phẩm yêu thích bạn nhé
+      </span>
+      <Link to="/products" className="underline">
+        TIẾP TỤC MUA HÀNG
+      </Link>
+    </div>
+  );
+};
+const DeleteConfirmButton = ({ onConfirm }) => {
   return (
     <Popconfirm
       title="Xóa sản phẩm này khỏi giỏ hàng?"
       placement="left"
       // description="Xác nhận xóa sản phẩm ra khỏi giỏ hàng?"
-      // onConfirm={confirm}
+      onConfirm={onConfirm}
       // onCancel={cancel}
       icon={
         <CiWarning
@@ -39,54 +77,134 @@ const DeleteConfirmButton = () => {
   );
 };
 
-const QuantityEditor = () => {
-  const [value, setValue] = useState(1);
+const QuantityEditor = ({ max, min, value, onIncrement, onDecrement }) => {
+  const [currentValue, setCurrentValue] = useState(value);
+
+  useEffect(() => {
+    setCurrentValue(value);
+  }, [value]);
 
   const increment = () => {
-    setValue((prevValue) => prevValue + 1);
+    if (currentValue < max) {
+      const newValue = currentValue + 1;
+      setCurrentValue(newValue);
+      onIncrement(newValue);
+    }
   };
 
   const decrement = () => {
-    setValue((prevValue) => (prevValue > 0 ? prevValue - 1 : 0));
+    if (currentValue > min) {
+      const newValue = currentValue - 1;
+      setCurrentValue(newValue);
+      onDecrement(newValue);
+    }
   };
 
   return (
     <Space className="flex items-center">
-      <Button icon={<FaMinus />} onClick={decrement} disabled={value <= 1} />
-      <InputNumber min={1} value={value} className="text-center" />
-      <Button icon={<FaPlus />} onClick={increment} />
+      <Button
+        icon={<FaMinus />}
+        onClick={decrement}
+        disabled={currentValue <= min}
+      />
+      <InputNumber
+        min={min}
+        max={max}
+        value={currentValue}
+        readOnly
+        className="text-center"
+      />
+      <Button
+        icon={<FaPlus />}
+        onClick={increment}
+        disabled={currentValue >= max}
+      />
     </Space>
   );
 };
 
-const CartProduct = () => {
+const CartItem = ({
+  productQuantity,
+  cartItem,
+  size,
+  addToCart,
+  removeFromCart,
+  deleteFromCart,
+}) => {
+  const [quantity, setQuantity] = useState(productQuantity);
+  const foundItem = cartItem?.product?.attributes?.size_list?.find(
+    (item) => item.size === size
+  );
+  const handleIncrement = (newValue) => {
+    if (newValue <= foundItem.quantity) {
+      setQuantity(newValue);
+      addToCart(cartItem, newValue);
+    }
+  };
+
+  const handleDecrement = (newValue) => {
+    if (newValue >= 1) {
+      setQuantity(newValue);
+      removeFromCart(cartItem, newValue);
+    }
+  };
+  const handleDeleteCartItem = () => {
+    deleteFromCart(cartItem);
+  };
+
   return (
     <div className="flex flex-row gap-3">
-      <div className="grow">
+      <div className="">
         <Image
           className="rounded-2xl"
-          width={150}
-          height={200}
-          src="https://cdn-images.kiotviet.vn/locsporthcm/7271554fd6af4a0ca26858ddf8b6c1a5.jpg"
+          width={170}
+          height={170}
+          src={
+            import.meta.env.VITE_IMG_URL +
+            cartItem?.product?.attributes?.image?.data?.[0]?.attributes?.url
+          }
         />
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex flex-row justify-between items-center gap-2">
           <span className="font-semibold">
-            ARSENAL XANH DA TRẺ EM 2024-2025 CP
+            {cartItem?.product?.attributes?.name}
           </span>
           {/* <Button size="small" type="text" danger>
             <FaTrashAlt size={15} />
           </Button> */}
-          <DeleteConfirmButton />
+          <DeleteConfirmButton onConfirm={handleDeleteCartItem} />
         </div>
-        <span>7</span>
-        <span className="text-xs text-green-600">
-          Số lượng sản phẩm trong kho còn <span className="font-bold">14</span>
+        <span>{size}</span>
+        {quantity > foundItem.quantity ? (
+          <span className="text-xs text-red-600">
+            Số lượng sản phẩm trong kho còn{" "}
+            <span className="font-bold ">
+              {foundItem ? foundItem.quantity : 0}
+            </span>{" "}
+            (vượt quá sản phẩm)
+          </span>
+        ) : (
+          <span className="text-xs text-green-600">
+            Số lượng sản phẩm trong kho còn{" "}
+            <span className="font-bold ">
+              {foundItem ? foundItem.quantity : 0}
+            </span>
+          </span>
+        )}
+
+        <span className="font-semibold text-red-500">
+          {cartItem?.product?.attributes?.price?.toLocaleString()}đ
         </span>
-        <span className="font-semibold text-red-500">47,000đ</span>
         <div className="flex flex-row justify-between items-center">
-          <QuantityEditor />
+          <QuantityEditor
+            max={foundItem?.quantity}
+            min={1}
+            value={productQuantity}
+            setValue={setQuantity}
+            onIncrement={handleIncrement}
+            onDecrement={handleDecrement}
+          />
         </div>
       </div>
     </div>
@@ -97,17 +215,31 @@ const DrawerFooter = () => {
   return (
     <div className="flex flex-row gap-2 items-center justify-center">
       <Button size="large" type="primary" className="w-full">
-        Chọn thêm
+        <Link to="/products">Chọn thêm</Link>
       </Button>
       <Button size="large" danger type="primary" className="w-full">
-        Đặt ngay
+        <Link to="/cart">Đặt ngay</Link>
       </Button>
     </div>
   );
 };
 
-export default function CartDrawer({ open, onClose }) {
-  const products = useSelector((state) => state.cart.products);
+export default function CartDrawer({ open, onClose, size }) {
+  // const products = useSelector((state) => state.cart.products);
+  const dispatch = useDispatch();
+  const userId = useSelector((state) => state.auth?.currentUser?.id);
+  const cartData = useSelector((state) => state.cart?.products);
+  //tổng giá tiền sản phẩm của giỏ hàng
+  const total = useSelector((state) => state.cart.total);
+  const handleAddToCart = (userId, product) => {
+    dispatch(addToCart({ userId, product }));
+  };
+  const handleRemoveFromCart = (userId, product) => {
+    dispatch(removeFromCart({ userId, product }));
+  };
+  const handleDeleteFromCart = (userId, cartItem) => {
+    dispatch(deleteFromCart({ userId, cartItem }));
+  };
   return (
     <>
       <Drawer
@@ -116,11 +248,30 @@ export default function CartDrawer({ open, onClose }) {
         footer={<DrawerFooter />}
         onClose={onClose}
         open={open}
+        size={size}
       >
         {/* Product Area */}
         <div className="flex flex-col gap-2">
           <div className="flex flex-col items-center gap-2">
-            <CartProduct />
+            {cartData?.length > 0 ? (
+              cartData.map((cartItem) => (
+                <CartItem
+                  key={cartItem.id}
+                  cartItem={cartItem}
+                  size={cartItem.size}
+                  productQuantity={cartItem.count}
+                  addToCart={(cartItem) => handleAddToCart(userId, cartItem)}
+                  removeFromCart={(cartItem) =>
+                    handleRemoveFromCart(userId, cartItem)
+                  }
+                  deleteFromCart={(cartItem) =>
+                    handleDeleteFromCart(userId, cartItem)
+                  }
+                />
+              ))
+            ) : (
+              <NotLoginScreen />
+            )}
           </div>
         </div>
       </Drawer>

@@ -24,11 +24,10 @@ export default function ProductList({ sortParam, titleParam }) {
     } else {
       console.log("vào get all");
       dispatch(fetchProductList({ sortParam: "", titleParam: "" }));
-      console.log(productList);
+      // console.log(productList);
     }
     // console.log(productList);
   }, [dispatch, sortParam, titleParam]);
-
   // Thêm console.log để kiểm tra dữ liệu
   // console.log("Product List:", productList);
   // console.log("Loading:", loading);
@@ -38,7 +37,7 @@ export default function ProductList({ sortParam, titleParam }) {
 
   return (
     <div className="p-9">
-      <div className="grid grid-cols-3 gap-5 justify-center">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 justify-center">
         {loading ? (
           <p>Loading...</p>
         ) : error ? (

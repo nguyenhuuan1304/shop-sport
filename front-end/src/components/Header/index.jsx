@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../../assets/logo.jpg";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { Divider } from "antd";
@@ -6,11 +6,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { FaHome, FaHeadphones, FaShoppingCart, FaUser } from "react-icons/fa";
 import { IoPersonCircle, IoPersonAddSharp } from "react-icons/io5";
 import { PiNotepadFill } from "react-icons/pi";
-import { Input, Space } from "antd";
-import { Badge } from "antd";
+import { Input, Space, Badge } from "antd";
 import { fetchUserDetail, logout } from "../../features/authSlice";
-import { fetchCartData } from "../../features/cartSlice";
+import { fetchCartData, setTotalProduct } from "../../features/cartSlice";
 import { IoLogOut } from "react-icons/io5";
+import { motion } from "framer-motion";
 const { Search } = Input;
 
 const menuItems = [
@@ -65,17 +65,25 @@ function MenuLink({ Icon, title, to }) {
 }
 
 export default function Header() {
+  const [totalProduct, setTotalProduct] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.auth.currentUser);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-
-  //số lượng sản phẩm có trong giỏ hàng
   const products = useSelector((state) => state.cart.products);
+
+  //fetch cart data để tính số lượng sản phẩm trong giỏ hàng
   useEffect(() => {
-    dispatch(fetchUserDetail());
     dispatch(fetchCartData(currentUser?.id));
-  }, [dispatch, currentUser?.id]);
+  }, [dispatch, currentUser]);
+  //tổng số lượng sản phẩm có trong giỏ hàng (tính cả size)
+  useEffect(() => {
+    const totalProductCount = products?.reduce((accumulator, product) => {
+      return accumulator + product.count;
+    }, 0);
+    setTotalProduct(totalProductCount);
+  }, [dispatch, products]);
+
   return (
     <div className="sm:flex hidden border-b flex-row h-32 w-full gap-10 items-center justify-between">
       <Link to="/">
@@ -123,7 +131,7 @@ export default function Header() {
               />
             )}
             <NavigationLink
-              count={products?.length ? products?.length : 0}
+              count={totalProduct ? totalProduct : 0}
               title="Giỏ hàng"
               Icon={FaShoppingCart}
               to="cart"

@@ -1,6 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { Input, Button, Rate, Image, Table, InputNumber, Carousel } from "antd";
-import { Link, useParams } from "react-router-dom";
+import React, { useEffect, useState, useLayoutEffect } from "react";
+import {
+  Input,
+  Button,
+  Rate,
+  Image,
+  Table,
+  InputNumber,
+  Carousel,
+  message,
+} from "antd";
+import { Link, useParams, useLocation } from "react-router-dom";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -8,6 +17,7 @@ import {
   fetchProductList,
   fetchSaleProductList,
 } from "../features/productSlice";
+import { addManyToCart } from "../features/cartSlice";
 import { motion } from "framer-motion";
 import ProductCard from "../components/ProductCard";
 import CartDrawer from "../components/CartDrawer";
@@ -92,6 +102,7 @@ function CustomArrow(props) {
 export default function ProductDetailPage() {
   const { productId } = useParams();
   const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.auth?.currentUser);
   const product = useSelector((state) => state.products?.productDetails);
   const saleProducts = useSelector((state) => state.products?.productList);
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
@@ -101,6 +112,13 @@ export default function ProductDetailPage() {
     key: `${item.size}-${index}`,
     count: 0,
   }));
+  const [messageApi, contextHolder] = message.useMessage();
+  const error = () => {
+    messageApi.open({
+      type: "error",
+      content: "Bạn chưa chọn sản phẩm!",
+    });
+  };
   const [cart, setCart] = useState([]);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -110,10 +128,10 @@ export default function ProductDetailPage() {
   const closeDrawer = () => {
     setDrawerOpen(false);
   };
+
   useEffect(() => {
     dispatch(fetchProductDetail(productId));
     dispatch(fetchProductList({ sortParam: "true", titleParam: "NoHot" }));
-    console.log(saleProducts);
   }, [dispatch, productId]);
 
   // +/ sản phẩm để thêm vào giỏ hàng
@@ -152,9 +170,12 @@ export default function ProductDetailPage() {
 
   //xử lý thêm sản phẩm đã chọn vào giỏ hàng
   const addToCart = () => {
-    showDrawer();
-    console.log(cart);
-    // console.log(dataSource);
+    // if cart not empty
+    if (cart && cart?.length > 0) {
+      dispatch(addManyToCart({ userId: currentUser?.id, products: cart }));
+      showDrawer();
+      console.log("cart: ", cart);
+    } else error();
   };
 
   const columns = [
@@ -189,7 +210,13 @@ export default function ProductDetailPage() {
   ];
 
   return (
-    <div className="flex flex-col gap-10">
+    <motion.div
+      initial={{ opacity: 0.2, scale: 0.1 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.6 }}
+      className="flex flex-col gap-10"
+    >
+      {contextHolder}
       {loading && <div className="flex flex-col items-center">Loading...</div>}
       {!loading && !product ? (
         <div>Không có sản phẩm này!</div>
@@ -220,6 +247,9 @@ export default function ProductDetailPage() {
             >
               <span className="text-2xl font-semibold">
                 {product?.attributes?.name}
+              </span>
+              <span className="text-left text-orange-800 font-semibold">
+                {product?.attributes?.brand.toUpperCase()}
               </span>
               <div className="flex flex-row gap-1 items-center">
                 <Rate defaultValue={0} />{" "}
@@ -344,8 +374,12 @@ export default function ProductDetailPage() {
           <div className="flex justify-center items-center pb-2">
             {saleProducts.map((item) => {
               return (
-                <div className="w-full flex justify-center">
-                  <ProductCard product={item} displayQuantity={false} />
+                <div key={item.id} className="w-full flex justify-center">
+                  <ProductCard
+                    key={item.id}
+                    product={item}
+                    displayQuantity={false}
+                  />
                 </div>
               );
             })}
@@ -353,6 +387,6 @@ export default function ProductDetailPage() {
         </Carousel>
       </div>
       <CartDrawer open={drawerOpen} onClose={closeDrawer} />
-    </div>
+    </motion.div>
   );
 }
