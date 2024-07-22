@@ -222,16 +222,25 @@ export default function ProductDetailPage() {
         <div>Không có sản phẩm này!</div>
       ) : (
         <>
-          <div className="flex flex-col gap-5 sm:flex-row">
+          <div className="flex flex-col sm:flex-row gap-5 justify-between">
             <motion.div
+              className="flex sm:flex-row sm:justify-center flex-row-reverse justify-between flex-1 h-1/2"
               initial={{ opacity: 0, x: -200 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
             >
               <Image
-                height={600}
-                width={600}
-                className="rounded-xl"
+                preview={false}
+                rootClassName="w-4/5"
+                className="rounded-xl hidden sm:block"
+                src={
+                  import.meta.env.VITE_IMG_URL +
+                  product?.attributes?.image?.data?.[0]?.attributes?.url
+                }
+                alt=""
+              />
+              <Image
+                className="rounded-xl sm:hidden"
                 src={
                   import.meta.env.VITE_IMG_URL +
                   product?.attributes?.image?.data?.[0]?.attributes?.url
@@ -243,7 +252,7 @@ export default function ProductDetailPage() {
               initial={{ opacity: 0, x: 200 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
-              className="flex flex-col gap-5"
+              className="flex flex-col gap-5 flex-1"
             >
               <span className="text-2xl font-semibold">
                 {product?.attributes?.name}
@@ -280,7 +289,7 @@ export default function ProductDetailPage() {
                     bordered
                     pagination={false}
                   />
-                  <div className="flex flex-row gap-2 w-full items-center justify-center absolute sm:static bottom-20 z-40">
+                  <div className="flex flex-row gap-2 w-full items-center justify-center bottom-20 z-40">
                     <Button
                       onClick={addToCart}
                       className="w-full"

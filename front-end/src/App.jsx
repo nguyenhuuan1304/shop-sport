@@ -16,6 +16,8 @@ import ProductDetailPage from "./pages/ProductDetailPage";
 import { fetchUserDetail, logout } from "./features/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchCartData } from "./features/cartSlice";
+import { AnimatePresence } from "framer-motion";
+import ScrollToTop from "./components/ScrollToTop";
 function App() {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.currentUser);
@@ -29,21 +31,23 @@ function App() {
   return (
     // <Provider store={store}>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="products" element={<ProductListPage />} />
-          <Route path="product/:productId" element={<ProductDetailPage />} />
-          <Route path="search" element={<SearchPage />} />
-          <Route path="contact" element={<ContactPage />} />
-          <Route path="profile" element={<UserProfilePage />}></Route>
-        </Route>
-        <Route path="login" element={<LoginPage />}></Route>
-        <Route path="cart" element={<CartLayout />}>
-          <Route index element={<CartPage />} />
-        </Route>
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+      <ScrollToTop>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<HomePage />} />
+            <Route path="products" element={<ProductListPage />} />
+            <Route path="product/:productId" element={<ProductDetailPage />} />
+            <Route path="search" element={<SearchPage />} />
+            <Route path="contact" element={<ContactPage />} />
+            <Route path="profile" element={<UserProfilePage />}></Route>
+          </Route>
+          <Route path="login" element={<LoginPage />}></Route>
+          <Route path="cart" element={<CartLayout />}>
+            <Route index element={<CartPage />} />
+          </Route>
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </ScrollToTop>
     </BrowserRouter>
     // </Provider>
   );

@@ -5,7 +5,7 @@ import homeImage1 from "../assets/home-image1.jpg";
 import homeImage2 from "../assets/home-image2.png";
 import { CiMedal } from "react-icons/ci";
 import CategoryDropdown from "../components/CategoryDropdown";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Button, message } from "antd";
 import { motion } from "framer-motion";
@@ -41,6 +41,7 @@ const adsList = [
 
 export default function HomePage() {
   const currentUser = useSelector((state) => state.auth.currentUser);
+
   return (
     <motion.div
       initial={{ opacity: 0, x: -window.innerHeight }}
