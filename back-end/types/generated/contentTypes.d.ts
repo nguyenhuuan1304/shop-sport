@@ -382,11 +382,6 @@ export interface ApiOrderAddressOrderAddress extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.user'
     >;
-    product: Attribute.Relation<
-      'api::order-address.order-address',
-      'manyToOne',
-      'api::product.product'
-    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -431,11 +426,6 @@ export interface ApiProductProduct extends Schema.CollectionType {
     brand: Attribute.String;
     products: Attribute.JSON;
     isHot: Attribute.Boolean & Attribute.DefaultTo<false>;
-    order_addresses: Attribute.Relation<
-      'api::product.product',
-      'oneToMany',
-      'api::order-address.order-address'
-    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

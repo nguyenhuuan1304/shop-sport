@@ -1,8 +1,7 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { loginService } from "../services/authService";
-import { request } from "../redux/request";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
-
+import { request } from "../redux/request";
+import { loginService } from "../services/authService";
 export const login = createAsyncThunk(
   "auth/login",
   async (payload, { rejectWithValue }) => {
@@ -16,7 +15,18 @@ export const login = createAsyncThunk(
     }
   }
 );
-
+export const changePassword = createAsyncThunk(
+  "auth/changePassword",
+  async ({data},{rejectWithValue})=>{
+    try {
+      console.log('datta fetch', data)
+      const reponse = await request.changePassword({data: data});
+      return reponse.data;
+    } catch (error) {
+      return rejectWithValue(error.reponse.data);
+    }
+  }
+)
 export const fetchUserDetail = createAsyncThunk(
   "auth/fetchUserDetail",
   async (_, { rejectWithValue }) => {
@@ -47,6 +57,7 @@ const initialState = {
   jwt: null,
   errorMessages: "",
   isLoading: false,
+  success: false,
 };
 
 const authSlice = createSlice({
@@ -74,7 +85,18 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.errorMessages = action.payload.error?.message;
     });
-
+    builder.addCase(changePassword.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(changePassword.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.success = true;
+      state.currentUser = action.payload;
+    });
+    builder.addCase(changePassword.rejected, (state, action) => {
+      state.isLoading = false;
+      state.errorMessages = action.payload;
+    });
     builder.addCase(fetchUserDetail.pending, (state) => {
       state.isLoading = true;
     });

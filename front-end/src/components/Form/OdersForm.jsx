@@ -48,11 +48,11 @@ export default function OdersForm() {
   return (
     <>
       <div className="container mx-auto p-5">
-        <div className="flex justify-end mb-4">
+        {/* <div className="flex justify-end mb-4">
           <button className="duration-300 h-12 w-40 hover:border-2 hover:border-green-600 bg-green-600 hover:bg-white hover:text-green-500 text-white font-bold text-xs py-2 px-4 rounded-xl">
             THÊM ĐỊA CHỈ
           </button>
-        </div>
+        </div> */}
         <Table columns={columns} dataSource={data} onChange={onChange} />
       </div>
     </>

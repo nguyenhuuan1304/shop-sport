@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../redux/request";
 
-export const fetchCreateOderAddress = createAsyncThunk(
+export const fetchCreateOrderAddress = createAsyncThunk(
   "oderAddress/fetchCreateOderAddress",
   async ({data}, { rejectWithValue }) => {
     try {
@@ -24,15 +24,16 @@ const OderAddressSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCreateOderAddress.pending, (state) => {
+      .addCase(fetchCreateOrderAddress.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchCreateOderAddress.fulfilled, (state, action) => {
+      .addCase(fetchCreateOrderAddress.fulfilled, (state, action) => {
         state.loading = false;
-        state.oderAddress = action.payload.result.data;
+        console.log("action.payload.result.data", action.payload)
+        state.oderAddress = action.payload;
       })
-      .addCase(fetchCreateOderAddress.rejected, (state, action) => {
+      .addCase(fetchCreateOrderAddress.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

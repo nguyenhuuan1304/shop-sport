@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { getProvincesWithDetail } from "vietnam-provinces";
-import { fetchCreateOderAddress } from "../../features/oderAddressSlice";
+import { fetchCreateOrderAddress } from "../../features/oderAddressSlice";
+import { fetchUpdateRelationUser } from "../../features/userSlice";
 function AddAddressForm() {
     const dispatch = useDispatch();
 
@@ -22,7 +23,6 @@ function AddAddressForm() {
   const [optionsWards, setOptionsWards] = useState([]);
 
   const currentUser = useSelector((state) => state.auth?.currentUser)
-  console.log("curren user", currentUser);
 
   useEffect(() => {
     const fetchProvinces = async () => {
@@ -98,13 +98,23 @@ function AddAddressForm() {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const formData = {
         name,
         address:address+", "+valueWard.label + ", " + valueDistrict.label + ", " + valueProvince.label,
     }
-    console.log("form data", formData)  
-    dispatch(fetchCreateOderAddress({data:formData}));
+    // console.log("form data", formData)   
+    try {
+      const createdOrderAddress = await dispatch(fetchCreateOrderAddress({ data: formData })).unwrap();
+      // console.log("orderAddressId ", createdOrderAddress.id);
+
+      if (createdOrderAddress && createdOrderAddress.id) {
+        await dispatch(fetchUpdateRelationUser({ userId: currentUser?.id, orderAddressId: createdOrderAddress.id }));
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.error("Error creating order address or updating relation:", error);
+    }
     setIsModalOpen(false);
   };
 

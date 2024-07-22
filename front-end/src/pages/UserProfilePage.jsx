@@ -8,8 +8,9 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Divider } from "antd";
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, Outlet } from "react-router-dom";
+import { logout } from "../features/authSlice";
 const iconMap = {
   user: faUser,
   newspaper: faNewspaper,
@@ -41,12 +42,17 @@ const optionProfile = [
   {
     icon: "arrow-right-from-bracket",
     title: "Đăng xuất",
-    path: " logout",
+    path: "logout",
   },
 ];
 
 export default function UserProfilePage() {
+  const dispatch = useDispatch();
   const currenUser = useSelector((state) => state.auth?.currentUser);
+
+  const handleLogout = () => {
+    dispatch(logout());
+  }
   return (
     <div className="bg-slate-50 w-full">
       <div className="flex flex-row justify-center gap-2 p-12">
@@ -55,21 +61,38 @@ export default function UserProfilePage() {
             <span className="uppercase font-semibold">
               {currenUser?.username}
             </span>
-            <span>{`${currenUser?.firstname || ''} ${currenUser?.lastname || ''}`}</span>
+            <span>{`${currenUser?.firstname || ""} ${
+              currenUser?.lastname || ""
+            }`}</span>
             <span className="text-base">{currenUser?.email}</span>
           </div>
           <Divider />
 
           <div className="flex flex-col space-y-2">
             {optionProfile.map((item, index) => {
+              if (item.path === "logout") {
+                return (
+                  <div
+                    key={index}
+                    onClick={handleLogout}
+                    className="text-black hover:text-white hover:bg-blue-400 hover:font-semibold p-2 rounded-lg cursor-pointer"
+                  >
+                    <div className="flex flex-row gap-4 items-center">
+                      <FontAwesomeIcon icon={iconMap[item.icon]} />
+                      <span>{item.title}</span>
+                      <Link to={`login`}></Link>
+                    </div>
+                  </div>
+                );
+              }
               return (
                 <Link
                   key={index}
-                  to={item?.path}
+                  to={item.path}
                   className="text-black hover:text-white hover:bg-blue-400 hover:font-semibold p-2 rounded-lg"
                 >
                   <div className="flex flex-row gap-4 items-center">
-                    <FontAwesomeIcon icon={iconMap[item?.icon]} className="" />
+                    <FontAwesomeIcon icon={iconMap[item.icon]} />
                     <span>{item.title}</span>
                   </div>
                 </Link>

@@ -1,8 +1,12 @@
+import { Alert, Button } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUpdateUser } from "../../features/userSlice";
 
 export default function PersonalInformationForm() {
+  const isSuccessUpdate = useSelector((state) => state.user?.success);
+  const isLoadingUpdate = useSelector((state) => state.user?.loading);
+  const isErrorUpdate = useSelector((state) => state.user?.error);
   const dispatch = useDispatch();
   const currenUser = useSelector((state) => state.auth?.currentUser);
   const [formData, setFormData] = useState({
@@ -46,6 +50,40 @@ export default function PersonalInformationForm() {
     <>
       <form className="flex flex-col p-4 w-3/5" onSubmit={handleSubmit}>
         <h1 className="text-xl font-semibold mb-4">THÔNG TIN TÀI KHOẢN</h1>
+        {isLoadingUpdate ? (
+          <>
+            <Button type="primary" loading className="ml-2">
+              Đang cập nhật tài khoản.
+            </Button>
+          </>
+        ) : (
+          <>
+            {" "}
+            {isSuccessUpdate ? (
+              <Alert
+                message="Success Tips"
+                description="Detailed description and advice about successful copywriting."
+                type="success"
+                showIcon
+              />
+            ) : (
+              <>
+                {isErrorUpdate ? (
+                  <Alert
+                    message="Error"
+                    description="This is an error message about copywriting."
+                    type="error"
+                    showIcon
+                  />
+                ) : (
+                  <></>
+                )}
+              </>
+            )}
+          </>
+        )}
+
+        <br />
         <div className="flex flex-row space-x-4 mb-4">
           <div className="flex flex-col">
             <label htmlFor="firstname" className="mb-2 font-semibold text-sm">

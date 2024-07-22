@@ -1,5 +1,6 @@
 import { Table } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import AddAddressForm from "./addAddressForm";
 const columns = [
   {
@@ -29,24 +30,26 @@ const columns = [
   },
 ];
 
-const data = [
-  {
-    key: "1",
-    name: "TÌNH TRẦN",
-    address: "79 biên cương, Xã Quảng Nghĩa, Thành phố Móng Cái, Quảng Ninh",
-    defaultAddress: "v",
-    action: "Cửa hàng mặc định",
-  },
-];
 
 const AddressForm = () => {
-  const [isOpenAddAddress, setisOpenAddAddress] = useState(false);
+  const currentUser = useSelector((state) => state.auth?.currentUser)
+  const [data, setData] = useState([]);
+  // console.log("currenUser",currentUser)
+  useEffect(() => {
+    if (currentUser) {
+      const formattedData = currentUser.order_addresses?.map((item) => ({
+        key: item.id.toString(),
+        name: item.name,
+        address: item.address,
+        defaultAddress: item.isDefault ? 'v' : '',
+        action: item.isDefault ? 'Cửa hàng mặc định' : ''
+      }));
+      setData(formattedData);
+    }
+  }, [currentUser]);
+  
   const onChange = (pagination, filters, sorter, extra) => {
     console.log("params", pagination, filters, sorter, extra);
-  };
-
-  const hanldeOpen = () => {
-    setisOpenAddAddress(!isOpenAddAddress);
   };
 
   return (
@@ -55,7 +58,7 @@ const AddressForm = () => {
         <div className="size-full">
           <AddAddressForm />
         </div>
-        <Table columns={columns} dataSource={data} onChange={onChange} />
+        <Table columns={columns} dataSource={data} pagination={{ pageSize: 5 }} onChange={onChange} scroll={{ y: 240 }}/>
       </div>
     </>
   );
