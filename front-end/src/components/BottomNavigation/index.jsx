@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Badge, Drawer } from "antd";
 import CartDrawer from "../../components/CartDrawer";
 import { motion } from "framer-motion";
@@ -23,7 +23,7 @@ const navLinks = [
   {
     Icon: CiViewTable,
     title: "Danh mục",
-    to: "",
+    to: "/categories",
   },
   {
     Icon: CiShoppingBasket,
@@ -67,6 +67,7 @@ const NavigationLink = ({ Icon, title, to, count, onClick }) => {
 };
 
 export default function BottomNavigation({ className }) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.currentUser);
   const number_of_product = useSelector(

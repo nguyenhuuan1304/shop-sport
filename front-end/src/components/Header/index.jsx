@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import logo from "../../assets/logo.jpg";
-import { NavLink, Link, useNavigate } from "react-router-dom";
+import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
 import { Divider } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { FaHome, FaHeadphones, FaShoppingCart, FaUser } from "react-icons/fa";
@@ -11,6 +11,7 @@ import { fetchUserDetail, logout } from "../../features/authSlice";
 import { fetchCartData, setTotalProduct } from "../../features/cartSlice";
 import { IoLogOut } from "react-icons/io5";
 import { motion } from "framer-motion";
+import useRedirectToLogin from "../../custom hooks/useRedirectToLogin";
 const { Search } = Input;
 
 const menuItems = [
@@ -31,17 +32,35 @@ const menuItems = [
 ];
 
 function NavigationLink({ Icon, title, to, count }) {
+  const redirectToLogin = useRedirectToLogin();
+
+  const handleClick = () => {
+    redirectToLogin();
+  };
+
   return (
-    <Link className="text-sm flex flex-row gap-2 items-center" to={to}>
-      {title === "Giỏ hàng" ? (
-        <Badge count={count} showZero>
+    <>
+      {title === "Đăng nhập" ? (
+        <div
+          className="text-sm flex flex-row gap-2 items-center cursor-pointer"
+          onClick={handleClick}
+        >
           <Icon size={30} className="text-red-500" />
-        </Badge>
+          {title}
+        </div>
       ) : (
-        <Icon size={30} className="text-red-500" />
+        <Link className="text-sm flex flex-row gap-2 items-center" to={to}>
+          {title === "Giỏ hàng" ? (
+            <Badge count={count} showZero>
+              <Icon size={30} className="text-red-500" />
+            </Badge>
+          ) : (
+            <Icon size={30} className="text-red-500" />
+          )}
+          {title}
+        </Link>
       )}
-      {title}
-    </Link>
+    </>
   );
 }
 
@@ -67,13 +86,14 @@ function MenuLink({ Icon, title, to }) {
 export default function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const currentUser = useSelector((state) => state.auth.currentUser);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const number_of_product = useSelector(
     (state) => state.cart.number_of_product
   );
   const products = useSelector((state) => state.cart.products);
-
+  console.log(location.pathname);
   //fetch cart data để tính số lượng sản phẩm trong giỏ hàng
   useEffect(() => {
     dispatch(fetchCartData(currentUser?.id));
@@ -126,11 +146,7 @@ export default function Header() {
                 Đăng xuất
               </Link>
             ) : (
-              <NavigationLink
-                title="Đăng nhập"
-                Icon={IoPersonCircle}
-                to="login"
-              />
+              <NavigationLink title="Đăng nhập" Icon={IoPersonCircle} />
             )}
             <NavigationLink
               count={number_of_product ? number_of_product : 0}

@@ -41,6 +41,7 @@ const adsList = [
 
 export default function HomePage() {
   const currentUser = useSelector((state) => state.auth.currentUser);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   return (
     <motion.div
@@ -84,23 +85,27 @@ export default function HomePage() {
           />
         ))}
       </div>
-      <div className="my-2">
-        <div className="bg-gradient-to-r from-red-500 to-slate-400 p-10 gap-5 flex flex-col items-center">
-          <span className="text-white text-3xl drop-shadow-lg text-center">
-            Đăng ký, đăng nhập để mua hàng sỉ
-          </span>
-          <div className="flex gap-5">
-            <Link to="login">
-              <Button type="primary" size={"large"}>
-                Đăng nhập
+      {!isAuthenticated ? (
+        <div className="my-2">
+          <div className="bg-gradient-to-r from-red-500 to-slate-400 p-10 gap-5 flex flex-col items-center">
+            <span className="text-white text-3xl drop-shadow-lg text-center">
+              Đăng ký, đăng nhập để mua hàng sỉ
+            </span>
+            <div className="flex gap-5">
+              <Link to="login">
+                <Button type="primary" size={"large"}>
+                  Đăng nhập
+                </Button>
+              </Link>
+              <Button danger size={"large"}>
+                Đăng ký
               </Button>
-            </Link>
-            <Button danger size={"large"}>
-              Đăng ký
-            </Button>
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        ""
+      )}
     </motion.div>
   );
 }

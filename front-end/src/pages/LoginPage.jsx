@@ -17,8 +17,7 @@ export default function LoginPage() {
     identifier: "",
     password: "",
   });
-  const from = location.state?.from?.pathname || "/";
-  console.log(from);
+  const from = location.state?.from || "/";
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(login(payload));
@@ -26,10 +25,9 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isAuthenticated && currentUser) {
-      // navigate("/");
       navigate(from, { replace: true });
     }
-  }, [isAuthenticated, currentUser, navigate]);
+  }, [isAuthenticated, currentUser]);
 
   return (
     <div className="bg-gray-200 min-h-screen flex items-center justify-center relative">

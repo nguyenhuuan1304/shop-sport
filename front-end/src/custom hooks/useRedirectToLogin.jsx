@@ -5,7 +5,7 @@ const useRedirectToLogin = () => {
   const location = useLocation();
 
   const redirectToLogin = () => {
-    navigate("/login", { state: { from: location } });
+    navigate("/login", { state: { from: location.pathname } });
   };
 
   return redirectToLogin;

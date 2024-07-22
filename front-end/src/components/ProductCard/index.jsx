@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import placeholder from "../../assets/playholder.png";
 import saletag from "../../assets/saleTag.png";
 import { FaRegEyeSlash } from "react-icons/fa6";
 import { Button, Divider, Badge } from "antd";
 import { motion } from "framer-motion";
+import useSessionStorage from "../../custom hooks/useSessionStorage";
 
 //thuộc tính displayQuantity = true : hiển thị số lượng tồn kho của sản phẩm
 const ProductCard = React.memo(({ product, displayQuantity }) => {
+  const [viewedProduct, setViewedProduct] = useSessionStorage(
+    "viewedProducts",
+    []
+  );
+  const addViewedProduct = () => {
+    setViewedProduct(product);
+    console.log(viewedProduct);
+
+    // navigate(`/product/${product?.id}`);
+  };
+  const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
   const [isDisCountActive, setIsDisCountActive] = useState(false);
   let isSale = product?.attributes?.is_discount_active;
@@ -98,12 +110,12 @@ const ProductCard = React.memo(({ product, displayQuantity }) => {
         </div>
         {
           <div className="flex flex-row-reverse">
-            <Link
-              to={`/product/${product?.id}`}
-              className="bg-white text-blue-500 font-light border border-blue-500  w-full py-1 px-2 rounded-full whitespace-nowrap hover:text-white hover:bg-blue-500 duration-500"
+            <Button
+              // to={`/product/${product?.id}`}
+              onClick={addViewedProduct}
             >
               Xem chi tiết
-            </Link>
+            </Button>
           </div>
         }
       </div>
@@ -123,11 +135,17 @@ const ProductCard = React.memo(({ product, displayQuantity }) => {
                       <li key={index} className="flex flex-row gap-5 text-left">
                         <span className="flex-grow">{item.size}</span>
                         {islogIN ? (
-                          <span className="text-right px-2">
-                            {item.quantity}
-                          </span>
+                          item.quantity === 0 ? (
+                            <span className="text-right text-red-600 px-2 opacity-40">
+                              {item.quantity}
+                            </span>
+                          ) : (
+                            <span className="text-right text-green-600 px-2">
+                              {item.quantity}
+                            </span>
+                          )
                         ) : (
-                          <FaRegEyeSlash className="" />
+                          <FaRegEyeSlash />
                         )}
                       </li>
                     ))}
