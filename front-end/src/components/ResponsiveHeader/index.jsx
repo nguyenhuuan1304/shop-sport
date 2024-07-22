@@ -1,12 +1,32 @@
-import React, { useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../../assets/logo.jpg";
-import { Button, Drawer, Input, List } from "antd";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Button, Drawer, Input, List, Dropdown } from "antd";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
 import { CiLogout, CiUser } from "react-icons/ci";
+import { RiArrowDownWideFill } from "react-icons/ri";
 import { logout } from "../../features/authSlice";
-import { useDispatch } from "react-redux";
 const { Search } = Input;
+
+// Dropdown items
+const DropDownItems = [
+  {
+    key: "1",
+    label: <Link to="/nike">NIKE</Link>,
+  },
+  {
+    key: "2",
+    label: <Link to="/adidas">ADIDAS</Link>,
+  },
+  {
+    key: "3",
+    label: <Link to="/manchester-united">MANCHESTER UNITED</Link>,
+  },
+  {
+    key: "4",
+    label: <Link to="/real-madrid">REAL MADRID</Link>,
+  },
+];
 
 // List data
 const ListData = [
@@ -17,8 +37,10 @@ const ListData = [
   {
     title: "Sản phẩm",
     to: "/products",
+    children: DropDownItems,
   },
 ];
+
 // Header Menu Content
 const HeaderMenu = ({ username, onClose, logout }) => {
   const handleLogout = () => {
@@ -40,7 +62,6 @@ const HeaderMenu = ({ username, onClose, logout }) => {
           </Link>
         </div>
         <div className="flex flex-row gap-1 items-center">
-          {" "}
           <CiLogout size={20} />
           <Link
             to="/"
@@ -59,6 +80,7 @@ export default function ResponsiveHeader() {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.currentUser);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const location = useLocation();
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
 
@@ -77,7 +99,10 @@ export default function ResponsiveHeader() {
   const closeSearchDrawer = () => {
     setSearchOpen(false);
   };
-
+  useEffect(() => {
+    setMenuOpen(false);
+    setSearchOpen(false);
+  }, [location]);
   return (
     <div className="sm:hidden sticky top-0 w-full z-50 flex flex-row items-center justify-between h-auto bg-black text-white pl-4 pr-4">
       {/* MENU */}
@@ -98,7 +123,7 @@ export default function ResponsiveHeader() {
         </svg>
       </div>
       {/* LOGO */}
-      <Link to="">
+      <Link to="/">
         <img className="w-32 " src={logo} alt="logo" />
       </Link>
       {/* SEARCH */}
@@ -120,7 +145,7 @@ export default function ResponsiveHeader() {
       </div>
       {/* Menu Drawer  */}
       <Drawer
-        className="opacity-90"
+        className=""
         title={
           isAuthenticated ? (
             <HeaderMenu
@@ -149,13 +174,31 @@ export default function ResponsiveHeader() {
           renderItem={(item) => (
             <List.Item className="text-lg">
               <Link to={item.to}>{item.title}</Link>
+              {item.children && (
+                <Dropdown
+                  menu={{ items: item.children }}
+                  trigger={["click"]}
+                  arrow={{
+                    pointAtCenter: true,
+                  }}
+                  overlayStyle={{
+                    width: "360px",
+                    overflow: "auto",
+                  }}
+                  placement="bottomLeft"
+                >
+                  <Link onClick={(e) => e.preventDefault()}>
+                    <RiArrowDownWideFill />
+                  </Link>
+                </Dropdown>
+              )}
             </List.Item>
           )}
         />
       </Drawer>
       {/* Search Drawer  */}
       <Drawer
-        className="opacity-90"
+        className=""
         title={
           <Search
             size="large"

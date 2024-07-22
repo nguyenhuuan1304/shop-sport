@@ -18,6 +18,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchCartData } from "./features/cartSlice";
 import { AnimatePresence } from "framer-motion";
 import ScrollToTop from "./components/ScrollToTop";
+import CategoryPage from "./pages/CategoryPage";
 function App() {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.currentUser);
@@ -37,6 +38,7 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="products" element={<ProductListPage />} />
             <Route path="product/:productId" element={<ProductDetailPage />} />
+            <Route path="categories" element={<CategoryPage />} />
             <Route path="search" element={<SearchPage />} />
             <Route path="contact" element={<ContactPage />} />
             <Route path="profile" element={<UserProfilePage />}></Route>
