@@ -362,6 +362,49 @@ export interface AdminTransferTokenPermission extends Schema.CollectionType {
   };
 }
 
+export interface ApiOrderAddressOrderAddress extends Schema.CollectionType {
+  collectionName: 'order_addresses';
+  info: {
+    singularName: 'order-address';
+    pluralName: 'order-addresses';
+    displayName: 'OrderAddress';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String & Attribute.Required;
+    address: Attribute.String & Attribute.Required;
+    isDefault: Attribute.Boolean;
+    user: Attribute.Relation<
+      'api::order-address.order-address',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    product: Attribute.Relation<
+      'api::order-address.order-address',
+      'manyToOne',
+      'api::product.product'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::order-address.order-address',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::order-address.order-address',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiProductProduct extends Schema.CollectionType {
   collectionName: 'products';
   info: {
@@ -388,6 +431,11 @@ export interface ApiProductProduct extends Schema.CollectionType {
     brand: Attribute.String;
     products: Attribute.JSON;
     isHot: Attribute.Boolean & Attribute.DefaultTo<false>;
+    order_addresses: Attribute.Relation<
+      'api::product.product',
+      'oneToMany',
+      'api::order-address.order-address'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -815,6 +863,16 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'plugin::users-permissions.role'
     >;
     cart: Attribute.JSON;
+    firstname: Attribute.String;
+    lastname: Attribute.String;
+    phone: Attribute.String;
+    birthday: Attribute.Date;
+    address: Attribute.String;
+    order_addresses: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::order-address.order-address'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -842,6 +900,7 @@ declare module '@strapi/types' {
       'admin::api-token-permission': AdminApiTokenPermission;
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
+      'api::order-address.order-address': ApiOrderAddressOrderAddress;
       'api::product.product': ApiProductProduct;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;

@@ -1,6 +1,9 @@
 import axiosInstance from "../../axios/axios";
 import errorHandler from "../request/errorHandler";
 import successHandler from "./successHandler";
+
+
+
 const request = {
   List: async (currentPage ,pageSize) => {
     try {
@@ -85,6 +88,21 @@ const request = {
       throw error;
     }
   },
+  createOderAddress: async ({data}) => {
+    try {
+      const newOrderAddressData = {
+          data
+        
+      }; 
+      console.log("request",newOrderAddressData)
+      const response = await axiosInstance.post(`/order-addresses`,
+        newOrderAddressData
+      );
+      return successHandler(response);
+    } catch (error) {
+      return errorHandler(error);
+    }
+  },
   Cart: async (userId) => {
     try {
       const response = await axiosInstance.get(
@@ -94,6 +112,28 @@ const request = {
     } catch (error) {
       console.error("Error fetching cart data:", error);
       throw error;
+    }
+  },
+  updateUser: async ({data}) => {
+    try {
+      const response = await axiosInstance.put(
+        `/users/${data.id}`,
+        data
+      );
+      return successHandler(response);
+    } catch (error) {
+      return errorHandler(error);
+    }
+  },
+  updateRelationUser: async ({data}) => {
+    try {
+      const response = await axiosInstance.put(
+        `/users/${data.id}`,
+        data
+      );
+      return successHandler(response);
+    } catch (error) {
+      return errorHandler(error);
     }
   },
   AddToCart: async (userId, product, total) => {

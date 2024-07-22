@@ -66,6 +66,12 @@
     "isHot": {
       "type": "boolean",
       "default": false
+    },
+    "order_addresses": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order-address.order-address",
+      "mappedBy": "product"
     }
   }
 }
