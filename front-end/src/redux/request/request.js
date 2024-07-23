@@ -1,19 +1,41 @@
-import axios from "axios";
 import axiosInstance from "../../axios/axios";
 import errorHandler from "./errorHandler";
 import successHandler from "./successHandler";
 const request = {
-  List: async () => {
+  List: async (currentPage, pageSize) => {
     try {
-      const response = await axiosInstance.get("/products?populate=*");
+      const response = await axiosInstance.get(
+        `/products?populate=*&pagination[page]=${currentPage}&pagination[pageSize]=${pageSize}`
+      );
       console.log("Response data:", response.data);
       return successHandler(response);
     } catch (error) {
       return errorHandler(error);
     }
   },
+  searchFiveProduct: async (keyWord) => {
+    try {
+      const response = await axiosInstance.get(
+        `/products?populate=*&filters[name][$containsi]=${keyWord.toUpperCase()}&pagination[limit]=5&sort[0]=createdAt:asc`
+      );
+      return successHandler(response);
+    } catch (error) {
+      return errorHandler(error);
+    }
+  },
+  listProductSearch: async ({ keyWord, currentPage, pageSize }) => {
+    try {
+      const response = await axiosInstance.get(
+        `/products?populate=*&filters[name][$containsi]=${keyWord.toUpperCase()}&pagination[page]=${currentPage}&pagination[pageSize]=${pageSize}`
+      );
+      // console.log("Response data:", response.data);
+      return successHandler(response);
+    } catch (error) {
+      return errorHandler(error);
+    }
+  },
 
-  ListSort: async ({ sort, title }) => {
+  ListSort: async ({ sort, title, currentPage, pageSize }) => {
     console.log("listsort ", sort);
     try {
       let url = "/products?populate=*";
@@ -28,7 +50,10 @@ const request = {
         }
         url += `&filters[${title}][$eq]=${sort}`;
       }
-      const response = await axiosInstance.get(url);
+      const response = await axiosInstance.get(
+        url +
+          `&pagination[page]=${currentPage}&pagination[pageSize]=${pageSize}`
+      );
       console.log("Response data:", response.data);
       return successHandler(response);
     } catch (error) {
@@ -37,7 +62,7 @@ const request = {
   },
 
   ListSaleProduct: async () => {
-    console.log("listsort ", sort);
+    // console.log("listsort ", sort);
     try {
       const response = await axiosInstance.get(
         `/products?populate=*&is_discount_active=true`
@@ -62,11 +87,26 @@ const request = {
   },
   UserDetail: async (userId) => {
     try {
-      const response = await axiosInstance.get(`/users/${userId}`);
+      const response = await axiosInstance.get(`/users/${userId}?populate=*`);
       return response;
     } catch (error) {
       console.error("Error fetching user detail data:", error);
       throw error;
+    }
+  },
+  createOderAddress: async ({ data }) => {
+    try {
+      const newOrderAddressData = {
+        data,
+      };
+      console.log("request", newOrderAddressData);
+      const response = await axiosInstance.post(
+        `/order-addresses`,
+        newOrderAddressData
+      );
+      return response.data;
+    } catch (error) {
+      return errorHandler(error);
     }
   },
   Cart: async (userId) => {
@@ -77,6 +117,37 @@ const request = {
       return response;
     } catch (error) {
       console.error("Error fetching cart data:", error);
+      throw error;
+    }
+  },
+  updateUser: async ({ data }) => {
+    try {
+      const response = await axiosInstance.put(`/users/${data.id}`, data);
+      return response;
+    } catch (error) {
+      console.error("Error fetching cart data:", error);
+      throw error;    }
+  },
+  updateRelationUser: async ({ userId, oderAddressId }) => {
+    try {
+      const data = {
+        order_addresses: {
+          connect: [oderAddressId],
+        },
+      };
+      const response = await axiosInstance.put(`/users/${userId}`, data);
+      return response;
+    } catch (error) {
+      console.error("Error fetching user detail data:", error);
+      throw error;
+    }
+  },
+  changePassword: async ({data})=>{
+    try {
+      const reponse = await axiosInstance.post(`/auth/change-password`, data);
+      return reponse;
+    } catch (error) {
+      console.error("error change password");
       throw error;
     }
   },

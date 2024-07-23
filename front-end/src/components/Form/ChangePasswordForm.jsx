@@ -41,8 +41,8 @@ export default function ChangPasswordForm() {
             {" "}
             {isSuccessChangePassword ? (
               <Alert
-                message="Success Tips"
-                description="Detailed description and advice about successful copywriting."
+                message="Đổi mật khẩu thành công"
+                description="Mật khẩu của bạn đã được thay đổi."
                 type="success"
                 showIcon
               />
@@ -50,8 +50,8 @@ export default function ChangPasswordForm() {
               <>
                 {isErrorChangePassword ? (
                   <Alert
-                    message="Error"
-                    description="This is an error message about copywriting."
+                    message="Đổi mật khẩu thất bại"
+                    description="Vui lòng thao tác lại để tiếp tục đổi mật khẩu"
                     type="error"
                     showIcon
                   />

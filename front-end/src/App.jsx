@@ -1,11 +1,10 @@
-import { Provider } from "react-redux";
 import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import store from "../src/redux/store";
 import AddresForm from "./components/Form/AddressForm";
 import ChangPasswordForm from "./components/Form/ChangePasswordForm";
 import OdersForm from "./components/Form/OdersForm";
 import PersonalInformationForm from "./components/Form/PersonalInformationForm";
+import CartLayout from "./layout/CartLayout";
 import Layout from "./layout/Layout";
 import CartPage from "./pages/CartPage";
 import ContactPage from "./pages/ContactPage";
@@ -15,14 +14,12 @@ import NotFoundPage from "./pages/NotFoundPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import ProductListPage from "./pages/ProductListPage";
 import SearchPage from "./pages/SearchPage";
-import CartLayout from "./layout/CartLayout";
 import UserProfilePage from "./pages/UserProfilePage";
 
-import { fetchUserDetail, logout } from "./features/authSlice";
-import { useSelector, useDispatch } from "react-redux";
-import { fetchCartData } from "./features/cartSlice";
-import { AnimatePresence } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
 import ScrollToTop from "./components/ScrollToTop";
+import { fetchUserDetail } from "./features/authSlice";
+import { fetchCartData } from "./features/cartSlice";
 import CategoryPage from "./pages/CategoryPage";
 function App() {
   const dispatch = useDispatch();
@@ -46,7 +43,15 @@ function App() {
             <Route path="categories" element={<CategoryPage />} />
             <Route path="search" element={<SearchPage />} />
             <Route path="contact" element={<ContactPage />} />
-            <Route path="profile" element={<UserProfilePage />} />
+            <Route path="profile" element={<UserProfilePage />}>
+              <Route
+                path="account-info"
+                element={<PersonalInformationForm />}
+              />
+              <Route path="address-book" element={<AddresForm />} />
+              <Route path="change-password" element={<ChangPasswordForm />} />
+              <Route path="orders" element={<OdersForm />} />
+            </Route>
           </Route>
           <Route path="login" element={<LoginPage />}></Route>
           <Route path="cart" element={<CartLayout />}>

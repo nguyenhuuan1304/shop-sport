@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from "react";
-import React, { useState } from "react";
+import { Badge, Button } from "antd";
+import { motion } from "framer-motion";
+import { default as React, useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import placeholder from "../../assets/playholder.png";
-import saletag from "../../assets/saleTag.png";
-import { FaRegEyeSlash } from "react-icons/fa6";
-import { Button, Divider, Badge } from "antd";
-import { motion } from "framer-motion";
 import useSessionStorage from "../../custom hooks/useSessionStorage";
 
 //thuộc tính displayQuantity = true : hiển thị số lượng tồn kho của sản phẩm
-const ProductCard = React.memo(({ product, displayQuantity }) => {
+const ProductCard = React.memo(function ProductCard({ product, displayQuantity }) {
   const [viewedProduct, setViewedProduct] = useSessionStorage(
     "viewedProducts",
     []
@@ -20,7 +17,7 @@ const ProductCard = React.memo(({ product, displayQuantity }) => {
     setViewedProduct(product);
     console.log(viewedProduct);
 
-    // navigate(`/product/${product?.id}`);
+    navigate(`/product/${product?.id}`);
   };
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);

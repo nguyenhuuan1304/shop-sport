@@ -74,9 +74,7 @@ export default function SearchBar({ keyWord }) {
   };
 
   return (
-    <div
-      className=" gap-6 flex flex-col p-4 grow"
-    >
+    <div className=" gap-6 flex flex-col p-4 grow">
       <div className="flex flex-row gap-10 flex-auto items-center justify-between">
         <div className="flex flex-col relative">
           <Search
@@ -99,7 +97,7 @@ export default function SearchBar({ keyWord }) {
                   className="bg-white p-3"
                   itemLayout="vertical"
                   dataSource={productList}
-                  split={true} 
+                  split={true}
                   renderItem={(item, index) => (
                     <Link
                       to={`/product/${item?.id}`}

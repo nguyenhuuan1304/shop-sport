@@ -38,7 +38,7 @@ function ProductList({ sortParam, titleParam, searchParam }) {
         fetchProductList({ sortParam: "", titleParam: "", searchParam ,currentPage ,pageSize})
       );
     } else {
-      // console.log("vào get all");
+      console.log("vào get all");
       dispatch(
         fetchProductList({ sortParam: "", titleParam: "", searchParam: "" ,currentPage ,pageSize})
       );

@@ -1,29 +1,17 @@
-import React, { useEffect, useState } from "react";
-import logo from "../../assets/logo.jpg";
-import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
-import { Divider } from "antd";
-import { useSelector, useDispatch } from "react-redux";
-import { FaHome, FaHeadphones, FaShoppingCart, FaUser } from "react-icons/fa";
-import { IoPersonCircle, IoPersonAddSharp } from "react-icons/io5";
-import { PiNotepadFill } from "react-icons/pi";
-import { Input, Space, Badge } from "antd";
-import { fetchUserDetail, logout } from "../../features/authSlice";
-import { fetchCartData, setTotalProduct } from "../../features/cartSlice";
-import { IoLogOut } from "react-icons/io5";
+import { Badge, Divider, Input } from "antd";
 import { motion } from "framer-motion";
-import useRedirectToLogin from "../../custom hooks/useRedirectToLogin";
-const { Search } = Input;
-import { Badge, Divider } from "antd";
-import React, { useEffect } from "react";
+import { default as React, useEffect } from "react";
 import { FaHeadphones, FaHome, FaShoppingCart, FaUser } from "react-icons/fa";
 import { IoLogOut, IoPersonAddSharp, IoPersonCircle } from "react-icons/io5";
 import { PiNotepadFill } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.jpg";
-import { fetchUserDetail, logout } from "../../features/authSlice";
+import useRedirectToLogin from "../../custom hooks/useRedirectToLogin";
+import { logout } from "../../features/authSlice";
 import { fetchCartData } from "../../features/cartSlice";
 import SearchBar from "../SearchBar";
+const { Search } = Input;
 
 const menuItems = [
   {
@@ -41,7 +29,7 @@ const menuItems = [
     to: "contact",
   },
 ];
-
+ 
 function NavigationLink({ Icon, title, to, count }) {
   const redirectToLogin = useRedirectToLogin();
 
@@ -68,6 +56,7 @@ function NavigationLink({ Icon, title, to, count }) {
           ) : (
             <Icon size={30} className="text-red-500" />
           )}
+          
           {title}
         </Link>
       )}

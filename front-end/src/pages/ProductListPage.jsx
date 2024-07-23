@@ -5,8 +5,6 @@ import { useSearchParams } from "react-router-dom";
 import _Breadcrumb from "../components/Breadcrumb";
 import ProductList from "../components/ProductList";
 
-import React from "react";
-import { useLocation } from "react-router-dom";
 const className =
   "hover:text-blue-500 hover:opacity-100 hover:font-semibold hover:text-2xl duration-200 border-b-2 hover:border-blue-500 border-transparent p-4";
 
@@ -37,10 +35,6 @@ const FilterOption = [
   },
 ];
 
-const useQuery = () => {
-  return new URLSearchParams(useLocation().search);
-};
-
 export default function ProductPage() {
   const [activeButton, setActiveButton] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -50,9 +44,6 @@ export default function ProductPage() {
   const handleFilterChange = (item, index) => {
     //lưu id button
     setActiveButton(index);
-  const searchParam = useQuery().get('search') || '';
-  // console.log(searchParam)
-  const handleFilterChange = (item) => {
     setSearchParams(item);
   };
 
@@ -81,9 +72,8 @@ export default function ProductPage() {
           );
         })}
       </div>
-      <ProductList sortParam={sortParam} titleParam={titleParam} searchParam={searchParam} />
+      <ProductList sortParam={sortParam} titleParam={titleParam} />
       <FloatButton.BackTop type="primary" />
     </motion.div>
-
   );
-}}
+} 

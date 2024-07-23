@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from "react";
 import {
-  Divider,
-  Input,
   Button,
-  Popconfirm,
   Image,
-  Space,
+  Input,
   InputNumber,
+  Popconfirm,
+  Space
 } from "antd";
+import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
 import { CiWarning } from "react-icons/ci";
-import { FaTrashAlt, FaPlus, FaMinus } from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
+import { FaMinus, FaPlus, FaTrashAlt } from "react-icons/fa";
 const { TextArea } = Input;
 
 export const QuantityEditor = ({
@@ -150,11 +149,11 @@ const CartItem = ({
           <DeleteConfirmButton onConfirm={handleDeleteCartItem} />
         </div>
         <span>{size}</span>
-        {quantity > foundItem.quantity ? (
+        {quantity > foundItem?.quantity ? (
           <span className="text-xs text-red-600">
             Số lượng sản phẩm trong kho còn{" "}
             <span className="font-bold ">
-              {foundItem ? foundItem.quantity : 0}
+              {foundItem ? foundItem?.quantity : 0}
             </span>{" "}
             (vượt quá sản phẩm)
           </span>
@@ -162,7 +161,7 @@ const CartItem = ({
           <span className="text-xs text-green-600">
             Số lượng sản phẩm trong kho còn{" "}
             <span className="font-bold ">
-              {foundItem ? foundItem.quantity : 0}
+              {foundItem ? foundItem?.quantity : 0}
             </span>
           </span>
         )}

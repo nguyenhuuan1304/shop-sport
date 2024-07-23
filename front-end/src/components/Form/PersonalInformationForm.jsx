@@ -61,8 +61,8 @@ export default function PersonalInformationForm() {
             {" "}
             {isSuccessUpdate ? (
               <Alert
-                message="Success Tips"
-                description="Detailed description and advice about successful copywriting."
+                message="Cập nhật tài khoản thành công"
+                description="tài khoản của bạn đã được thay đổi thành công vui lòng kiểm tra thông tin tài khoản."
                 type="success"
                 showIcon
               />
@@ -70,8 +70,8 @@ export default function PersonalInformationForm() {
               <>
                 {isErrorUpdate ? (
                   <Alert
-                    message="Error"
-                    description="This is an error message about copywriting."
+                    message="Cập nhật tài khoản thất bại"
+                    description="vui lòng thao tác cập nhật lại tài khoản."
                     type="error"
                     showIcon
                   />

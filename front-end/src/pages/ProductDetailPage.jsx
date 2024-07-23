@@ -1,32 +1,25 @@
-import React, { useEffect, useState, useLayoutEffect } from "react";
 import {
-  Input,
   Button,
-  Rate,
-  Image,
-  Table,
-  InputNumber,
   Carousel,
+  Image,
+  Input,
+  InputNumber,
   message,
+  Rate,
+  Table,
 } from "antd";
-import { Link, useParams, useLocation } from "react-router-dom";
-import { FaPlus, FaMinus } from "react-icons/fa";
-import { Button, Carousel, Image, Input, InputNumber, Rate, Table } from "antd";
 import { motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
+import { default as React, useEffect, useState } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import CartDrawer from "../components/CartDrawer";
 import ProductCard from "../components/ProductCard";
+import { addManyToCart } from "../features/cartSlice";
 import {
   fetchProductDetail,
   fetchProductList
 } from "../features/productSlice";
-import { addManyToCart } from "../features/cartSlice";
-import { motion } from "framer-motion";
-import ProductCard from "../components/ProductCard";
-import CartDrawer from "../components/CartDrawer";
 const { Search } = Input;
 
 const carouselResponsiveSetting = [
@@ -115,7 +108,7 @@ export default function ProductDetailPage() {
   const loading = useSelector((state) => state.products?.loading);
   const dataSource = product?.attributes?.size_list?.map((item, index) => ({
     ...item,
-    key: `${item.size}-${index}`,
+    key: `${index}`,
     count: 0,
   }));
   const [messageApi, contextHolder] = message.useMessage();
@@ -142,10 +135,11 @@ export default function ProductDetailPage() {
   }, [dispatch, productId]);
 
   // +/ sản phẩm để thêm vào giỏ hàng
-  const handleQuantityChange = (key, count) => {
+  const handleQuantityChange = (RowItem) => {
+    console.log("key.size", RowItem);
+    const key = RowItem.key;
     // Kiểm tra xem sản phẩm có trong cart chưa
     const existingItem = cart.find((item) => item.key === key);
-
     if (existingItem) {
       // Nếu sản phẩm đã có trong cart, cập nhật count
       const updatedCart = cart
@@ -155,20 +149,18 @@ export default function ProductDetailPage() {
                 ...item,
                 product: product,
                 count: item.count + 1,
-                size: item.key?.split("-")[0],
+                size: RowItem.size,
               }
             : item
         )
         .filter((item) => item.count > 0); // Lọc ra các mục có count > 0
       setCart(updatedCart);
     } else {
-      // Nếu sản phẩm chưa có trong cart, thêm mới vào
-      // key là "M-1" , tạo trường size để lấy size M
       const newItem = {
         key,
         count: 1,
         product: product,
-        size: key?.split("-")[0],
+        size:  RowItem.size,
       };
       const updatedCart = [...cart, newItem].filter((item) => item.count > 0); // Lọc ra các mục có count > 0
       setCart(updatedCart);
@@ -210,7 +202,7 @@ export default function ProductDetailPage() {
         <QuantityEditor
           min={0}
           max={record.quantity}
-          onChange={() => handleQuantityChange(record.key, 1)}
+          onChange={() => handleQuantityChange(record, 1)}
         />
       ),
     },
@@ -406,3 +398,4 @@ export default function ProductDetailPage() {
     </motion.div>
   );
 }
+
