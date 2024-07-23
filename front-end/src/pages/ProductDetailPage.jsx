@@ -11,11 +11,17 @@ import {
 } from "antd";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { FaPlus, FaMinus } from "react-icons/fa";
+import { Button, Carousel, Image, Input, InputNumber, Rate, Table } from "antd";
+import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { FaMinus, FaPlus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import CartDrawer from "../components/CartDrawer";
+import ProductCard from "../components/ProductCard";
 import {
   fetchProductDetail,
-  fetchProductList,
-  fetchSaleProductList,
+  fetchProductList
 } from "../features/productSlice";
 import { addManyToCart } from "../features/cartSlice";
 import { motion } from "framer-motion";
@@ -131,7 +137,8 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     dispatch(fetchProductDetail(productId));
-    dispatch(fetchProductList({ sortParam: "true", titleParam: "NoHot" }));
+    dispatch(fetchProductList({ sortParam: "true", titleParam: "NoHot", searchParam: "", currentPage: 0, pageSize: 0}));
+    console.log(saleProducts);
   }, [dispatch, productId]);
 
   // +/ sản phẩm để thêm vào giỏ hàng

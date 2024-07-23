@@ -1,8 +1,7 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { IoIosMenu } from "react-icons/io";
 import { Dropdown, Menu } from "antd";
-import { useLocation } from "react-router-dom";
+import React, { useState } from "react";
+import { IoIosMenu } from "react-icons/io";
+import { NavLink, useLocation } from "react-router-dom";
 import CategoryDropdown from "../CategoryDropdown";
 
 export default function _Menu() {
@@ -30,7 +29,7 @@ export default function _Menu() {
   );
 
   return (
-    <div className="hidden sm:flex flex-row items-center justify-evenly gap-5 mt-5 sticky top-0 z-50 bg-white">
+    <div className="hidden sm:flex flex-row items-center justify-evenly gap-5 mt-5 sticky top-0 z-40 bg-white">
       <Dropdown
         dropdownRender={() => menu}
         placement="bottomLeft"

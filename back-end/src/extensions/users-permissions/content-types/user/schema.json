@@ -67,6 +67,28 @@
     },
     "cart": {
       "type": "json"
+    },
+    "firstname": {
+      "type": "string",
+      "required": false
+    },
+    "lastname": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "birthday": {
+      "type": "date"
+    },
+    "address": {
+      "type": "string"
+    },
+    "order_addresses": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order-address.order-address",
+      "mappedBy": "user"
     }
   }
 }

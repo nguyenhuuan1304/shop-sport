@@ -1,18 +1,23 @@
 import { Provider } from "react-redux";
 import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import store from "../src/redux/store";
+import AddresForm from "./components/Form/AddressForm";
+import ChangPasswordForm from "./components/Form/ChangePasswordForm";
+import OdersForm from "./components/Form/OdersForm";
+import PersonalInformationForm from "./components/Form/PersonalInformationForm";
 import Layout from "./layout/Layout";
 import CartPage from "./pages/CartPage";
 import ContactPage from "./pages/ContactPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import ProductDetailPage from "./pages/ProductDetailPage";
 import ProductListPage from "./pages/ProductListPage";
 import SearchPage from "./pages/SearchPage";
 import CartLayout from "./layout/CartLayout";
 import UserProfilePage from "./pages/UserProfilePage";
-import store from "../src/redux/store";
-import ProductDetailPage from "./pages/ProductDetailPage";
+
 import { fetchUserDetail, logout } from "./features/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchCartData } from "./features/cartSlice";
@@ -41,7 +46,7 @@ function App() {
             <Route path="categories" element={<CategoryPage />} />
             <Route path="search" element={<SearchPage />} />
             <Route path="contact" element={<ContactPage />} />
-            <Route path="profile" element={<UserProfilePage />}></Route>
+            <Route path="profile" element={<UserProfilePage />} />
           </Route>
           <Route path="login" element={<LoginPage />}></Route>
           <Route path="cart" element={<CartLayout />}>

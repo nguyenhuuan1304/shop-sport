@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { FaRegEyeSlash } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import placeholder from "../../assets/playholder.png";
@@ -25,6 +27,8 @@ const ProductCard = React.memo(({ product, displayQuantity }) => {
   const [isDisCountActive, setIsDisCountActive] = useState(false);
   let isSale = product?.attributes?.is_discount_active;
   let islogIN = useSelector((state) => state.auth.isAuthenticated);
+
+  // console.log(product);
   const imageUrl = product?.attributes?.image?.data?.[0]?.attributes?.url
     ? import.meta.env.VITE_IMG_URL +
       product?.attributes?.image?.data?.[0]?.attributes?.url

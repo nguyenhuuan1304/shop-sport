@@ -13,6 +13,17 @@ import { IoLogOut } from "react-icons/io5";
 import { motion } from "framer-motion";
 import useRedirectToLogin from "../../custom hooks/useRedirectToLogin";
 const { Search } = Input;
+import { Badge, Divider } from "antd";
+import React, { useEffect } from "react";
+import { FaHeadphones, FaHome, FaShoppingCart, FaUser } from "react-icons/fa";
+import { IoLogOut, IoPersonAddSharp, IoPersonCircle } from "react-icons/io5";
+import { PiNotepadFill } from "react-icons/pi";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, NavLink } from "react-router-dom";
+import logo from "../../assets/logo.jpg";
+import { fetchUserDetail, logout } from "../../features/authSlice";
+import { fetchCartData } from "../../features/cartSlice";
+import SearchBar from "../SearchBar";
 
 const menuItems = [
   {
@@ -97,7 +108,8 @@ export default function Header() {
   //fetch cart data để tính số lượng sản phẩm trong giỏ hàng
   useEffect(() => {
     dispatch(fetchCartData(currentUser?.id));
-  }, [dispatch, currentUser]);
+  }, [dispatch, currentUser?.id]);
+
 
   return (
     <div className="sm:flex hidden border-b flex-row h-32 w-full gap-10 items-center justify-between">
@@ -117,11 +129,59 @@ export default function Header() {
       </Link>
       <div className=" gap-6 flex flex-col p-4 grow">
         <div className="flex flex-row gap-10 flex-auto items-center justify-between">
-          <Search
-            placeholder="Nhập sản phẩm tìm kiếm"
-            enterButton
-            className="w-96 h-auto"
-          />
+          {/* <div className="flex flex-col relative">
+            <Search
+              placeholder="Nhập sản phẩm tìm kiếm"
+              enterButton
+              className="w-96 h-auto"
+              onSearch={handleSearch}
+              onChange={onChangeHandleSearch}
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
+              value={keyWordSearch}
+            />
+            {isOpenDropDown && keyWordSearch && (
+              <div className="absolute top-10 w-full z-50 bg-white rounded-lg border opacity-100">
+                <div className="p-2 sticky top-0 bg-gray-100 z-10 w-full rounded-t-lg">
+                  Sản phẩm gợi ý
+                </div>
+                <div className="bg-white w-full border opacity-100 overflow-auto h-80 rounded-b-lg border-b last:border-b">
+                  <List
+                    className="bg-white p-3"
+                    itemLayout="vertical"
+                    dataSource={productList}
+                    split={true} // Thuộc tính split để thêm đường kẻ
+                    renderItem={(item, index) => (
+                      <Link to={`/product/${item?.id}`} key={item?.id}>
+                        <List.Item className="w-full border-b border-gray-300 last:border-b-0">
+                          <List.Item.Meta
+                            avatar={
+                              <Avatar
+                                src={urlImg(item)}
+                                className="w-20 h-20 rounded-full shadow-xl border-4 border-neutral-100"
+                              />
+                            }
+                            title={<a>{item?.attributes?.name}</a>}
+                            description={
+                              isAuthenticated ? (
+                                <p>{item?.attributes?.price} $</p>
+                              ) : (
+                                <p className="font-semibold">
+                                  Đăng nhập để xem giá
+                                </p>
+                              )
+                            }
+                          />
+                          <Divider />
+                        </List.Item>
+                      </Link>
+                    )}
+                  />
+                </div>
+              </div>
+            )}
+          </div> */}
+          <SearchBar></SearchBar>
           <div className="flex flex-row items-center gap-5">
             <NavigationLink
               title="Kiểm tra đơn hàng"
