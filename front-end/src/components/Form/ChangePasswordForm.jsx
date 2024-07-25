@@ -1,7 +1,7 @@
 import { Alert, Button, Input } from "antd";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { changePassword } from "../../features/authSlice";
+import { changePassword } from "../../redux/slices/authSlice";
 
 export default function ChangPasswordForm() {
   const isLoadingChangePassword = useSelector((state) => state.auth?.isLoading);

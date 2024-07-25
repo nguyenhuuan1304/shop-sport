@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Badge, Drawer } from "antd";
 import CartDrawer from "../../components/CartDrawer";
 import { motion } from "framer-motion";
-import { fetchCartData } from "../../features/cartSlice";
+import { fetchCartData } from "../../redux/slices/cartSlice";
 import {
   CiShoppingBasket,
   CiViewTable,

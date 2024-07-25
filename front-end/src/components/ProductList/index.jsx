@@ -2,7 +2,7 @@ import { Pagination } from "antd";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductList } from "../../features/productSlice";
+import { fetchProductList } from "../../redux/slices/productSlice";
 import ProductCard from "../ProductCard/";
 
 function ProductList({ sortParam, titleParam, searchParam }) {

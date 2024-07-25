@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Alert } from "antd";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../features/authSlice";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.jpg";
+import { login } from "../redux/slices/authSlice";
 
 export default function LoginPage() {
   const isLoading = useSelector((state) => state.auth.isLoading);

@@ -1,7 +1,7 @@
 import { Alert, Button } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUpdateUser } from "../../features/userSlice";
+import { fetchUpdateUser } from "../../redux/slices/userSlice";
 
 export default function PersonalInformationForm() {
   const isSuccessUpdate = useSelector((state) => state.user?.success);

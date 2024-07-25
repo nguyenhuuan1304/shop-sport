@@ -1,32 +1,16 @@
-import React, { useEffect, useState } from "react";
 import {
   Button,
-  Drawer,
-  Image,
-  InputNumber,
-  Input,
-  Space,
-  Popconfirm,
+  Drawer
 } from "antd";
-import { FaTrashAlt, FaPlus, FaMinus } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { CiWarning } from "react-icons/ci";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import {
-  fetchCartData,
   addToCart,
-  removeFromCart,
   deleteFromCart,
-} from "../../features/cartSlice";
-import { motion } from "framer-motion";
-import {
-  CiShoppingBasket,
-  CiViewTable,
-  CiUser,
-  CiViewList,
-  CiMenuBurger,
-} from "react-icons/ci";
-import CartItem, { QuantityEditor, DeleteConfirmButton } from "../CartItem";
+  removeFromCart
+} from "../../redux/slices/cartSlice";
+import CartItem from "../CartItem";
 import EmptyCart from "../EmptyCart";
 //Trang sẽ hiển thị nếu chưa đăng nhập
 

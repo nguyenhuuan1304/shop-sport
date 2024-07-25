@@ -5,8 +5,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import placeholder from "../../assets/playholder.png";
-import { fetchProductList } from "../../features/productSlice";
-import { fetchFiveProduct } from "../../features/searchSlice";
+import { fetchProductList } from "../../redux/slices/productSlice";
+import { fetchFiveProduct } from "../../redux/slices/searchSlice";
 const { Search } = Input;
 
 export default function SearchBar({ keyWord }) {

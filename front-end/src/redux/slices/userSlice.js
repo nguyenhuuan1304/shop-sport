@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { request } from "../redux/request";
+import { request } from "../request";
 
 export const fetchUpdateUser = createAsyncThunk(
   "user/fetchUpdateUser",

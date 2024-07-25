@@ -1,38 +1,21 @@
-import React, { useState, useEffect } from "react";
 import {
-  Divider,
-  Input,
-  Button,
-  Popconfirm,
-  Image,
-  Space,
-  InputNumber,
+    Button,
+    Divider,
+    Input
 } from "antd";
-import { Link } from "react-router-dom";
-import { CiWarning } from "react-icons/ci";
-import {
-  fetchCartData,
-  addToCart,
-  removeFromCart,
-  setTotalProduct,
-  deleteFromCart,
-} from "../features/cartSlice";
+import { motion } from "framer-motion";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FaTrashAlt, FaPlus, FaMinus } from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
-const { TextArea } = Input;
-import {
-  CiShoppingBasket,
-  CiViewTable,
-  CiUser,
-  CiViewList,
-  CiMenuBurger,
-} from "react-icons/ci";
-import CartItem, {
-  QuantityEditor,
-  DeleteConfirmButton,
-} from "../components/CartItem";
+import { Link } from "react-router-dom";
+import CartItem from "../components/CartItem";
 import EmptyCart from "../components/EmptyCart";
+import {
+    addToCart,
+    deleteFromCart,
+    fetchCartData,
+    removeFromCart
+} from "../redux/slices/cartSlice";
+const { TextArea } = Input;
 
 export default function CartPage() {
   const dispatch = useDispatch();

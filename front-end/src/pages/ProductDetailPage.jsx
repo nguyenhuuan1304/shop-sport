@@ -1,12 +1,12 @@
 import {
-  Button,
-  Carousel,
-  Image,
-  Input,
-  InputNumber,
-  message,
-  Rate,
-  Table,
+    Button,
+    Carousel,
+    Image,
+    Input,
+    InputNumber,
+    message,
+    Rate,
+    Table,
 } from "antd";
 import { motion } from "framer-motion";
 import { default as React, useEffect, useState } from "react";
@@ -15,11 +15,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import CartDrawer from "../components/CartDrawer";
 import ProductCard from "../components/ProductCard";
-import { addManyToCart } from "../features/cartSlice";
+import { addManyToCart } from "../redux/slices/cartSlice";
 import {
-  fetchProductDetail,
-  fetchProductList
-} from "../features/productSlice";
+    fetchProductDetail,
+    fetchProductList
+} from "../redux/slices/productSlice";
 const { Search } = Input;
 
 const carouselResponsiveSetting = [

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { request } from "../redux/request";
+import { request } from "../request";
 
 //lấy all product, fillter theo sortParam và titleParam, pagination
 export const fetchProductList = createAsyncThunk(

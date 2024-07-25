@@ -1,16 +1,16 @@
 import {
-  faArrowRightFromBracket,
-  faCartShopping,
-  faLockOpen,
-  faNewspaper,
-  faUser,
+    faArrowRightFromBracket,
+    faCartShopping,
+    faLockOpen,
+    faNewspaper,
+    faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Divider } from "antd";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Outlet } from "react-router-dom";
-import { logout } from "../features/authSlice";
+import { logout } from "../redux/slices/authSlice";
 const iconMap = {
   user: faUser,
   newspaper: faNewspaper,

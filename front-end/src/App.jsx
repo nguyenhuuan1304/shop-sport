@@ -18,9 +18,9 @@ import UserProfilePage from "./pages/UserProfilePage";
 
 import { useDispatch, useSelector } from "react-redux";
 import ScrollToTop from "./components/ScrollToTop";
-import { fetchUserDetail } from "./features/authSlice";
-import { fetchCartData } from "./features/cartSlice";
 import CategoryPage from "./pages/CategoryPage";
+import { fetchUserDetail } from "./redux/slices/authSlice";
+import { fetchCartData } from "./redux/slices/cartSlice";
 function App() {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.currentUser);

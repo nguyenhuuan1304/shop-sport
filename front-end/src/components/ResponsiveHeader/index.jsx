@@ -1,11 +1,11 @@
+import { Drawer, Dropdown, Input, List } from "antd";
 import React, { useEffect, useState } from "react";
-import logo from "../../assets/logo.jpg";
-import { Button, Drawer, Input, List, Dropdown } from "antd";
-import { useSelector, useDispatch } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
 import { CiLogout, CiUser } from "react-icons/ci";
 import { RiArrowDownWideFill } from "react-icons/ri";
-import { logout } from "../../features/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
+import logo from "../../assets/logo.jpg";
+import { logout } from "../../redux/slices/authSlice";
 const { Search } = Input;
 
 // Dropdown items

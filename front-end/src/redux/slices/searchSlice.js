@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { request } from "../redux/request";
+import { request } from "../request";
 
 
 //get 5 product for search to keyword

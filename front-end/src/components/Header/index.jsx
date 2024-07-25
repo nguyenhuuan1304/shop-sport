@@ -8,8 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.jpg";
 import useRedirectToLogin from "../../custom hooks/useRedirectToLogin";
-import { logout } from "../../features/authSlice";
-import { fetchCartData } from "../../features/cartSlice";
+import { logout } from "../../redux/slices/authSlice";
+import { fetchCartData } from "../../redux/slices/cartSlice";
 import SearchBar from "../SearchBar";
 const { Search } = Input;
 

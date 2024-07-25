@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
-import { request } from "../redux/request";
-import { loginService } from "../services/authService";
+import { loginService } from "../../services/authService";
+import { request } from "../request";
 export const login = createAsyncThunk(
   "auth/login",
   async (payload, { rejectWithValue }) => {

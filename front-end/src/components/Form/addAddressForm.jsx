@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { getProvincesWithDetail } from "vietnam-provinces";
-import { fetchCreateOrderAddress } from "../../features/oderAddressSlice";
-import { fetchUpdateRelationUser } from "../../features/userSlice";
+import { fetchCreateOrderAddress } from "../../redux/slices/oderAddressSlice";
+import { fetchUpdateRelationUser } from "../../redux/slices/userSlice";
 function AddAddressForm() {
     const dispatch = useDispatch();
 
