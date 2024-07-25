@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Cart from "./cartModel";
+import Cart from "./cartModel.js";
 
 const order_schema = mongoose.Schema({
   total_of_price: {
@@ -16,4 +16,4 @@ const order_schema = mongoose.Schema({
     required: true,
   },
 });
-export default Order = mongoose.model("Order", order_schema);
+export default mongoose.model("Order", order_schema);

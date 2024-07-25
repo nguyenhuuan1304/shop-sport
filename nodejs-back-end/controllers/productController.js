@@ -1,22 +1,21 @@
-import {
-  getProducts,
-  getProductById,
-  addProduct,
-  deleteProduct,
-  updateProduct,
-} from "../services/productService.js";
+import { productService } from "../services/index.js";
 import cloudinary from "../config/cloudinary.config.js";
 import fs from "fs";
-import path from "path";
 
-async function getProductsController(req, res) {
+async function getProducts(req, res) {
   try {
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 6;
     const orderBy = req.query.orderBy ? JSON.parse(req.query.orderBy) : {};
     const isHot = req.query.hot ? req.query.hot === "true" : undefined;
     const isSale = req.query.sale ? req.query.sale === "true" : undefined;
-    const result = await getProducts(page, pageSize, orderBy, isHot, isSale);
+    const result = await productService.getProducts(
+      page,
+      pageSize,
+      orderBy,
+      isHot,
+      isSale
+    );
     return res.status(200).json(result);
   } catch (error) {
     res.status(500).json({
@@ -25,10 +24,10 @@ async function getProductsController(req, res) {
   }
 }
 
-async function getProductsByIdController(req, res) {
+async function getProductById(req, res) {
   try {
     const product_id = req.params.id;
-    const result = await getProductById(product_id);
+    const result = await productService.getProductById(product_id);
     if (result) {
       return res.status(200).json(result);
     } else return res.status(404).json({ message: "not found product!" });
@@ -39,7 +38,7 @@ async function getProductsByIdController(req, res) {
   }
 }
 
-async function deleteProductController(req, res) {
+async function deleteProduct(req, res) {
   try {
     const product_id = req.params.id;
     const result = await deleteProduct(product_id);
@@ -53,7 +52,7 @@ async function deleteProductController(req, res) {
   }
 }
 
-async function addProductController(req, res) {
+async function addProduct(req, res) {
   try {
     //handle upload image to cloudinary
     const uploadedImages = [];
@@ -76,7 +75,7 @@ async function addProductController(req, res) {
   }
 }
 
-async function updateProductController(req, res) {
+async function updateProduct(req, res) {
   try {
     const product_id = req.params.id;
     const product = req.body;
@@ -96,9 +95,9 @@ async function updateProductController(req, res) {
   }
 }
 export {
-  getProductsController,
-  getProductsByIdController,
-  updateProductController,
-  deleteProductController,
-  addProductController,
+  getProducts,
+  getProductById,
+  addProduct,
+  deleteProduct,
+  updateProduct,
 };

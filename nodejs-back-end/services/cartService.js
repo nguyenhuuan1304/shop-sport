@@ -13,9 +13,9 @@ async function clearCart(cart_id) {
   try {
     const cart = await Cart.findById(user_id);
     if (cart) {
-      cart?.total_of_product = 0;
-      cart?.total_of_price= 0;
-      cart?.items = []
+      cart.total_of_product = 0;
+      cart.total_of_price = 0;
+      cart.items = [];
     }
     await cart.save();
     return cart;

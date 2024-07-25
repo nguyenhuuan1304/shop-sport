@@ -2,7 +2,6 @@ import Product from "../models/productModel.js";
 
 async function getProducts(page, page_size, order_by, is_hot, is_sale) {
   try {
-    console.log(is_hot);
     const filter = { is_deleted: false };
     if (is_hot !== undefined) {
       filter.is_hot = is_hot;

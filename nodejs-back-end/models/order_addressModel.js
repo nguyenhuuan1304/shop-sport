@@ -20,4 +20,4 @@ const order_address_schema = mongoose.Schema({
     required: true,
   },
 });
-export default OrderAddress = mongoose.model("OrderAddress", user_schema);
+export default mongoose.model("OrderAddress", order_address_schema);

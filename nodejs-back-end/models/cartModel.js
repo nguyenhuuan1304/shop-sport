@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import Product from "./product.model";
+import Product from "./productModel.js";
 
 const items = Schema({
   size: {
@@ -35,4 +35,4 @@ const cart_schema = Schema({
   },
 });
 
-export default Cart = mongoose.model("Cart", cart_schema);
+export default mongoose.model("Cart", cart_schema);

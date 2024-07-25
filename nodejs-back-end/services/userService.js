@@ -1,5 +1,5 @@
 import User from "../models/userModel.js";
-import { addCart } from "./cartService.js";
+import { cartService } from "./index.js";
 
 async function getUsers() {
   try {
@@ -9,9 +9,9 @@ async function getUsers() {
     throw error;
   }
 }
-async function getUsersById(user_id) {
+async function getUserById(user_id) {
   try {
-    const user = await User.findById(user_id);
+    const user = await User.findById(user_id).populate("cart");
     return user;
   } catch (error) {
     throw error;
@@ -20,7 +20,7 @@ async function getUsersById(user_id) {
 async function addUser(user) {
   try {
     const new_user = new User(user);
-    new_user.cart = await addCart();
+    new_user.cart = await cartService.addCart();
     await new_user.save();
     return new_user;
   } catch (error) {
@@ -39,11 +39,20 @@ async function deleteUser(user_id) {
 }
 async function updateUser(user_id, user) {
   try {
-    const updated_user = await User.findByIdAndUpdate(user_id, user);
+    copyUser = { ...user };
+    delete copyUser.password;
+    delete copyUser.role;
+    delete copyUser.orders;
+    delete copyUser.order_addresses;
+    delete copyUser.is_deleted;
+    delete copyUser.cart;
+    delete copyUser.__v;
+
+    const updated_user = await User.findByIdAndUpdate(user_id, copyUser);
     return updated_user;
   } catch (error) {
     throw error;
   }
 }
 
-export { getUsers, getUsersById, addUser, deleteUser, updateUser };
+export { getUsers, getUserById, addUser, deleteUser, updateUser };

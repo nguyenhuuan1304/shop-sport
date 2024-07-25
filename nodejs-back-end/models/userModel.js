@@ -1,7 +1,7 @@
 import mongoose, { SchemaType } from "mongoose";
-import Cart from "./cartModel";
-import Order from "./order.model";
-import OrderAddress from "./order_address.model";
+import Cart from "./cartModel.js";
+import Order from "./orderModel.js";
+import OrderAddress from "./order_addressModel.js";
 
 const user_schema = mongoose.Schema({
   username: {
@@ -20,14 +20,18 @@ const user_schema = mongoose.Schema({
     type: String,
     required: true,
   },
+  number_phone: {
+    type: String,
+    required: true,
+  },
   password: {
     type: String,
     required: true,
   },
   role: {
     type: String,
-    enum: ["admin", "user"],
-    default: "user",
+    enum: ["ADMIN", "USER"],
+    default: "USER",
   },
   cart: {
     type: mongoose.Schema.Types.ObjectId,
@@ -48,4 +52,4 @@ const user_schema = mongoose.Schema({
     required: true,
   },
 });
-export default User = mongoose.model("User", user_schema);
+export default mongoose.model("User", user_schema);
