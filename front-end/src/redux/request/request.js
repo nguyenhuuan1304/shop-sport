@@ -1,11 +1,12 @@
 import axiosInstance from "../../axios/axios";
+import API_ENDPOINTS from "./api-endpoints";
 import errorHandler from "./errorHandler";
 import successHandler from "./successHandler";
 const request = {
   List: async (currentPage, pageSize) => {
     try {
       const response = await axiosInstance.get(
-        `/products?populate=*&pagination[page]=${currentPage}&pagination[pageSize]=${pageSize}`
+        API_ENDPOINTS.GET_LISTPRODUCTS(currentPage, pageSize)
       );
       console.log("Response data:", response.data);
       return successHandler(response);
@@ -16,7 +17,7 @@ const request = {
   searchFiveProduct: async (keyWord) => {
     try {
       const response = await axiosInstance.get(
-        `/products?populate=*&filters[name][$containsi]=${keyWord.toUpperCase()}&pagination[limit]=5&sort[0]=createdAt:asc`
+        API_ENDPOINTS.SEARCH_FIVEPRODUCTS(keyWord)
       );
       return successHandler(response);
     } catch (error) {
@@ -26,7 +27,7 @@ const request = {
   listProductSearch: async ({ keyWord, currentPage, pageSize }) => {
     try {
       const response = await axiosInstance.get(
-        `/products?populate=*&filters[name][$containsi]=${keyWord.toUpperCase()}&pagination[page]=${currentPage}&pagination[pageSize]=${pageSize}`
+        API_ENDPOINTS.SEARCH_LISTPRODUCTS(keyWord, currentPage, pageSize)
       );
       // console.log("Response data:", response.data);
       return successHandler(response);
@@ -36,25 +37,21 @@ const request = {
   },
 
   ListSort: async ({ sort, title, currentPage, pageSize }) => {
-    console.log("listsort ", sort);
+    // console.log("listsort ", sort);
     try {
-      let url = "/products?populate=*";
+      let url = "";
       if (sort != "true" && sort != "false") {
-        url += `&sort=${sort}`;
+        url += API_ENDPOINTS.LIST_SORT(sort, currentPage, pageSize);
       } else {
-        console.log("title  ", title);
         if (title == "Hot") {
           title = "isHot";
         } else {
           title = "is_discount_active";
         }
-        url += `&filters[${title}][$eq]=${sort}`;
+        url += API_ENDPOINTS.LIST_FILLTER(title, sort, currentPage, pageSize);
       }
-      const response = await axiosInstance.get(
-        url +
-          `&pagination[page]=${currentPage}&pagination[pageSize]=${pageSize}`
-      );
-      console.log("Response data:", response.data);
+      const response = await axiosInstance.get(url);
+      // console.log("Response data:", response.data);
       return successHandler(response);
     } catch (error) {
       return errorHandler(error);
@@ -64,20 +61,17 @@ const request = {
   ListSaleProduct: async () => {
     // console.log("listsort ", sort);
     try {
-      const response = await axiosInstance.get(
-        `/products?populate=*&is_discount_active=true`
-      );
+      const response = await axiosInstance.get(API_ENDPOINTS.LIST_SALE);
       console.log("Response data:", response.data);
       return successHandler(response);
     } catch (error) {
       return errorHandler(error);
     }
   },
-
   ProductDetail: async (productId) => {
     try {
       const response = await axiosInstance.get(
-        `/products/${productId}?populate=*`
+        API_ENDPOINTS.PRODUCT_DETAIL(productId)
       );
       return response.data;
     } catch (error) {
@@ -87,7 +81,7 @@ const request = {
   },
   UserDetail: async (userId) => {
     try {
-      const response = await axiosInstance.get(`/users/${userId}?populate=*`);
+      const response = await axiosInstance.get(API_ENDPOINTS.USER_DETAIL(userId));
       return response;
     } catch (error) {
       console.error("Error fetching user detail data:", error);
@@ -126,7 +120,8 @@ const request = {
       return response;
     } catch (error) {
       console.error("Error fetching cart data:", error);
-      throw error;    }
+      throw error;
+    }
   },
   updateRelationUser: async ({ userId, oderAddressId }) => {
     try {
@@ -142,7 +137,7 @@ const request = {
       throw error;
     }
   },
-  changePassword: async ({data})=>{
+  changePassword: async ({ data }) => {
     try {
       const reponse = await axiosInstance.post(`/auth/change-password`, data);
       return reponse;
@@ -186,7 +181,7 @@ const request = {
             : item
         );
       } else {
-        updatedProducts = [...userCart.data.cart.products, product];
+        updatedProducts = [...userCart.data.cart.products, cartItem];
       }
       //updated total value
       const updatedTotal =
@@ -210,6 +205,7 @@ const request = {
       console.log("updated total", updatedTotal);
       return response.data;
     } catch (error) {
+      console.error("Failed to add to cart:", error);
       throw error;
     }
   },
@@ -271,6 +267,7 @@ const request = {
       console.log("updated total", updatedTotal);
       return response.data;
     } catch (error) {
+      console.error("Failed to remove cart:", error);
       throw error;
     }
   },
@@ -328,6 +325,7 @@ const request = {
       console.log(updatedCartProducts);
       return response.data;
     } catch (error) {
+      console.error("Failed to add many to cart:", error);
       throw error;
     }
   },
@@ -386,6 +384,7 @@ const request = {
       console.log("updated total", updatedTotal);
       return response.data;
     } catch (error) {
+      console.error("Failed to add to cart:", error);
       throw error;
     }
   },
