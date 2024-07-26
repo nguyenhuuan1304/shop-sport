@@ -37,9 +37,7 @@ const product_schema = new mongoose.Schema({
   description: {
     type: String,
   },
-  size_list: {
-    type: [size_list],
-  },
+  size_list: [size_list],
   sale_price: {
     type: Number,
   },
@@ -57,4 +55,5 @@ const product_schema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("Product", product_schema);
+const productModel = mongoose.model("Product", product_schema);
+export default productModel;

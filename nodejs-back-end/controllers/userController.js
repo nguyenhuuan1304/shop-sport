@@ -2,7 +2,7 @@ import { userService } from "../services/index.js";
 
 async function getUserById(req, res) {
   try {
-    const user_id = req.params.id;
+    const user_id = req.user.user_id;
     const result = await userService.getUserById(user_id);
     if (result) {
       return res.status(200).json(result);
@@ -16,7 +16,7 @@ async function getUserById(req, res) {
 
 async function updateUser(req, res) {
   try {
-    const user_id = req.params.id;
+    const user_id = req.user.user_id;
     const user = req.body;
     const updated_user = await userService.updateUser(user_id, user);
     if (updated_user) {

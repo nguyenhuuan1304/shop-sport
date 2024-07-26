@@ -1,8 +1,9 @@
-import Cart from "../models/cartModel.js";
+import { cartModel } from "../models/index.js";
+import { userService } from "./index.js";
 
 async function addCart() {
   try {
-    const new_cart = new Cart();
+    const new_cart = new cartModel();
     await new_cart.save();
     return new_cart;
   } catch (error) {
@@ -11,7 +12,7 @@ async function addCart() {
 }
 async function clearCart(cart_id) {
   try {
-    const cart = await Cart.findById(user_id);
+    const cart = await cartModel.findById(cart_id);
     if (cart) {
       cart.total_of_product = 0;
       cart.total_of_price = 0;
@@ -25,11 +26,22 @@ async function clearCart(cart_id) {
 }
 async function updateCart(cart_id, cart) {
   try {
-    const updated_cart = await Cart.findByIdAndUpdate(cart_id, cart);
+    const updated_cart = await cartModel.findByIdAndUpdate(cart_id, cart);
     return updated_cart;
   } catch (error) {
     throw error;
   }
 }
+async function getCartByUserId(user_id) {
+  try {
+    const user = await userService.getUserById(user_id);
+    if (user) {
+      const cart = await cartModel.findById(user.cart);
+      return cart;
+    } else throw new Error("User not found");
+  } catch (error) {
+    throw error;
+  }
+}
 
-export { addCart, clearCart, updateCart };
+export { addCart, clearCart, updateCart, getCartByUserId };

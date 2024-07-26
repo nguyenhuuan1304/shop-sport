@@ -1,4 +1,4 @@
-import Product from "../models/productModel.js";
+import { productModel } from "../models/index.js";
 
 async function getProducts(page, page_size, order_by, is_hot, is_sale) {
   try {
@@ -9,9 +9,10 @@ async function getProducts(page, page_size, order_by, is_hot, is_sale) {
     if (is_sale !== undefined) {
       filter.is_sale = is_sale;
     }
-    const total = await Product.countDocuments(filter);
+    const total = await productModel.countDocuments(filter);
     const skip = (page - 1) * page_size;
-    const products = await Product.find(filter)
+    const products = await productModel
+      .find(filter)
       .skip(skip)
       .limit(page_size)
       .sort(order_by);
@@ -34,7 +35,7 @@ async function getProducts(page, page_size, order_by, is_hot, is_sale) {
 
 async function getProductById(product_id) {
   try {
-    const product = await Product.findById(product_id);
+    const product = await productModel.findById(product_id);
     return product;
   } catch (error) {
     throw error;
@@ -43,7 +44,7 @@ async function getProductById(product_id) {
 
 async function addProduct(product) {
   try {
-    const new_product = new Product(product);
+    const new_product = new productModel(product);
     await new_product.save();
     return new_product;
   } catch (error) {
@@ -53,7 +54,7 @@ async function addProduct(product) {
 
 async function deleteProduct(product_id) {
   try {
-    const product = await Product.findById(product_id);
+    const product = await productModel.findById(product_id);
     if (product) product.is_deleted = true;
     await product.save();
     return product;
@@ -64,7 +65,10 @@ async function deleteProduct(product_id) {
 
 async function updateProduct(product_id, product) {
   try {
-    const update_product = await Product.findByIdAndUpdate(product_id, product);
+    const update_product = await productModel.findByIdAndUpdate(
+      product_id,
+      product
+    );
     return update_product;
   } catch (error) {
     throw error;

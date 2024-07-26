@@ -3,9 +3,11 @@ import mongoose from "mongoose";
 const order_address_schema = mongoose.Schema({
   name: {
     type: String,
+    default: "",
     required: true,
   },
   address: {
+    default: "",
     type: String,
     required: true,
   },
@@ -20,4 +22,5 @@ const order_address_schema = mongoose.Schema({
     required: true,
   },
 });
-export default mongoose.model("OrderAddress", order_address_schema);
+const orderAddressModel = mongoose.model("OrderAddress", order_address_schema);
+export default orderAddressModel;

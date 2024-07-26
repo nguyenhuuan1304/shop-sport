@@ -1,7 +1,7 @@
 import mongoose, { SchemaType } from "mongoose";
 import Cart from "./cartModel.js";
 import Order from "./orderModel.js";
-import OrderAddress from "./order_addressModel.js";
+import OrderAddress from "./orderAddressModel.js";
 
 const user_schema = mongoose.Schema({
   username: {

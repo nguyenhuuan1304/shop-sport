@@ -1,9 +1,9 @@
-import User from "../models/userModel.js";
+import { userModel } from "../models/index.js";
 import { cartService } from "./index.js";
 
 async function getUsers() {
   try {
-    const users = await User.find({});
+    const users = await userModel.find({ is_deleted: false });
     return users;
   } catch (error) {
     throw error;
@@ -11,7 +11,7 @@ async function getUsers() {
 }
 async function getUserById(user_id) {
   try {
-    const user = await User.findById(user_id).populate("cart");
+    const user = await userModel.findById(user_id);
     return user;
   } catch (error) {
     throw error;
@@ -19,7 +19,7 @@ async function getUserById(user_id) {
 }
 async function addUser(user) {
   try {
-    const new_user = new User(user);
+    const new_user = new userModel(user);
     new_user.cart = await cartService.addCart();
     await new_user.save();
     return new_user;
@@ -29,7 +29,7 @@ async function addUser(user) {
 }
 async function deleteUser(user_id) {
   try {
-    const user = await User.findById(user_id);
+    const user = await userModel.findById(user_id);
     if (user) user.is_deleted = true;
     await user.save();
     return user;
@@ -39,7 +39,7 @@ async function deleteUser(user_id) {
 }
 async function updateUser(user_id, user) {
   try {
-    copyUser = { ...user };
+    const copyUser = { ...user };
     delete copyUser.password;
     delete copyUser.role;
     delete copyUser.orders;
@@ -48,7 +48,7 @@ async function updateUser(user_id, user) {
     delete copyUser.cart;
     delete copyUser.__v;
 
-    const updated_user = await User.findByIdAndUpdate(user_id, copyUser);
+    const updated_user = await userModel.findByIdAndUpdate(user_id, copyUser);
     return updated_user;
   } catch (error) {
     throw error;

@@ -18,13 +18,14 @@ function verifyToken(req, res, next) {
       message: "Unauthorized: Missing Token",
     });
   }
-  jwt.verify(token, process.env.secret_key, (err, decoded) => {
+  jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
     if (err) {
       return res.status(401).json({
         message: "Forbidden: Invalid token",
       });
     }
     req.user = decoded;
+    console.log(req.user);
     next();
   });
 }
