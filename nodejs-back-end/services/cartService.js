@@ -24,9 +24,20 @@ async function clearCart(cart_id) {
     throw error;
   }
 }
-async function updateCart(cart_id, cart) {
+async function updateCart(user_id, cart) {
   try {
-    const updated_cart = await cartModel.findByIdAndUpdate(cart_id, cart);
+    const user = await userService.getUserById(user_id);
+    if (!user) throw new Error("User not found!");
+    const cart_id = user?.cart;
+
+    const updated_cart = await cartModel.findByIdAndUpdate(cart_id, cart, {
+      new: true,
+    });
+
+    if (!updated_cart) {
+      throw new Error("Cart not found or could not be updated!");
+    }
+
     return updated_cart;
   } catch (error) {
     throw error;

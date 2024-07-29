@@ -1,5 +1,6 @@
 import { userModel } from "../models/index.js";
 import { cartService } from "./index.js";
+import bcrypt from "bcryptjs";
 
 async function getUsers() {
   try {

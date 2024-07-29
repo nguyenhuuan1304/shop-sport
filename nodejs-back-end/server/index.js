@@ -1,6 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import cors from "cors";
 import dbconnect from "../config/db.config.js";
 import routes from "../routes/index.js";
 
@@ -8,6 +9,7 @@ dotenv.config();
 
 const app = express();
 
+app.use(cors());
 app.use(morgan("combined"));
 
 app.use(

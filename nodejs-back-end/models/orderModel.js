@@ -15,5 +15,10 @@ const order_schema = mongoose.Schema({
     ref: Cart,
     required: true,
   },
+  is_deleted: {
+    type: Boolean,
+    default: false,
+    required: true,
+  },
 });
 export default mongoose.model("Order", order_schema);
