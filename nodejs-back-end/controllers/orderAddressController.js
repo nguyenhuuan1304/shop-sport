@@ -66,9 +66,31 @@ async function updateOrderAddress(req, res) {
   }
 }
 
+async function setDefaultOrderAddress(req, res) {
+  try {
+    const user_id = req.user.user_id;
+    const order_address_id = req.params.id;
+    const result = await orderAddressService.setDefaultOrderAddress(
+      user_id,
+      order_address_id
+    );
+    if (!result)
+      return res.status(404).json({ message: "not found order address id!" });
+    else
+      return res.status(200).json({
+        message: `set default is success with order address id ${result}`,
+      });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+}
+
 export {
   getOrderAddressByUserId,
   addOrderAddress,
   deleteOrderAddress,
   updateOrderAddress,
+  setDefaultOrderAddress,
 };

@@ -6,7 +6,7 @@ async function getProducts(req, res) {
   try {
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 6;
-    const orderBy = req.query.orderBy ? JSON.parse(req.query.orderBy) : {};
+    const orderBy = req.query.orderBy ? req.query.orderBy : undefined;
     const isHot = req.query.hot ? req.query.hot === "true" : undefined;
     const isSale = req.query.sale ? req.query.sale === "true" : undefined;
     const result = await productService.getProducts(

@@ -160,7 +160,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"trung@gmail.com\",\r\n    \"password\": \"123\"\r\n}",
+							"raw": "{\r\n    \"email\": \"trung@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -178,6 +178,46 @@
 								"api",
 								"auth",
 								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZhMjAyODM1MDU0MDQ5YTcyYzE1NzllIiwiaWF0IjoxNzIyMjI0MTE1LCJleHAiOjE3MjIyMjc3MTV9.K4gDdU3E2FNtzhsJr2KsYoxeAK9gCVYSSG4BSzpYbD4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPassword\": \"123\",\r\n    \"newPassword\": \"123456\",\r\n    \"confirmNewPassword\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/auth/change-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"auth",
+								"change-password"
 							]
 						}
 					},
@@ -204,7 +244,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZhMjAyODM1MDU0MDQ5YTcyYzE1NzllIiwiaWF0IjoxNzIxOTc2MDA3LCJleHAiOjE3MjE5Nzk2MDd9.BXwmjfrW7K_5vBkJiOUXlsH_drQxCKzN-4f1mZsZ8D4",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZhMjAyODM1MDU0MDQ5YTcyYzE1NzllIiwiaWF0IjoxNzIyMjM1NDk4LCJleHAiOjE3MjIyMzkwOTh9.5yoi8Zg3Pwj8dc1d-4-iQesKWNUlDHHkB_LAzpncWEQ",
 									"type": "string"
 								}
 							]
@@ -213,7 +253,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"number_phone\": \"123\"\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -280,6 +320,14 @@
 								"cart"
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "update cart",
+					"request": {
+						"method": "GET",
+						"header": []
 					},
 					"response": []
 				}
@@ -415,6 +463,32 @@
 							"path": [
 								"api",
 								"order-address"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ORDERS",
+			"item": [
+				{
+					"name": "get orders by user id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/order/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"order",
+								""
 							]
 						}
 					},

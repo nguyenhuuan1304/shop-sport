@@ -8,17 +8,20 @@ const order_schema = mongoose.Schema({
   },
   status: {
     type: Boolean,
+    default: false,
     required: true,
   },
   cart: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: Cart,
+    type: {},
     required: true,
   },
   is_deleted: {
     type: Boolean,
     default: false,
     required: true,
+  },
+  order_address: {
+    type: String,
   },
 });
 export default mongoose.model("Order", order_schema);

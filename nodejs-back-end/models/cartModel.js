@@ -1,7 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import Product from "./productModel.js";
-
-const items = Schema({
+export const items = Schema({
   size: {
     type: String,
     required: true,
@@ -17,7 +16,7 @@ const items = Schema({
   },
 });
 
-const cart_schema = Schema({
+export const cart_schema = Schema({
   total_of_product: {
     type: Number,
     default: 0,

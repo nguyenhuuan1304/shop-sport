@@ -2,6 +2,10 @@ import { productModel } from "../models/index.js";
 
 async function getProducts(page, page_size, order_by, is_hot, is_sale) {
   try {
+    //convert string to object
+    const [key, value] = order_by.split(":");
+    const objOrderBy = { [key]: parseInt(value, 10) };
+
     const filter = { is_deleted: false };
     if (is_hot !== undefined) {
       filter.is_hot = is_hot;
@@ -15,7 +19,7 @@ async function getProducts(page, page_size, order_by, is_hot, is_sale) {
       .find(filter)
       .skip(skip)
       .limit(page_size)
-      .sort(order_by);
+      .sort(objOrderBy);
     const total_page = Math.ceil(total / page_size);
     return {
       data: products,

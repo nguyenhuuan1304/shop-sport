@@ -6,6 +6,10 @@ async function addOrderAddress(user_id, order_address) {
     const user = await userService.getUserById(user_id);
     if (user) {
       const new_order_address = new orderAddressModel(order_address);
+      //set is_default = true for the first order address
+      if (user.order_addresses.length == 0) {
+        new_order_address.is_default = true;
+      }
       await new_order_address.save();
       user.order_addresses.push(new_order_address._id);
       await user.save();
@@ -66,9 +70,34 @@ async function getOrderAddressByUserId(user_id) {
   }
 }
 
+async function setDefaultOrderAddress(user_id, order_address_id) {
+  try {
+    // get order_address list by user id
+    const order_addresses = await getOrderAddressByUserId(user_id);
+    //check order_address_id
+    const order_address = await orderAddressModel.findById(order_address_id);
+    if (!order_address) throw new Error("Order Address not found!");
+    const updates = order_addresses.map(async (address) => {
+      if (address._id.toString() === order_address_id) {
+        if (address.is_default === false) {
+          address.is_default = true;
+        }
+      } else {
+        address.is_default = false;
+      }
+      return await address.save();
+    });
+    await Promise.all(updates);
+    return order_address_id;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export {
   getOrderAddressByUserId,
   addOrderAddress,
   deleteOrderAddress,
   updateOrderAddress,
+  setDefaultOrderAddress,
 };
