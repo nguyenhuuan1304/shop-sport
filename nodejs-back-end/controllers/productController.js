@@ -64,7 +64,9 @@ async function addProduct(req, res) {
         fs.unlinkSync(file.path);
       }
     }
-
+    if (req.body.size_list) {
+      req.body.size_list = JSON.parse(req.body.size_list);
+    }
     const product = { ...req.body, images: uploadedImages };
     const new_product = await productService.addProduct(product);
     console.log(new_product);
