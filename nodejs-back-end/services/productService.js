@@ -3,8 +3,11 @@ import { productModel } from "../models/index.js";
 async function getProducts(page, page_size, order_by, is_hot, is_sale) {
   try {
     //convert string to object
-    const [key, value] = order_by.split(":");
-    const objOrderBy = { [key]: parseInt(value, 10) };
+    let objOrderBy;
+    if (order_by) {
+      const [key, value] = order_by.split(":");
+      objOrderBy = { [key]: parseInt(value, 10) };
+    }
 
     const filter = { is_deleted: false };
     if (is_hot !== undefined) {
@@ -79,10 +82,22 @@ async function updateProduct(product_id, product) {
   }
 }
 
+async function searchProduct(search_query) {
+  try {
+    const products = await productModel.find({
+      name: { $regex: search_query.toString(), $options: "i" },
+    });
+    return products;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export {
   getProducts,
   getProductById,
   addProduct,
   deleteProduct,
   updateProduct,
+  searchProduct,
 };

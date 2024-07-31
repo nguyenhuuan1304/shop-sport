@@ -1,13 +1,18 @@
 import express from "express";
 import { productController } from "../controllers/index.js";
 import upload from "../middlewares/upload.js";
-
+import { PRODUCT_ROUTES } from "../constants/api_routes.js";
 const router = express.Router();
 
-router.get("/", productController.getProducts);
-router.get("/:id", productController.getProductById);
-router.put("/:id", productController.updateProduct);
-router.delete("/:id", productController.deleteProduct);
-router.post("/", upload.array("images"), productController.addProduct);
+router.get(PRODUCT_ROUTES.GET, productController.getProducts);
+router.get(PRODUCT_ROUTES.GET_BY_ID, productController.getProductById);
+router.get("/search", productController.searchProduct);
+router.put(PRODUCT_ROUTES.UPDATE, productController.updateProduct);
+router.delete(PRODUCT_ROUTES.DELETE, productController.deleteProduct);
+router.post(
+  PRODUCT_ROUTES.ADD,
+  upload.array("images"),
+  productController.addProduct
+);
 
 export default router;

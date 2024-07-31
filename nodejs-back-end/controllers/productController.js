@@ -5,7 +5,7 @@ import fs from "fs";
 async function getProducts(req, res) {
   try {
     const page = parseInt(req.query.page) || 1;
-    const pageSize = parseInt(req.query.pageSize) || 6;
+    const pageSize = parseInt(req.query.pageSize) || 3;
     const orderBy = req.query.orderBy ? req.query.orderBy : undefined;
     const isHot = req.query.hot ? req.query.hot === "true" : undefined;
     const isSale = req.query.sale ? req.query.sale === "true" : undefined;
@@ -66,7 +66,8 @@ async function addProduct(req, res) {
     }
 
     const product = { ...req.body, images: uploadedImages };
-    const new_product = await addProduct(product);
+    const new_product = await productService.addProduct(product);
+    console.log(new_product);
     res.status(200).json(new_product);
   } catch (error) {
     res.status(500).json({
@@ -94,10 +95,24 @@ async function updateProduct(req, res) {
     });
   }
 }
+
+async function searchProduct(req, res) {
+  try {
+    const search_query = req.query.q || "";
+    console.log(search_query);
+    const result = await productService.searchProduct(search_query);
+    return res.status(200).json({ data: result });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+}
 export {
   getProducts,
   getProductById,
   addProduct,
   deleteProduct,
   updateProduct,
+  searchProduct,
 };

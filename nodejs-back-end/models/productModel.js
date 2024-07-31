@@ -12,8 +12,9 @@ const size_list = new mongoose.Schema({
 });
 
 const product_schema = new mongoose.Schema({
-  state: {
+  status: {
     type: Boolean,
+    default: true,
     required: true,
   },
   name: {
@@ -54,6 +55,9 @@ const product_schema = new mongoose.Schema({
     required: true,
   },
 });
+
+// Create text index for text search
+product_schema.index({ name: "text", description: "text", category: "text" });
 
 const productModel = mongoose.model("Product", product_schema);
 export default productModel;

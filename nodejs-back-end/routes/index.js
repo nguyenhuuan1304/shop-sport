@@ -6,7 +6,6 @@ import orderAddressRoutes from "../routes/orderAddressRoutes.js";
 import orderRoutes from "../routes/orderRoutes.js";
 import cartRoutes from "../routes/cartRoutes.js";
 import { verifyToken } from "../middlewares/jwt.js";
-// import orderRoutes from "../routes/orderRoutes.js";
 
 const router = express.Router();
 
