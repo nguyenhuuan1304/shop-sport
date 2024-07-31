@@ -1,12 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
-import { loginService } from "../../services/authService";
 import { request } from "../request";
 export const login = createAsyncThunk(
   "auth/login",
   async (payload, { rejectWithValue }) => {
     try {
-      const response = await loginService(payload);
+      const response = await request.loginService(payload);
       const { jwt, user } = response.data;
       localStorage.setItem("jwt", jwt);
       return user;
@@ -93,10 +92,13 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.success = true;
       state.currentUser = action.payload;
+      state.errorMessages = null;
     });
     builder.addCase(changePassword.rejected, (state, action) => {
       state.isLoading = false;
-      state.errorMessages = action.payload;
+      state.errorMessages = action.error.message;
+      console.log("paylod", action)
+      state.success = false;
     });
     builder.addCase(fetchUserDetail.pending, (state) => {
       state.isLoading = true;

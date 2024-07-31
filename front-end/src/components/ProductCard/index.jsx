@@ -30,7 +30,7 @@ const ProductCard = React.memo(function ProductCard({ product, displayQuantity }
     ? import.meta.env.VITE_IMG_URL +
       product?.attributes?.image?.data?.[0]?.attributes?.url
     : placeholder;
-  console.log(product);
+  // console.log(product);
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0 }}
@@ -44,8 +44,8 @@ const ProductCard = React.memo(function ProductCard({ product, displayQuantity }
       <div className="flex flex-col gap-3 flex-basis-2/3 flex-grow-2">
         <div className="relative block w-full">
           <img
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
+            // onMouseEnter={() => setIsHovered(true)}
+            // onMouseLeave={() => setIsHovered(false)}
             id="img-product"
             src={imageUrl}
             className={`w-64 h-60 duration-500 rounded-s-3xl shadow-neutral-500 shadow-md transition-transform

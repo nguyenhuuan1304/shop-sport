@@ -1,12 +1,12 @@
 import {
-    Button,
-    Carousel,
-    Image,
-    Input,
-    InputNumber,
-    message,
-    Rate,
-    Table,
+  Button,
+  Carousel,
+  Image,
+  Input,
+  InputNumber,
+  message,
+  Rate,
+  Table,
 } from "antd";
 import { motion } from "framer-motion";
 import { default as React, useEffect, useState } from "react";
@@ -17,8 +17,8 @@ import CartDrawer from "../components/CartDrawer";
 import ProductCard from "../components/ProductCard";
 import { addManyToCart } from "../redux/slices/cartSlice";
 import {
-    fetchProductDetail,
-    fetchProductList
+  fetchProductDetail,
+  fetchProductList
 } from "../redux/slices/productSlice";
 const { Search } = Input;
 
@@ -131,7 +131,7 @@ export default function ProductDetailPage() {
   useEffect(() => {
     dispatch(fetchProductDetail(productId));
     dispatch(fetchProductList({ sortParam: "true", titleParam: "NoHot", searchParam: "", currentPage: 0, pageSize: 0}));
-    console.log(saleProducts);
+    // console.log(saleProducts);
   }, [dispatch, productId]);
 
   // +/ sản phẩm để thêm vào giỏ hàng

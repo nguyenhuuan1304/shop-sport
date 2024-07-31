@@ -17,10 +17,10 @@ import SearchPage from "./pages/SearchPage";
 import UserProfilePage from "./pages/UserProfilePage";
 
 import { useDispatch, useSelector } from "react-redux";
-import ScrollToTop from "./components/ScrollToTop";
 import CategoryPage from "./pages/CategoryPage";
 import { fetchUserDetail } from "./redux/slices/authSlice";
 import { fetchCartData } from "./redux/slices/cartSlice";
+import RequireAuth from "./utils/requireAuth";
 function App() {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.currentUser);
@@ -34,15 +34,18 @@ function App() {
   return (
     // <Provider store={store}>
     <BrowserRouter>
-      <ScrollToTop>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<HomePage />} />
-            <Route path="products" element={<ProductListPage />} />
-            <Route path="product/:productId" element={<ProductDetailPage />} />
-            <Route path="categories" element={<CategoryPage />} />
-            <Route path="search" element={<SearchPage />} />
-            <Route path="contact" element={<ContactPage />} />
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route path="products" element={<ProductListPage />} />
+          <Route
+            path="product/:productId"
+            element={<ProductDetailPage />}
+          />{" "}
+          <Route path="categories" element={<CategoryPage />} />
+          <Route path="search" element={<SearchPage />} />
+          <Route path="contact" element={<ContactPage />} />
+          <Route element={<RequireAuth />}>
             <Route path="profile" element={<UserProfilePage />}>
               <Route
                 path="account-info"
@@ -53,13 +56,13 @@ function App() {
               <Route path="orders" element={<OdersForm />} />
             </Route>
           </Route>
-          <Route path="login" element={<LoginPage />}></Route>
-          <Route path="cart" element={<CartLayout />}>
-            <Route index element={<CartPage />} />
-          </Route>
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </ScrollToTop>
+        </Route>
+        <Route path="login" element={<LoginPage />}></Route>
+        <Route path="cart" element={<CartLayout />}>
+          <Route index element={<CartPage />} />
+        </Route>
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
     </BrowserRouter>
     // </Provider>
   );

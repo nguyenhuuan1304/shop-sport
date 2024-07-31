@@ -93,7 +93,8 @@ export default function Header() {
     (state) => state.cart.number_of_product
   );
   const products = useSelector((state) => state.cart.products);
-  console.log(location.pathname);
+  // console.log(location.pathname);
+
   //fetch cart data để tính số lượng sản phẩm trong giỏ hàng
   useEffect(() => {
     dispatch(fetchCartData(currentUser?.id));
