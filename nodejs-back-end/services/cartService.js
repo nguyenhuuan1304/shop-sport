@@ -30,9 +30,11 @@ async function updateCart(user_id, cart) {
     if (!user) throw new Error("User not found!");
     const cart_id = user?.cart;
 
-    const updated_cart = await cartModel.findByIdAndUpdate(cart_id, cart, {
-      new: true,
-    });
+    const updated_cart = await cartModel
+      .findByIdAndUpdate(cart_id, cart, {
+        new: true,
+      })
+      .populate({ path: "items.product", model: "Product" });
 
     if (!updated_cart) {
       throw new Error("Cart not found or could not be updated!");
