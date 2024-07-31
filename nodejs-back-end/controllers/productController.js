@@ -104,9 +104,17 @@ async function updateProduct(req, res) {
 
 async function searchProduct(req, res) {
   try {
-    const search_query = req.query.q || "";
-    console.log(search_query);
-    const result = await productService.searchProduct(search_query);
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 3;
+    const search_query = req.query.q;
+    if (!search_query) {
+      return res.status(400).json({ message: "Missing search query" });
+    }
+    const result = await productService.searchProduct(
+      search_query,
+      page,
+      pageSize
+    );
     return res.status(200).json({ data: result });
   } catch (error) {
     res.status(500).json({

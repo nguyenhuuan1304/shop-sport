@@ -5,8 +5,8 @@ import { PRODUCT_ROUTES } from "../constants/api_routes.js";
 const router = express.Router();
 
 router.get(PRODUCT_ROUTES.GET, productController.getProducts);
-router.get(PRODUCT_ROUTES.GET_BY_ID, productController.getProductById);
 router.get(PRODUCT_ROUTES.SEARCH, productController.searchProduct);
+router.get(PRODUCT_ROUTES.GET_BY_ID, productController.getProductById);
 router.put(PRODUCT_ROUTES.UPDATE, productController.updateProduct);
 router.delete(PRODUCT_ROUTES.DELETE, productController.deleteProduct);
 router.post(

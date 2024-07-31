@@ -83,12 +83,31 @@ async function updateProduct(product_id, product) {
   }
 }
 
-async function searchProduct(search_query) {
+async function searchProduct(search_query, page, pageSize) {
   try {
-    const products = await productModel.find({
-      name: { $regex: search_query.toString(), $options: "i" },
+    const totalDocuments = await productModel.countDocuments({
+      $text: { $search: search_query },
     });
-    return products;
+    const skip = (page - 1) * pageSize;
+    const products = await productModel
+      .find({
+        $text: { $search: search_query },
+      })
+      .skip(skip)
+      .limit(pageSize);
+    const totalPage = Math.ceil(totalDocuments / pageSize);
+
+    return {
+      data: products,
+      meta: {
+        pagination: {
+          page: page,
+          pageSize: pageSize,
+          total: totalDocuments,
+          totalPage: totalPage,
+        },
+      },
+    };
   } catch (error) {
     throw error;
   }
