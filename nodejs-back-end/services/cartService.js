@@ -47,7 +47,10 @@ async function getCartByUserId(user_id) {
   try {
     const user = await userService.getUserById(user_id);
     if (user) {
-      const cart = await cartModel.findById(user.cart);
+      const cart = await cartModel
+        .findById(user.cart)
+        .populate({ path: "items.product", model: "Product" });
+
       return cart;
     } else throw new Error("User not found");
   } catch (error) {
