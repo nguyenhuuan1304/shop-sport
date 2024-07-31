@@ -72,6 +72,7 @@ async function deleteProduct(product_id) {
 
 async function updateProduct(product_id, product) {
   try {
+    product.updated_at = Date.now();
     const update_product = await productModel.findByIdAndUpdate(
       product_id,
       product

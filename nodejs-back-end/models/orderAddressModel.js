@@ -21,6 +21,16 @@ const order_address_schema = mongoose.Schema({
     default: false,
     required: true,
   },
+  created_at: {
+    type: Date,
+    default: Date.now,
+    required: true,
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now,
+    required: true,
+  },
 });
 const orderAddressModel = mongoose.model("OrderAddress", order_address_schema);
 export default orderAddressModel;

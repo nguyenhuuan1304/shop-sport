@@ -80,9 +80,13 @@ async function updateProduct(req, res) {
   try {
     const product_id = req.params.id;
     const product = req.body;
+    console.log(product);
     if (!req.files) {
-      const updated_product = await updateProduct(product_id, product);
-      if (updateProduct) {
+      const updated_product = await productService.updateProduct(
+        product_id,
+        product
+      );
+      if (updated_product) {
         return res
           .status(200)
           .json({ message: "updated product successfully!" });

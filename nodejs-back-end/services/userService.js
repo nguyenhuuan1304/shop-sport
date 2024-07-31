@@ -40,6 +40,7 @@ async function deleteUser(user_id) {
 }
 async function updateUser(user_id, user) {
   try {
+    user.updated_at = Date.now();
     const copyUser = { ...user };
     delete copyUser.password;
     delete copyUser.role;

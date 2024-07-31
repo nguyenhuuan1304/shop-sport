@@ -14,6 +14,11 @@ export const items = Schema({
     type: Number,
     required: true,
   },
+  created_at: {
+    type: Date,
+    default: Date.now,
+    required: true,
+  },
 });
 
 export const cart_schema = Schema({

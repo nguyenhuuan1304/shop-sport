@@ -54,6 +54,11 @@ const product_schema = new mongoose.Schema({
     default: Date.now,
     required: true,
   },
+  created_at: {
+    type: Date,
+    default: Date.now,
+    required: true,
+  },
 });
 
 // Create text index for text search

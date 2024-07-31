@@ -23,5 +23,10 @@ const order_schema = mongoose.Schema({
   order_address: {
     type: String,
   },
+  created_at: {
+    type: Date,
+    default: Date.now,
+    required: true,
+  },
 });
 export default mongoose.model("Order", order_schema);
