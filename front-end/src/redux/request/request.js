@@ -6,10 +6,10 @@ const request = {
   List: async (currentPage, pageSize) => {
     try {
       const response = await axiosInstance.get(
-        API_ENDPOINTS.GET_LISTPRODUCTS(currentPage, pageSize)
+        API_ENDPOINTS.GET_LIST_PRODUCTS(currentPage, pageSize)
       );
-      console.log("Response data:", response.data);
-      return successHandler(response);
+      // console.log("Response data:", response);
+      return response.data;
     } catch (error) {
       return errorHandler(error);
     }
@@ -17,7 +17,7 @@ const request = {
   searchFiveProduct: async (keyWord) => {
     try {
       const response = await axiosInstance.get(
-        API_ENDPOINTS.SEARCH_FIVEPRODUCTS(keyWord)
+        API_ENDPOINTS.SEARCH_FIVE_PRODUCTS(keyWord)
       );
       return successHandler(response);
     } catch (error) {
@@ -27,17 +27,17 @@ const request = {
   listProductSearch: async ({ keyWord, currentPage, pageSize }) => {
     try {
       const response = await axiosInstance.get(
-        API_ENDPOINTS.SEARCH_LISTPRODUCTS(keyWord, currentPage, pageSize)
+        API_ENDPOINTS.SEARCH_LIST_PRODUCTS(keyWord, currentPage, pageSize)
       );
       // console.log("Response data:", response.data);
-      return successHandler(response);
+      return response;
     } catch (error) {
       return errorHandler(error);
     }
   },
 
   ListSort: async ({ sort, title, currentPage, pageSize }) => {
-    // console.log("listsort ", sort);
+    console.log("listsort ", sort);
     try {
       let url = "";
       if (sort != "true" && sort != "false") {
@@ -52,7 +52,7 @@ const request = {
       }
       const response = await axiosInstance.get(url);
       // console.log("Response data:", response.data);
-      return successHandler(response);
+      return response.data;
     } catch (error) {
       return errorHandler(error);
     }
@@ -81,10 +81,22 @@ const request = {
   },
   UserDetail: async (userId) => {
     try {
-      const response = await axiosInstance.get(API_ENDPOINTS.USER_DETAIL(userId));
+      const response = await axiosInstance.get(
+        API_ENDPOINTS.USER_DETAIL(userId)
+      );
       return response;
     } catch (error) {
       console.error("Error fetching user detail data:", error);
+      throw error;
+    }
+  },
+  loginService: async (payload) => {
+    try {
+      const reponse = await axiosInstance.post(API_ENDPOINTS.LOGIN, payload);
+      console.log("login: ", reponse);
+      return reponse;
+    } catch (error) {
+      console.error("Error fetching login:", error);
       throw error;
     }
   },
@@ -93,9 +105,9 @@ const request = {
       const newOrderAddressData = {
         data,
       };
-      console.log("request", newOrderAddressData);
+      // console.log("request", newOrderAddressData);
       const response = await axiosInstance.post(
-        `/order-addresses`,
+        API_ENDPOINTS.CREATE_ORDER_ADDRESS,
         newOrderAddressData
       );
       return response.data;
@@ -106,7 +118,7 @@ const request = {
   Cart: async (userId) => {
     try {
       const response = await axiosInstance.get(
-        `/users/${userId}?fields[0]=cart`
+        API_ENDPOINTS.GET_CART_BY_ID_USER(userId)
       );
       return response;
     } catch (error) {
@@ -116,7 +128,10 @@ const request = {
   },
   updateUser: async ({ data }) => {
     try {
-      const response = await axiosInstance.put(`/users/${data.id}`, data);
+      const response = await axiosInstance.put(
+        API_ENDPOINTS.UPDATE_USER(data.id),
+        data
+      );
       return response;
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -130,7 +145,10 @@ const request = {
           connect: [oderAddressId],
         },
       };
-      const response = await axiosInstance.put(`/users/${userId}`, data);
+      const response = await axiosInstance.put(
+        API_ENDPOINTS.UPDATE_USER(userId),
+        data
+      );
       return response;
     } catch (error) {
       console.error("Error fetching user detail data:", error);
@@ -139,7 +157,10 @@ const request = {
   },
   changePassword: async ({ data }) => {
     try {
-      const reponse = await axiosInstance.post(`/auth/change-password`, data);
+      const reponse = await axiosInstance.post(
+        API_ENDPOINTS.CHANGE_PASSWORD,
+        data
+      );
       return reponse;
     } catch (error) {
       console.error("error change password");
@@ -149,13 +170,12 @@ const request = {
   //add a product to cart
   AddToCart: async (userId, cartItem) => {
     try {
-      console.log("request add to cart", cartItem);
+      // console.log("request add to cart", cartItem);
       //get current user cart
       const userCart = await axiosInstance.get(
-        `/users/${userId}?fields[0]=cart`
+        API_ENDPOINTS.ADD_TO_CART(userId)
       );
-
-      console.log("request get user cart", userCart.data);
+      // console.log("request get user cart", userCart.data);
       //check product is in cart (size === size and id === id)
       let existingProduct = userCart?.data?.cart?.products.find((item) => {
         return (
@@ -167,7 +187,7 @@ const request = {
         );
       });
       let updatedProducts;
-      console.log("existing product", existingProduct);
+      // console.log("existing product", existingProduct);
       //if exist
       if (existingProduct) {
         existingProduct = {
@@ -192,7 +212,7 @@ const request = {
       }, 0);
       //updated cart
       const response = await axiosInstance.put(
-        `/users/${userId}?fields[0]=cart`,
+        API_ENDPOINTS.UPDATE_CART(userId),
         {
           cart: {
             products: updatedProducts,
@@ -201,8 +221,8 @@ const request = {
           },
         }
       );
-      console.log("updated products", updatedProducts);
-      console.log("updated total", updatedTotal);
+      // console.log("updated products", updatedProducts);
+      // console.log("updated total", updatedTotal);
       return response.data;
     } catch (error) {
       console.error("Failed to add to cart:", error);
@@ -215,7 +235,7 @@ const request = {
       console.log("request remove from cart", cartItem);
       //get current user cart
       const userCart = await axiosInstance.get(
-        `/users/${userId}?fields[0]=cart`
+        API_ENDPOINTS.REMOVE_FROM_CART(userId)
       );
       console.log("request get user cart", userCart.data);
       //check product is in cart (size === size and id === id)
@@ -229,7 +249,7 @@ const request = {
         );
       });
       let updatedProducts;
-      console.log("existing product", existingProduct);
+      // console.log("existing product", existingProduct);
       //if exist
       if (existingProduct) {
         existingProduct = {
@@ -243,7 +263,7 @@ const request = {
             : item
         );
       } else {
-        updatedProducts = [...userCart.data.cart.products, product];
+        updatedProducts = [...userCart.data.cart.products, cartItem];
       }
       //updated total value
       const updatedTotal =
@@ -254,7 +274,7 @@ const request = {
       }, 0);
       //updated cart
       const response = await axiosInstance.put(
-        `/users/${userId}?fields[0]=cart`,
+        API_ENDPOINTS.UPDATE_CART(userId),
         {
           cart: {
             products: updatedProducts,
@@ -263,8 +283,8 @@ const request = {
           },
         }
       );
-      console.log("updated products", updatedProducts);
-      console.log("updated total", updatedTotal);
+      // console.log("updated products", updatedProducts);
+      // console.log("updated total", updatedTotal);
       return response.data;
     } catch (error) {
       console.error("Failed to remove cart:", error);
@@ -281,9 +301,9 @@ const request = {
       }, 0);
       // Get current user cart
       const userCartResponse = await axiosInstance.get(
-        `/users/${userId}?fields[0]=cart`
+        API_ENDPOINTS.GET_CART_BY_ID_USER(userId)
       );
-      console.log("user cart response", userCartResponse.data);
+      // console.log("user cart response", userCartResponse.data);
       let userCart = userCartResponse?.data?.cart || { products: [], total: 0 };
 
       // Create a copy of the current cart products
@@ -312,7 +332,7 @@ const request = {
       );
       // Update cart on the strapi
       const response = await axiosInstance.put(
-        `/users/${userId}?fields[0]=cart`,
+        API_ENDPOINTS.UPDATE_CART(userId),
         {
           cart: {
             products: updatedCartProducts,
@@ -332,10 +352,10 @@ const request = {
   // Delete cart item in cart
   DeleteFromCart: async (userId, cartItem) => {
     try {
-      console.log("request delete from cart", cartItem);
+      // console.log("request delete from cart", cartItem);
       //get current user cart
       const userCart = await axiosInstance.get(
-        `/users/${userId}?fields[0]=cart`
+        API_ENDPOINTS.GET_CART_BY_ID_USER(userId)
       );
       console.log("request get user cart", userCart.data);
       //check the product
@@ -349,7 +369,7 @@ const request = {
         );
       });
       let updatedProducts;
-      console.log("existing product", existingProduct);
+      // console.log("existing product", existingProduct);
       //if exist
       if (existingProduct) {
         //delete product from cart
@@ -371,7 +391,7 @@ const request = {
       }, 0);
       //updated cart
       const response = await axiosInstance.put(
-        `/users/${userId}?fields[0]=cart`,
+        API_ENDPOINTS.UPDATE_CART(userId),
         {
           cart: {
             products: updatedProducts,
@@ -380,8 +400,8 @@ const request = {
           },
         }
       );
-      console.log("updated products", updatedProducts);
-      console.log("updated total", updatedTotal);
+      // console.log("updated products", updatedProducts);
+      // console.log("updated total", updatedTotal);
       return response.data;
     } catch (error) {
       console.error("Failed to add to cart:", error);

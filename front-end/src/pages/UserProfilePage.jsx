@@ -1,9 +1,9 @@
 import {
-    faArrowRightFromBracket,
-    faCartShopping,
-    faLockOpen,
-    faNewspaper,
-    faUser,
+  faArrowRightFromBracket,
+  faCartShopping,
+  faLockOpen,
+  faNewspaper,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Divider } from "antd";

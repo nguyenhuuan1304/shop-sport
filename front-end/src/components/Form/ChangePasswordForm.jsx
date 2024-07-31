@@ -10,6 +10,8 @@ export default function ChangPasswordForm() {
   );
   const isSuccessChangePassword = useSelector((state) => state.auth?.success);
 
+  // console.log("test ",isErrorChangePassword ,isLoadingChangePassword, isSuccessChangePassword)
+
   const [formData, setFormData] = useState({
     currentPassword: "",
     password: "",
