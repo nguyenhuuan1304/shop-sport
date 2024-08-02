@@ -49,6 +49,7 @@ function ProductList({ sortParam, titleParam, searchParam }) {
         getProductList(nextPage);
         return nextPage;
       });
+      console.log("crrent page ", currentPage)
     } else {
       setHasMore(false);
     }

@@ -41,7 +41,7 @@ export const fetchProductListWithSortOrTitle = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log("current page ", currentPage)
+      console.log("current page ", currentPage);
       return await request.ListSort({
         sort: sortParam,
         title: titleParam,
@@ -86,7 +86,7 @@ export const fetchProductDetail = createAsyncThunk(
   async (productId, { rejectWithValue }) => {
     try {
       const response = await request.ProductDetail(productId);
-      return response.data;
+      return response;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -139,7 +139,7 @@ const productSlice = createSlice({
       state.expensiveProductList = [];
       state.productListWithSortOrTitleByPage = [];
       state.combinedProductList = [];
-      state.totalProductItems = 0; 
+      state.totalProductItems = 0;
       console.log("active ", state.activeFilter, state.combinedProductList);
     },
   },
@@ -195,10 +195,10 @@ const productSlice = createSlice({
             state.combinedProductList = [...state.expensiveProductList];
             break;
         }
-        console.log("state.combinedProductList , ", state.combinedProductList);
-        state.totalProductItems = action.payload.meta?.pagination?.total;
-        state.pageSize = action.payload.meta.pagination.pageSize;
-        console.log("payload ",state.totalProductItems)
+        // console.log("state.combinedProductList , ", state.combinedProductList);
+        state.totalProductItems = action.payload?.meta?.pagination?.total;
+        state.pageSize = action.payload.meta?.pagination?.pageSize;
+        console.log("payload ", action.payload);
       })
       .addCase(fetchProductListWithSortOrTitle.rejected, (state, action) => {
         state.loading = false;
@@ -237,9 +237,9 @@ const productSlice = createSlice({
           ...state.productListByPage,
           ...action.payload.data,
         ];
-        console.log("state.productListByPage , ", state.productListByPage);
+        // console.log("state.productListByPage , ", state.productListByPage);
         state.combinedProductList = [...state.productListByPage];
-        console.log("state.combinedProductList , ", state.combinedProductList);
+        // console.log("state.combinedProductList , ", state.combinedProductList);
         state.totalProductItems = action.payload.meta?.pagination?.total;
         state.pageSize = action.payload.meta.pagination.pageSize;
         // console.log(action.payload)
@@ -260,19 +260,6 @@ const productSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       });
-
-    // .addCase(fetchSaleProductList.pending, (state) => {
-    //   state.loading = true;
-    //   state.error = null;
-    // })
-    // .addCase(fetchSaleProductList.fulfilled, (state, action) => {
-    //   state.loading = false;
-    //   state.saleProductList = action.payload;
-    // })
-    // .addCase(fetchSaleProductList.rejected, (state, action) => {
-    //   state.loading = false;
-    //   state.error = action.payload;
-    // });
   },
 });
 

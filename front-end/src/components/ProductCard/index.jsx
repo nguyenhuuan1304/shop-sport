@@ -8,7 +8,19 @@ import placeholder from "../../assets/playholder.png";
 import useSessionStorage from "../../custom hooks/useSessionStorage";
 
 //thuộc tính displayQuantity = true : hiển thị số lượng tồn kho của sản phẩm
-const ProductCard = React.memo(function ProductCard({ product, displayQuantity }) {
+const ProductCard = React.memo(function ProductCard({
+  product,
+  displayQuantity,
+}) {
+  const sizes = {
+    XS: 0,
+    S: 0,
+    M: 0,
+    L: 0,
+    XL: 0,
+    XXL: 0,
+    XXXL: 0,
+  };
   const [viewedProduct, setViewedProduct] = useSessionStorage(
     "viewedProducts",
     []
@@ -16,20 +28,16 @@ const ProductCard = React.memo(function ProductCard({ product, displayQuantity }
   const addViewedProduct = () => {
     setViewedProduct(product);
     console.log(viewedProduct);
-
-    navigate(`/product/${product?.id}`);
+    navigate(`/product/${product?._id}`);
   };
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
   const [isDisCountActive, setIsDisCountActive] = useState(false);
-  let isSale = product?.attributes?.is_discount_active;
+  let isSale = product?.is_sale;
   let islogIN = useSelector((state) => state.auth.isAuthenticated);
 
   // console.log(product);
-  const imageUrl = product?.attributes?.image?.data?.[0]?.attributes?.url
-    ? import.meta.env.VITE_IMG_URL +
-      product?.attributes?.image?.data?.[0]?.attributes?.url
-    : placeholder;
+  const imageUrl = product?.images[0] ? product?.images[0] : placeholder;
   // console.log(product);
   return (
     <motion.div
@@ -51,10 +59,7 @@ const ProductCard = React.memo(function ProductCard({ product, displayQuantity }
             className={`w-64 h-60 duration-500 rounded-s-3xl shadow-neutral-500 shadow-md transition-transform
             
             `}
-            alt={
-              product?.attributes?.image?.data?.[0]?.attributes?.name ||
-              "default alt text"
-            }
+            alt={product?.images[0] || "default alt text"}
           />
 
           {isSale && (
@@ -75,10 +80,10 @@ const ProductCard = React.memo(function ProductCard({ product, displayQuantity }
         <div className="border-b"></div>
         <div className="flex flex-col">
           <span className="text-left text-orange-800 font-semibold">
-            {product?.attributes?.brand.toUpperCase()}
+            {product?.brand?.toUpperCase()}
           </span>
           <div className="text-base text-left truncate w-52 font-bold">
-            {product?.attributes?.name}
+            {product?.name}
           </div>
 
           <div>
@@ -87,18 +92,18 @@ const ProductCard = React.memo(function ProductCard({ product, displayQuantity }
                 <div className="text-left text-red-500 text-sm font-semibold">
                   <span className="text-red-500 line-through">Giá gốc:</span>{" "}
                   <span className="line-through text-red-400">
-                    {product?.attributes?.price.toLocaleString()}₫
+                    {product?.price?.toLocaleString()}₫
                   </span>
-                  {product?.attributes?.is_discount_active && (
+                  {product?.is_sale && (
                     <span className="text-left text-green-500 text-sm font-semibold block">
-                      {product?.attributes?.discounted_price.toLocaleString()}₫
+                      {product?.sale_price?.toLocaleString()}₫
                     </span>
                   )}
                 </div>
               ) : (
                 <div className="text-left">
                   <span className="text-left text-green-500">
-                    Giá gốc: {product?.attributes?.price.toLocaleString()}₫
+                    Giá gốc: {product?.price?.toLocaleString()}₫
                   </span>
                 </div>
               )
@@ -129,12 +134,12 @@ const ProductCard = React.memo(function ProductCard({ product, displayQuantity }
           </div>
           <div className="rounded-md text-center gap-5 flex flex-col justify-between items-center h-full">
             <ul>
-              {product?.attributes?.size_list ? (
+              {product?.size_list && product?.size_list.length > 0 ? (
                 <div className="flex flex-col gap-8">
                   <div className="flex flex-col gap-2 h-40 overflow-y-auto">
-                    {product?.attributes?.size_list?.map((item, index) => (
+                    {product?.size_list?.map((item, index) => (
                       <li key={index} className="flex flex-row gap-5 text-left">
-                        <span className="flex-grow">{item.size}</span>
+                        <span className="flex-grow">{item.size_name}</span>
                         {islogIN ? (
                           item.quantity === 0 ? (
                             <span className="text-right text-red-600 px-2 opacity-40">
@@ -154,7 +159,26 @@ const ProductCard = React.memo(function ProductCard({ product, displayQuantity }
                   {/* <Button size="small">Thêm giỏ hàng</Button> */}
                 </div>
               ) : (
-                <span className="text-red-500 text-xs">Không có size nào</span>
+                <div className="flex flex-col gap-2 h-40 overflow-y-auto">
+                  {Object.entries(sizes).map(([size, quantity]) => (
+                    <li key={size} className="flex flex-row gap-5 text-left">
+                      <span className="flex-grow">{size}</span>
+                      {islogIN ? (
+                        quantity === 0 ? (
+                          <span className="text-right text-red-600 px-2 ">
+                            {quantity}
+                          </span>
+                        ) : (
+                          <span className="text-right text-green-600 px-2">
+                            {quantity}
+                          </span>
+                        )
+                      ) : (
+                        <FaRegEyeSlash />
+                      )}
+                    </li>
+                  ))}
+                </div>
               )}
             </ul>
             {islogIN ? (

@@ -84,10 +84,10 @@ const cartSlice = createSlice({
       })
       .addCase(fetchCartData.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload.cart?.products;
-        state.total = action.payload.cart?.total;
-        state.number_of_product = action.payload.cart?.number_of_product;
-        state.userId = action.payload.id;
+        state.total = action.payload?.total_of_price;
+        state.products = action.payload?.items;
+        state.number_of_product = action.payload?.total_of_product;
+        // console.log(action.payload);
       })
       .addCase(fetchCartData.rejected, (state, action) => {
         state.loading = false;
@@ -99,9 +99,10 @@ const cartSlice = createSlice({
       })
       .addCase(addToCart.fulfilled, (state, action) => {
         state.loading = false;
-        state.total = action.payload?.cart?.total;
-        state.products = action.payload?.cart?.products;
-        state.number_of_product = action.payload.cart?.number_of_product;
+        state.total = action.payload?.cart?.total_of_price;
+        state.products = action.payload?.cart?.items;
+        state.number_of_product = action.payload?.cart?.total_of_product;
+        // console.log(action.payload);
       })
       .addCase(addToCart.rejected, (state, action) => {
         state.loading = false;
@@ -113,8 +114,11 @@ const cartSlice = createSlice({
       })
       .addCase(removeFromCart.fulfilled, (state, action) => {
         state.loading = false;
-        state.total = action.payload?.cart?.total;
-        state.number_of_product = action.payload.cart?.number_of_product;
+
+
+        state.total = action.payload?.cart?.total_of_price;
+        state.products = action.payload?.cart?.items;
+        state.number_of_product = action.payload?.cart?.total_of_product;
       })
       .addCase(removeFromCart.rejected, (state, action) => {
         state.loading = false;
@@ -126,9 +130,9 @@ const cartSlice = createSlice({
       })
       .addCase(addManyToCart.fulfilled, (state, action) => {
         state.loading = false;
-        state.total = action.payload?.cart?.total;
-        state.products = action.payload?.cart?.products;
-        state.number_of_product = action.payload.cart?.number_of_product;
+        state.total = action.payload?.cart?.total_of_price;
+        state.products = action.payload?.cart?.items;
+        state.number_of_product = action.payload?.cart?.total_of_product;
       })
       .addCase(addManyToCart.rejected, (state, action) => {
         state.loading = false;
@@ -140,9 +144,9 @@ const cartSlice = createSlice({
       })
       .addCase(deleteFromCart.fulfilled, (state, action) => {
         state.loading = false;
-        state.total = action.payload?.cart?.total;
-        state.products = action.payload?.cart?.products;
-        state.number_of_product = action.payload.cart?.number_of_product;
+        state.total = action.payload?.cart?.total_of_price;
+        state.products = action.payload?.cart?.items;
+        state.number_of_product = action.payload?.cart?.total_of_product;
       })
       .addCase(deleteFromCart.rejected, (state, action) => {
         state.loading = false;

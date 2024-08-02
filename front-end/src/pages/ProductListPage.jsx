@@ -11,11 +11,11 @@ const className =
 const FilterOption = [
   {
     title: "Mới nhất",
-    sort: "createdAt:DESC",
+    sort: "created_at:-1",
   },
   {
     title: "New",
-    sort: "createdAt:ASC",
+    sort: "created_at:1",
   },
   {
     title: "Sale",
@@ -27,11 +27,11 @@ const FilterOption = [
   },
   {
     title: "Giá Thấp",
-    sort: "price:ASC",
+    sort: "price:1",
   },
   {
     title: "Giá cao",
-    sort: "price:DESC",
+    sort: "price:-1",
   },
 ];
 

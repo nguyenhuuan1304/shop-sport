@@ -1,7 +1,7 @@
 import {
-    Button,
-    Divider,
-    Input
+  Button,
+  Divider,
+  Input
 } from "antd";
 import { motion } from "framer-motion";
 import React, { useEffect } from "react";
@@ -10,10 +10,10 @@ import { Link } from "react-router-dom";
 import CartItem from "../components/CartItem";
 import EmptyCart from "../components/EmptyCart";
 import {
-    addToCart,
-    deleteFromCart,
-    fetchCartData,
-    removeFromCart
+  addToCart,
+  deleteFromCart,
+  fetchCartData,
+  removeFromCart
 } from "../redux/slices/cartSlice";
 const { TextArea } = Input;
 
@@ -21,11 +21,12 @@ export default function CartPage() {
   const dispatch = useDispatch();
   const userId = useSelector((state) => state.auth?.currentUser?.id);
   const cartData = useSelector((state) => state.cart?.products);
+  // console.log(cartData)
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
   //tổng giá tiền sản phẩm của giỏ hàng
   const total = useSelector((state) => state.cart.total);
   // tổng số lượng sản phẩm có trong giỏ hàng (tính cả size)
-  const totalProduct = useSelector((state) => state.cart.totalProduct);
+  const totalProduct = useSelector((state) => state.cart?.number_of_product);
   // xử lý thêm sản phẩm vào giỏ hàng trên strapi
   const handleAddToCart = (userId, product) => {
     dispatch(addToCart({ userId, product }));

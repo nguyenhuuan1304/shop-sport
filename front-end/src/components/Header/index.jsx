@@ -29,7 +29,7 @@ const menuItems = [
     to: "contact",
   },
 ];
- 
+
 function NavigationLink({ Icon, title, to, count }) {
   const redirectToLogin = useRedirectToLogin();
 
@@ -56,7 +56,7 @@ function NavigationLink({ Icon, title, to, count }) {
           ) : (
             <Icon size={30} className="text-red-500" />
           )}
-          
+
           {title}
         </Link>
       )}
@@ -90,8 +90,10 @@ export default function Header() {
   const currentUser = useSelector((state) => state.auth.currentUser);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const number_of_product = useSelector(
-    (state) => state.cart.number_of_product
+    (state) => state.cart?.number_of_product
   );
+
+  console.log(number_of_product);
   const products = useSelector((state) => state.cart.products);
   // console.log(location.pathname);
 
@@ -99,7 +101,6 @@ export default function Header() {
   useEffect(() => {
     dispatch(fetchCartData(currentUser?.id));
   }, [dispatch, currentUser?.id]);
-
 
   return (
     <div className="sm:flex hidden border-b flex-row h-32 w-full gap-10 items-center justify-between">

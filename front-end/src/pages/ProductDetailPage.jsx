@@ -106,7 +106,7 @@ export default function ProductDetailPage() {
   const saleProducts = useSelector((state) => state.products?.productList);
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
   const loading = useSelector((state) => state.products?.loading);
-  const dataSource = product?.attributes?.size_list?.map((item, index) => ({
+  const dataSource = product?.size_list?.map((item, index) => ({
     ...item,
     key: `${index}`,
     count: 0,
@@ -136,7 +136,7 @@ export default function ProductDetailPage() {
 
   // +/ sản phẩm để thêm vào giỏ hàng
   const handleQuantityChange = (RowItem) => {
-    console.log("key.size", RowItem);
+    // console.log("key.size", RowItem);
     const key = RowItem.key;
     // Kiểm tra xem sản phẩm có trong cart chưa
     const existingItem = cart.find((item) => item.key === key);
@@ -149,7 +149,7 @@ export default function ProductDetailPage() {
                 ...item,
                 product: product,
                 count: item.count + 1,
-                size: RowItem.size,
+                size: RowItem.size_name,
               }
             : item
         )
@@ -160,7 +160,7 @@ export default function ProductDetailPage() {
         key,
         count: 1,
         product: product,
-        size:  RowItem.size,
+        size:  RowItem.size_name,
       };
       const updatedCart = [...cart, newItem].filter((item) => item.count > 0); // Lọc ra các mục có count > 0
       setCart(updatedCart);
@@ -181,7 +181,7 @@ export default function ProductDetailPage() {
     {
       title: "Sản phẩm",
       width: 120,
-      dataIndex: "size",
+      dataIndex: "size_name",
       align: "center",
       key: "size",
     },
@@ -233,16 +233,14 @@ export default function ProductDetailPage() {
                 rootClassName="w-4/5"
                 className="rounded-xl hidden sm:block"
                 src={
-                  import.meta.env.VITE_IMG_URL +
-                  product?.attributes?.image?.data?.[0]?.attributes?.url
+                  product?.images[0]
                 }
                 alt=""
               />
               <Image
                 className="rounded-xl sm:hidden"
                 src={
-                  import.meta.env.VITE_IMG_URL +
-                  product?.attributes?.image?.data?.[0]?.attributes?.url
+                  product?.images[0]
                 }
                 alt=""
               />
@@ -254,10 +252,10 @@ export default function ProductDetailPage() {
               className="flex flex-col gap-5 flex-1"
             >
               <span className="text-2xl font-semibold">
-                {product?.attributes?.name}
+                {product?.name}
               </span>
               <span className="text-left text-orange-800 font-semibold">
-                {product?.attributes?.brand.toUpperCase()}
+                {product?.brand?.toUpperCase()}
               </span>
               <div className="flex flex-row gap-1 items-center">
                 <Rate defaultValue={0} />{" "}
@@ -265,12 +263,12 @@ export default function ProductDetailPage() {
               </div>
               <span className="text-red-500 font-semibold text-lg">
                 {isAuthenticated
-                  ? `${product?.attributes?.price.toLocaleString()}đ`
+                  ? `${product?.price?.toLocaleString()}đ`
                   : "Đăng nhập để xem giá"}
               </span>
               <span className="text-sm">
                 Tình trạng:{" "}
-                {product?.attributes.state ? (
+                {product?.status ? (
                   <span className="rounded-full bg-green-300 text-green-700 px-2 p-1 text-xs">
                     Còn hàng
                   </span>
@@ -338,7 +336,7 @@ export default function ProductDetailPage() {
             </span>
           </div>
           <span className="border bg-gray-100 rounded-lg p-2">
-            {product?.attributes?.description}
+            {product?.description}
           </span>
         </div>
         <div className=" flex flex-col shadow-xl rounded-lg sm:w-1/3 basis-1/3">

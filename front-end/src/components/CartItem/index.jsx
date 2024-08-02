@@ -104,8 +104,8 @@ const CartItem = ({
   deleteFromCart,
 }) => {
   const [quantity, setQuantity] = useState(productQuantity);
-  const foundItem = cartItem?.product?.attributes?.size_list?.find(
-    (item) => item.size === size
+  const foundItem = cartItem?.product?.size_list?.find(
+    (item) => item.size_name === size
   );
   const handleIncrement = (newValue) => {
     if (newValue <= foundItem.quantity) {
@@ -124,7 +124,7 @@ const CartItem = ({
     deleteFromCart(cartItem);
   };
 
-  console.log("cart item count", quantity);
+  // console.log("cart item count", quantity);
   return (
     <div className="flex flex-row gap-3">
       <div className="">
@@ -133,15 +133,15 @@ const CartItem = ({
           width={170}
           height={170}
           src={
-            import.meta.env.VITE_IMG_URL +
-            cartItem?.product?.attributes?.image?.data?.[0]?.attributes?.url
+           
+            cartItem?.product?.images[0]
           }
         />
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex flex-row justify-between items-center gap-2">
           <span className="font-semibold">
-            {cartItem?.product?.attributes?.name}
+            {cartItem?.product?.name}
           </span>
           {/* <Button size="small" type="text" danger>
             <FaTrashAlt size={15} />
@@ -167,7 +167,7 @@ const CartItem = ({
         )}
 
         <span className="font-semibold text-red-500">
-          {cartItem?.product?.attributes?.price?.toLocaleString()}đ
+          {cartItem?.product?.price?.toLocaleString()}đ
         </span>
         <div className="flex flex-row justify-between items-center">
           <QuantityEditor
