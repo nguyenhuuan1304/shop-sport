@@ -100,15 +100,21 @@ const request = {
       throw error;
     }
   },
-  createOderAddress: async ({ data }) => {
+  fetchOrderAddress: async () => {
     try {
-      const newOrderAddressData = {
-        data,
-      };
-      // console.log("request", newOrderAddressData);
+      const response = await axiosInstance.get(API_ENDPOINTS.GET_ORDER_ADDRESS);
+      console.log(response);
+      return response;
+    } catch (error) {
+      return errorHandler(error);
+    }
+  },
+  createOrderAddress: async (order_address) => {
+    try {
+      console.log("request ", order_address);
       const response = await axiosInstance.post(
         API_ENDPOINTS.CREATE_ORDER_ADDRESS,
-        newOrderAddressData
+        { order_address: order_address }
       );
       return response.data;
     } catch (error) {
@@ -155,15 +161,14 @@ const request = {
       throw error;
     }
   },
-  changePassword: async ({ data }) => {
+  changePassword: async (data) => {
     try {
-      const reponse = await axiosInstance.post(
+      const response = await axiosInstance.post(
         API_ENDPOINTS.CHANGE_PASSWORD,
         data
       );
-      return reponse;
+      return response;
     } catch (error) {
-      console.error("error change password");
       throw error;
     }
   },
@@ -205,7 +210,8 @@ const request = {
         updatedProducts = [...userCart.data.items, cartItem];
       }
       //updated total value
-      const updatedTotal = userCart?.data?.total_of_price + cartItem?.product?.price;
+      const updatedTotal =
+        userCart?.data?.total_of_price + cartItem?.product?.price;
       //number of product
       const numberOfProduct = updatedProducts.reduce((accumulator, product) => {
         return accumulator + product.count;
@@ -395,6 +401,14 @@ const request = {
       return response.data;
     } catch (error) {
       console.error("Failed to add to cart:", error);
+      throw error;
+    }
+  },
+  GetOrders: async () => {
+    try {
+      const response = await axiosInstance.get(API_ENDPOINTS.GET_ORDERS);
+      return response.data;
+    } catch (error) {
       throw error;
     }
   },

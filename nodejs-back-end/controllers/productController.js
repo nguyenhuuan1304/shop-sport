@@ -107,6 +107,7 @@ async function searchProduct(req, res) {
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 3;
     const search_query = req.query.q;
+    console.log(req.query.q);
     if (!search_query) {
       return res.status(400).json({ message: "Missing search query" });
     }

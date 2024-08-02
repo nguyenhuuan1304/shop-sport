@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Divider } from "antd";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, NavLink } from "react-router-dom";
 import { logout } from "../redux/slices/authSlice";
 const iconMap = {
   user: faUser,
@@ -52,17 +52,18 @@ export default function UserProfilePage() {
 
   const handleLogout = () => {
     dispatch(logout());
-  }
+  };
   return (
     <div className="bg-slate-50 w-full">
-      <div className="flex flex-row justify-center gap-2 p-12">
-        <div className="flex flex-col bg-white p-5 w-1/4 h-3/4 rounded-lg shadow-xl">
+      <div className="flex flex-col sm:flex-row justify-center gap-2 p-12">
+        {/* left side */}
+        <div className="flex flex-col bg-white p-5 sm:w-1/4 sm:h-3/4 w-full rounded-lg shadow-xl">
           <div className="flex flex-col text-center text-neutral-500 w-full">
             <span className="uppercase font-semibold">
               {currenUser?.username}
             </span>
-            <span>{`${currenUser?.firstname || ""} ${
-              currenUser?.lastname || ""
+            <span>{`${currenUser?.first_name || ""} ${
+              currenUser?.last_name || ""
             }`}</span>
             <span className="text-base">{currenUser?.email}</span>
           </div>
@@ -80,27 +81,34 @@ export default function UserProfilePage() {
                     <div className="flex flex-row gap-4 items-center">
                       <FontAwesomeIcon icon={iconMap[item.icon]} />
                       <span>{item.title}</span>
-                      <Link to={`login`}></Link>
+                      <Link to={`/`}></Link>
                     </div>
                   </div>
                 );
               }
               return (
-                <Link
+                <NavLink
                   key={index}
                   to={item.path}
-                  className="text-black hover:text-white hover:bg-blue-400 hover:font-semibold p-2 rounded-lg"
+                  className={({ isActive, isPending }) =>
+                    isPending
+                      ? "text-black hover:text-white hover:bg-blue-400 hover:font-semibold p-2 rounded-lg duration-300"
+                      : isActive
+                      ? " text-white bg-blue-400 font-semibold p-2 rounded-lg"
+                      : "text-black hover:text-white hover:bg-blue-400 hover:font-semibold p-2 rounded-lg duration-300"
+                  }
                 >
                   <div className="flex flex-row gap-4 items-center">
                     <FontAwesomeIcon icon={iconMap[item.icon]} />
                     <span>{item.title}</span>
                   </div>
-                </Link>
+                </NavLink>
               );
             })}
           </div>
         </div>
-        <div className="bg-white w-3/4 rounded-lg shadow-xl">
+        {/* right side */}
+        <div className="bg-white sm:w-3/4 w-full rounded-lg shadow-xl">
           <Outlet />
         </div>
       </div>

@@ -12,7 +12,7 @@ const API_ENDPOINTS = {
     `/products?page=${currentPage}&pageSize=${pageSize}&${title}=${sort}`,
   LIST_SALE: `/products?populate=*&is_discount_active=true`,
   PRODUCT_DETAIL: (productId) => `/products/${productId}`,
-  
+
   //user
   USER_DETAIL: (userId) => `/users/profile`,
   UPDATE_USER: (id) => `/users/update`,
@@ -22,13 +22,19 @@ const API_ENDPOINTS = {
   CHANGE_PASSWORD: `/auth/change-password`,
 
   //order address
-  CREATE_ORDER_ADDRESS: `/order-addresses`,
+  CREATE_ORDER_ADDRESS: `/order-address`,
+  GET_ORDER_ADDRESS: `/order-address`,
+  SET_DEFAULT_ORDER_ADDRESS: (order_address_id) =>
+    `/set-default/${order_address_id}`,
 
   // cart
   GET_CART_BY_ID_USER: () => `/cart`,
   ADD_TO_CART: () => `/cart/update`,
   UPDATE_CART: () => `/cart/update`,
   REMOVE_FROM_CART: () => `/cart/update`,
+
+  //order
+  GET_ORDERS: `/order`,
 };
 
 export default API_ENDPOINTS;

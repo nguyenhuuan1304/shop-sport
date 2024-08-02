@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { getProvincesWithDetail } from "vietnam-provinces";
-import { fetchCreateOrderAddress } from "../../redux/slices/oderAddressSlice";
+import { fetchCreateOrderAddress } from "../../redux/slices/orderAddressSlice";
 import { fetchUpdateRelationUser } from "../../redux/slices/userSlice";
 function AddAddressForm() {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -22,7 +22,7 @@ function AddAddressForm() {
   const [optionsDistricts, setOptionsDistricts] = useState([]);
   const [optionsWards, setOptionsWards] = useState([]);
 
-  const currentUser = useSelector((state) => state.auth?.currentUser)
+  const currentUser = useSelector((state) => state.auth?.currentUser);
 
   useEffect(() => {
     const fetchProvinces = async () => {
@@ -100,20 +100,38 @@ function AddAddressForm() {
 
   const handleSubmit = async () => {
     const formData = {
-        name,
-        address:address+", "+valueWard.label + ", " + valueDistrict.label + ", " + valueProvince.label,
-    }
-    // console.log("form data", formData)   
+      name,
+      address:
+        address +
+        ", " +
+        valueWard.label +
+        ", " +
+        valueDistrict.label +
+        ", " +
+        valueProvince.label,
+    };
+    // console.log("form data", formData)
     try {
-      const createdOrderAddress = await dispatch(fetchCreateOrderAddress({ data: formData })).unwrap();
+      const createdOrderAddress = await dispatch(
+        fetchCreateOrderAddress(formData)
+      ).unwrap();
+
       // console.log("orderAddressId ", createdOrderAddress.id);
 
       if (createdOrderAddress && createdOrderAddress.id) {
-        await dispatch(fetchUpdateRelationUser({ userId: currentUser?.id, orderAddressId: createdOrderAddress.id }));
+        dispatch(
+          fetchUpdateRelationUser({
+            userId: currentUser?.id,
+            orderAddressId: createdOrderAddress.id,
+          })
+        );
         setIsModalOpen(false);
       }
     } catch (error) {
-      console.error("Error creating order address or updating relation:", error);
+      console.error(
+        "Error creating order address or updating relation:",
+        error
+      );
     }
     setIsModalOpen(false);
   };
@@ -166,7 +184,8 @@ function AddAddressForm() {
               <input
                 type="text"
                 id="address"
-                name="address" onChange={(e) => setAddress(e.target.value)}
+                name="address"
+                onChange={(e) => setAddress(e.target.value)}
                 className="border p-2 font-semibold text-sm rounded w-full"
               />
             </div>

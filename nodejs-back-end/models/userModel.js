@@ -51,6 +51,15 @@ const user_schema = mongoose.Schema({
     default: false,
     required: true,
   },
+  address: {
+    type: String,
+    default: "",
+    required: true,
+  },
+  dob: {
+    type: Date,
+    required: true,
+  },
   created_at: {
     type: Date,
     default: Date.now,

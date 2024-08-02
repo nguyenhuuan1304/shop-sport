@@ -67,75 +67,67 @@ export default function SearchBar({ keyWord }) {
   }, [dispatch, useDebounceSearchTerm]);
 
   const urlImg = (item) => {
-    return item?.attributes?.image?.data?.[0]?.attributes?.url
-      ? import.meta.env.VITE_IMG_URL +
-          item?.attributes?.image?.data?.[0]?.attributes?.url
-      : placeholder;
+    return item?.images[0] ? item?.images[0] : placeholder;
   };
 
   return (
-    <div className=" gap-6 flex flex-col p-4 grow">
-      <div className="flex flex-row gap-10 flex-auto items-center justify-between">
-        <div className="flex flex-col relative">
-          <Search
-            placeholder="Nhập sản phẩm tìm kiếm"
-            enterButton
-            className="w-96 h-auto"
-            onSearch={handleSearch}
-            onChange={(e) => hamdleOnChange(e.target.value)}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-            value={keyWordSearch}
-          />
-          {isOpenDropDown && keyWordSearch && (
-            <div className="absolute top-10 w-full z-50 bg-white rounded-lg border opacity-100">
-              <div className="p-2 sticky top-0 bg-gray-100 z-10 w-full rounded-t-lg">
-                Sản phẩm gợi ý
-              </div>
-              <div className="bg-white w-full border opacity-100 overflow-auto h-80 rounded-b-lg border-b last:border-b">
-                <List
-                  className="bg-white p-3"
-                  itemLayout="vertical"
-                  dataSource={productList}
-                  split={true}
-                  renderItem={(item, index) => (
-                    <Link
-                      to={`/product/${item?.id}`}
-                      key={item?.id}
-                      onClick={handleInputBlur}
-                    >
-                      <List.Item className="w-full border-b border-gray-300 last:border-b-0">
-                        <List.Item.Meta
-                          avatar={
-                            <Avatar
-                              src={urlImg(item)}
-                              className="w-20 h-20 rounded-full shadow-xl border-4 border-neutral-100"
-                            />
-                          }
-                          title={<p>{item?.attributes?.name}</p>}
-                          description={
-                            isAuthenticated ? (
-                              <p>{item?.attributes?.price} $</p>
-                            ) : (
-                              <p className="font-semibold">
-                                Đăng nhập để xem giá
-                              </p>
-                            )
-                          }
-                        />
-                        <Divider />
-                      </List.Item>
-                    </Link>
-                  )}
-                />
-              </div>
+    <div className="flex flex-row gap-10 flex-auto items-center justify-between">
+      <div className="flex flex-col relative">
+        <Search
+          placeholder="Nhập sản phẩm tìm kiếm"
+          enterButton
+          className="w-96 h-auto"
+          onSearch={handleSearch}
+          onChange={(e) => hamdleOnChange(e.target.value)}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
+          value={keyWordSearch}
+        />
+        {isOpenDropDown && keyWordSearch && (
+          <div className="absolute top-10 w-full z-50 bg-white rounded-lg border opacity-100">
+            <div className="p-2 sticky top-0 bg-gray-100 z-10 w-full rounded-t-lg">
+              Sản phẩm gợi ý
             </div>
-          )}
-        </div>
+            <div className="bg-white w-full border opacity-100 overflow-auto h-80 rounded-b-lg border-b last:border-b">
+              <List
+                className="bg-white p-3"
+                itemLayout="vertical"
+                dataSource={productList}
+                split={true}
+                renderItem={(item, index) => (
+                  <Link
+                    to={`/product/${item?._id}`}
+                    key={item?._id}
+                    onClick={handleInputBlur}
+                  >
+                    <List.Item className="w-full border-b border-gray-300 last:border-b-0">
+                      <List.Item.Meta
+                        avatar={
+                          <Avatar
+                            src={urlImg(item)}
+                            className="w-20 h-20 rounded-full shadow-xl border-4 border-neutral-100"
+                          />
+                        }
+                        title={<p>{item?.name}</p>}
+                        description={
+                          isAuthenticated ? (
+                            <p>{item?.price} $</p>
+                          ) : (
+                            <p className="font-semibold">
+                              Đăng nhập để xem giá
+                            </p>
+                          )
+                        }
+                      />
+                      <Divider />
+                    </List.Item>
+                  </Link>
+                )}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
-SearchBar.propTypes = {
-  keyWord: PropTypes.string,
-};

@@ -99,8 +99,8 @@ export default function Header() {
 
   //fetch cart data để tính số lượng sản phẩm trong giỏ hàng
   useEffect(() => {
-    dispatch(fetchCartData(currentUser?.id));
-  }, [dispatch, currentUser?.id]);
+    if (currentUser) dispatch(fetchCartData(currentUser?._id));
+  }, [dispatch, currentUser?._id]);
 
   return (
     <div className="sm:flex hidden border-b flex-row h-32 w-full gap-10 items-center justify-between">
@@ -172,7 +172,9 @@ export default function Header() {
               </div>
             )}
           </div> */}
+
           <SearchBar></SearchBar>
+
           <div className="flex flex-row items-center gap-5">
             <NavigationLink
               title="Kiểm tra đơn hàng"
