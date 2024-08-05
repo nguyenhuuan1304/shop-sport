@@ -32,6 +32,7 @@ export default function SearchBar({ keyWord }) {
     setKeyWordSearchListProducts(value);
     navigate(`/products?search=${value}`);
   };
+
   useEffect(() => {
     if (keyWordSearchListProducts) {
       dispatch(
@@ -71,6 +72,63 @@ export default function SearchBar({ keyWord }) {
   };
 
   return (
+<<<<<<< HEAD
+    <div className=" gap-6 flex flex-col p-4 grow">
+      <div className="flex flex-row gap-10 flex-auto items-center justify-between">
+        <div className="flex flex-col relative">
+          <Search
+            placeholder="Nhập sản phẩm tìm kiếm"
+            enterButton
+            className="w-96 h-auto"
+            onSearch={handleSearch}
+            onChange={(e) => hamdleOnChange(e.target.value)}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            value={keyWordSearch}
+          />
+          {isOpenDropDown && keyWordSearch && (
+            <div className="absolute top-10 w-full z-50 bg-white rounded-lg border opacity-100">
+              <div className="p-2 sticky top-0 bg-gray-100 z-10 w-full rounded-t-lg">
+                Sản phẩm gợi ý
+              </div>
+              <div className="bg-white w-full border opacity-100 overflow-auto h-80 rounded-b-lg border-b last:border-b">
+                <List
+                  className="bg-white p-3"
+                  itemLayout="vertical"
+                  dataSource={productList}
+                  split={true}
+                  renderItem={(item, index) => (
+                    <Link
+                      to={`/product/${item?._id}`}
+                      key={item?._id}
+                      onClick={handleInputBlur}
+                    >
+                      <List.Item className="w-full border-b border-gray-300 last:border-b-0">
+                        <List.Item.Meta
+                          avatar={
+                            <Avatar
+                              src={urlImg(item)}
+                              className="w-20 h-20 rounded-full shadow-xl border-4 border-neutral-100"
+                            />
+                          }
+                          title={<p>{item?.name}</p>}
+                          description={
+                            isAuthenticated ? (
+                              <p>{item?.price} $</p>
+                            ) : (
+                              <p className="font-semibold">
+                                Đăng nhập để xem giá
+                              </p>
+                            )
+                          }
+                        />
+                        <Divider />
+                      </List.Item>
+                    </Link>
+                  )}
+                />
+              </div>
+=======
     <div className="flex flex-row gap-10 flex-auto items-center justify-between">
       <div className="flex flex-col relative">
         <Search
@@ -87,6 +145,7 @@ export default function SearchBar({ keyWord }) {
           <div className="absolute top-10 w-full z-50 bg-white rounded-lg border opacity-100">
             <div className="p-2 sticky top-0 bg-gray-100 z-10 w-full rounded-t-lg">
               Sản phẩm gợi ý
+>>>>>>> e9af7172fb0285ea376de1e64812fe75ffb6274c
             </div>
             <div className="bg-white w-full border opacity-100 overflow-auto h-80 rounded-b-lg border-b last:border-b">
               <List

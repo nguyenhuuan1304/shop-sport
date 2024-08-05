@@ -19,7 +19,8 @@ const request = {
       const response = await axiosInstance.get(
         API_ENDPOINTS.SEARCH_FIVE_PRODUCTS(keyWord)
       );
-      return successHandler(response);
+      console.log(response);
+      return response.data.data;
     } catch (error) {
       return errorHandler(error);
     }
@@ -29,8 +30,8 @@ const request = {
       const response = await axiosInstance.get(
         API_ENDPOINTS.SEARCH_LIST_PRODUCTS(keyWord, currentPage, pageSize)
       );
-      // console.log("Response data:", response.data);
-      return response;
+      console.log("Response data:", response.data.data);
+      return response.data.data;
     } catch (error) {
       return errorHandler(error);
     }

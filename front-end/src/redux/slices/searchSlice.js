@@ -26,16 +26,7 @@ const searchSlice = createSlice({
     totalProductItems: null,
   },
   reducers: {
-    productListSearch: (state, action) => {
-      state.productListSearch = action.payload.data;
-      // console.log("setProductList", action.payload.result.data);
-    },
-    setLoading: (state, action) => {
-      state.loading = action.payload;
-    },
-    setError: (state, action) => {
-      state.error = action.payload;
-    },
+    
   },
   extraReducers: (builder) => {
     builder
@@ -46,8 +37,8 @@ const searchSlice = createSlice({
       })
       .addCase(fetchFiveProduct.fulfilled, (state, action)=> {
         state.loading = false;
-        state.productListSearch = action.payload.result.data;
-        // console.log("find 5 product ", action.payload.result.data)
+        state.productListSearch = [...action.payload.data];
+        console.log(action.payload)
       })
       .addCase(fetchFiveProduct.rejected, (state,action)=>{
         state.loading = false;
