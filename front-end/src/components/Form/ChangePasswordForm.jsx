@@ -14,14 +14,14 @@ export default function ChangPasswordForm() {
 
   const [formData, setFormData] = useState({
     currentPassword: "",
-    password: "",
-    passwordConfirmation: "",
+    newPassword: "",
+    confirmNewPassword: "",
   });
   const dispatch = useDispatch();
   const handleChangePassword = (e) => {
     e.preventDefault(); // Ngăn chặn hành vi mặc định của form submission
     console.log("object", formData);
-    dispatch(changePassword({ data: formData }));
+    dispatch(changePassword(formData));
   };
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,7 +32,7 @@ export default function ChangPasswordForm() {
   };
   return (
     <>
-      <div className="flex flex-col p-4 w-1/3">
+      <div className="flex flex-col p-4 w-full sm:w-1/3">
         <h1 className="text-xl font-semibold mb-4">ĐỔI MẬT KHẨU</h1>
         {isLoadingChangePassword ? (
           <Button type="primary" loading className="ml-2">
@@ -85,11 +85,11 @@ export default function ChangPasswordForm() {
             Mật khẩu mới
           </label>
           <Input.Password
-            id="password"
-            name="password"
-            value={formData.password}
+            id="newPassword"
+            name="newPassword"
+            value={formData.newPassword}
             onChange={handleChange}
-            placeholder="Nhập lại mật khẩu cũ"
+            placeholder="Nhập mật khẩu mới"
           />
         </div>
 
@@ -101,11 +101,11 @@ export default function ChangPasswordForm() {
             Nhập lại mật khẩu mới
           </label>
           <Input.Password
-            id="passwordConfirmation"
-            name="passwordConfirmation"
-            value={formData.passwordConfirmation}
+            id="confirmNewPassword"
+            name="confirmNewPassword"
+            value={formData.confirmNewPassword}
             onChange={handleChange}
-            placeholder="Nhập lại mật khẩu cũ"
+            placeholder="Nhập lại mật khẩu mới"
           />
         </div>
 

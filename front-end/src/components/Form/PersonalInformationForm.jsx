@@ -8,29 +8,31 @@ export default function PersonalInformationForm() {
   const isLoadingUpdate = useSelector((state) => state.user?.loading);
   const isErrorUpdate = useSelector((state) => state.user?.error);
   const dispatch = useDispatch();
-  const currenUser = useSelector((state) => state.auth?.currentUser);
+  const currentUser = useSelector((state) => state.auth?.currentUser);
   const [formData, setFormData] = useState({
-    firstname: "",
-    lastname: "",
-    phone: "",
+    first_name: "",
+    last_name: "",
+    number_phone: "",
     email: "",
-    birthday: "",
+    dob: "",
     address: "",
   });
-  console.log(currenUser);
   useEffect(() => {
-    if (currenUser) {
+    if (currentUser) {
+      const dob = currentUser.dob
+        ? new Date(currentUser.dob).toISOString().split("T")[0]
+        : "";
       setFormData({
-        id: currenUser.id || "",
-        firstname: currenUser.firstname || "",
-        lastname: currenUser.lastname || "",
-        phone: currenUser.phone || "",
-        email: currenUser.email || "",
-        birthday: currenUser.birthday || "",
-        address: currenUser.address || "",
+        id: currentUser._id || "",
+        first_name: currentUser.first_name || "",
+        last_name: currentUser.last_name || "",
+        number_phone: currentUser.number_phone || "",
+        email: currentUser.email || "",
+        dob: dob,
+        address: currentUser.address || "",
       });
     }
-  }, [currenUser]);
+  }, [currentUser]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,7 +50,10 @@ export default function PersonalInformationForm() {
 
   return (
     <>
-      <form className="flex flex-col p-4 w-3/5" onSubmit={handleSubmit}>
+      <form
+        className="flex flex-col p-4 sm:w-3/5 w-full"
+        onSubmit={handleSubmit}
+      >
         <h1 className="text-xl font-semibold mb-4">THÔNG TIN TÀI KHOẢN</h1>
         {isLoadingUpdate ? (
           <>
@@ -84,44 +89,45 @@ export default function PersonalInformationForm() {
         )}
 
         <br />
-        <div className="flex flex-row space-x-4 mb-4">
+        <div className="flex flex-col sm:flex-row sm:space-x-4 mb-4">
           <div className="flex flex-col">
-            <label htmlFor="firstname" className="mb-2 font-semibold text-sm">
+            <label htmlFor="first_name" className="mb-2 font-semibold text-sm">
               Họ và chữ lót
             </label>
             <input
               type="text"
-              id="firstname"
-              name="firstname"
+              id="first_name"
+              name="first_name"
               className="border p-2 font-semibold text-sm rounded"
-              value={formData.firstname}
+              placeholder={formData.first_name}
+              value={formData.first_name}
               onChange={handleChange}
             />
           </div>
-          <div className="flex flex-col">
-            <label htmlFor="lastname" className="mb-2 font-semibold text-sm">
+          <div className="flex flex-col sm:mt-0 mt-4">
+            <label htmlFor="last_name" className="mb-2 font-semibold text-sm">
               Tên
             </label>
             <input
               type="text"
-              id="lastname"
-              name="lastname"
+              id="last_name"
+              name="last_name"
               className="border p-2 font-semibold text-sm rounded"
-              value={formData.lastname}
+              value={formData.last_name}
               onChange={handleChange}
             />
           </div>
         </div>
         <div className="flex flex-col mb-4">
-          <label htmlFor="phone" className="mb-2 font-semibold text-sm">
+          <label htmlFor="number_phone" className="mb-2 font-semibold text-sm">
             Số điện thoại
           </label>
           <input
             type="text"
-            id="phone"
-            name="phone"
+            id="number_phone"
+            name="number_phone"
             className="border p-2 font-semibold text-sm rounded"
-            value={formData.phone}
+            value={formData.number_phone}
             onChange={handleChange}
           />
         </div>
@@ -136,6 +142,7 @@ export default function PersonalInformationForm() {
             className="border p-2 font-semibold text-sm rounded"
             value={formData.email}
             onChange={handleChange}
+            disabled={true}
           />
         </div>
         <div className="flex flex-col mb-4">
@@ -144,10 +151,10 @@ export default function PersonalInformationForm() {
           </label>
           <input
             type="date"
-            id="birthday"
-            name="birthday"
+            id="dob"
+            name="dob"
             className="border p-2 rounded"
-            value={formData.birthday}
+            value={formData.dob}
             onChange={handleChange}
           />
         </div>

@@ -18,7 +18,7 @@ import ProductCard from "../components/ProductCard";
 import { addManyToCart } from "../redux/slices/cartSlice";
 import {
   fetchProductDetail,
-  fetchProductList
+  fetchProductList,
 } from "../redux/slices/productSlice";
 const { Search } = Input;
 
@@ -103,7 +103,7 @@ export default function ProductDetailPage() {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth?.currentUser);
   const product = useSelector((state) => state.products?.productDetails);
-  const saleProducts = useSelector((state) => state.products?.productList);
+  const saleProducts = useSelector((state) => state.products?.saleProductList);
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
   const loading = useSelector((state) => state.products?.loading);
   const dataSource = product?.size_list?.map((item, index) => ({
@@ -130,7 +130,14 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     dispatch(fetchProductDetail(productId));
-    dispatch(fetchProductList({ sortParam: "true", titleParam: "NoHot", searchParam: "", currentPage: 0, pageSize: 0}));
+    dispatch(
+      fetchProductList({
+        sortParam: "true",
+        titleParam: "Sale",
+        currentPage: 0,
+        pageSize: 0,
+      })
+    );
     // console.log(saleProducts);
   }, [dispatch, productId]);
 
@@ -160,7 +167,7 @@ export default function ProductDetailPage() {
         key,
         count: 1,
         product: product,
-        size:  RowItem.size_name,
+        size: RowItem.size_name,
       };
       const updatedCart = [...cart, newItem].filter((item) => item.count > 0); // Lọc ra các mục có count > 0
       setCart(updatedCart);
@@ -232,16 +239,12 @@ export default function ProductDetailPage() {
                 preview={false}
                 rootClassName="w-4/5"
                 className="rounded-xl hidden sm:block"
-                src={
-                  product?.images[0]
-                }
+                src={product?.images[0]}
                 alt=""
               />
               <Image
                 className="rounded-xl sm:hidden"
-                src={
-                  product?.images[0]
-                }
+                src={product?.images[0]}
                 alt=""
               />
             </motion.div>
@@ -251,9 +254,7 @@ export default function ProductDetailPage() {
               transition={{ duration: 0.5 }}
               className="flex flex-col gap-5 flex-1"
             >
-              <span className="text-2xl font-semibold">
-                {product?.name}
-              </span>
+              <span className="text-2xl font-semibold">{product?.name}</span>
               <span className="text-left text-orange-800 font-semibold">
                 {product?.brand?.toUpperCase()}
               </span>
@@ -378,11 +379,11 @@ export default function ProductDetailPage() {
           prevArrow={<CustomArrow />}
         >
           <div className="flex justify-center items-center pb-2">
-            {saleProducts.map((item) => {
+            {saleProducts?.map((item) => {
               return (
                 <div key={item.id} className="w-full flex justify-center">
                   <ProductCard
-                    key={item.id}
+                    key={item._id}
                     product={item}
                     displayQuantity={false}
                   />
@@ -396,4 +397,3 @@ export default function ProductDetailPage() {
     </motion.div>
   );
 }
-

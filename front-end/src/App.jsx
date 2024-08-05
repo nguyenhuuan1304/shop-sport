@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import AddresForm from "./components/Form/AddressForm";
 import ChangPasswordForm from "./components/Form/ChangePasswordForm";
 import OdersForm from "./components/Form/OdersForm";
@@ -47,6 +47,7 @@ function App() {
           <Route path="contact" element={<ContactPage />} />
           <Route element={<RequireAuth />}>
             <Route path="profile" element={<UserProfilePage />}>
+              <Route index element={<Navigate to="account-info" replace />} />
               <Route
                 path="account-info"
                 element={<PersonalInformationForm />}

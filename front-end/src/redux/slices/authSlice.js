@@ -16,16 +16,16 @@ export const login = createAsyncThunk(
 );
 export const changePassword = createAsyncThunk(
   "auth/changePassword",
-  async ({data},{rejectWithValue})=>{
+  async (data, { rejectWithValue }) => {
     try {
-      console.log('datta fetch', data)
-      const reponse = await request.changePassword({data: data});
-      return reponse.data;
+      console.log("create async thunk", data);
+      const response = await request.changePassword(data);
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.reponse.data);
     }
   }
-)
+);
 export const fetchUserDetail = createAsyncThunk(
   "auth/fetchUserDetail",
   async (_, { rejectWithValue }) => {
@@ -78,6 +78,7 @@ const authSlice = createSlice({
     builder.addCase(login.fulfilled, (state, action) => {
       state.isLoading = false;
       state.currentUser = action.payload;
+      console.log(action.payload);
       state.jwt = action.payload.jwt;
       state.isAuthenticated = true;
     });
@@ -97,7 +98,6 @@ const authSlice = createSlice({
     builder.addCase(changePassword.rejected, (state, action) => {
       state.isLoading = false;
       state.errorMessages = action.error.message;
-      console.log("paylod", action)
       state.success = false;
     });
     builder.addCase(fetchUserDetail.pending, (state) => {

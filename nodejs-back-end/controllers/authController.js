@@ -28,8 +28,11 @@ async function login(req, res) {
       user: {
         username: user?.username,
         email: user?.email,
-        firstName: user?.firstname,
-        lastName: user?.last_name,
+        first_name: user?.first_name,
+        last_name: user?.last_name,
+        number_phone: user?.number_phone,
+        address: user?.address,
+        dob: user?.dob,
         role: user?.role,
       },
     });
@@ -55,6 +58,8 @@ async function register(req, res) {
       number_phone: req.body.number_phone,
       first_name: req.body.first_name,
       last_name: req.body.last_name,
+      address: req.body.address,
+      dob: req.body.dob,
     };
     await userService.addUser(new_user);
     return res
