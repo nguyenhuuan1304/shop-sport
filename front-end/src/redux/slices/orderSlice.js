@@ -18,6 +18,17 @@ export const fetchOrders = createAsyncThunk(
     }
   }
 );
+export const createOrder = createAsyncThunk(
+  "order/createOrder",
+  async (order, { rejectWithValue }) => {
+    try {
+      const response = await request.CreateOrder(order);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 const orderSlice = createSlice({
   name: "order",
@@ -31,9 +42,21 @@ const orderSlice = createSlice({
       })
       .addCase(fetchOrders.fulfilled, (state, action) => {
         state.loading = false;
-        state.orders = action.payload.data;
+        state.orders = action.payload;
       })
       .addCase(fetchOrders.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(createOrder.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createOrder.fulfilled, (state, action) => {
+        state.loading = false;
+        // state.orders = action.payload.data;
+      })
+      .addCase(createOrder.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

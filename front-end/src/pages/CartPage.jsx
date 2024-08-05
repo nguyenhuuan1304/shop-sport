@@ -12,6 +12,7 @@ import {
   removeFromCart,
 } from "../redux/slices/cartSlice";
 import { fetchOrderAddress } from "../redux/slices/orderAddressSlice";
+import { createOrder } from "../redux/slices/orderSlice";
 const { TextArea } = Input;
 
 export default function CartPage() {
@@ -70,6 +71,15 @@ export default function CartPage() {
       console.log(cartData);
       console.log("order address", default_address);
       console.log("total price", total);
+      const order = {
+        email: orderForm.email,
+        number_phone: orderForm.number_phone,
+        notes: orderForm.notes || "",
+        order_address: default_address,
+        cart: cartData,
+        total_of_price: total,
+      };
+      dispatch(createOrder(order));
     } else alert("Số lượng sản phẩm trong giỏ hạn vượt quá sản phẩm tồn kho");
   };
 

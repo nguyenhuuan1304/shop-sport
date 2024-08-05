@@ -14,9 +14,11 @@ async function getOrdersByUserId(req, res) {
 
 async function createOrder(req, res) {
   try {
+    const user_id = req.user.user_id;
+    console.log(req.body);
     const order = req.body;
-    const result = await orderService.createOrder(order);
-    return res.status(200).json(result);
+    const result = await orderService.createOrder(user_id, order);
+    return res.status(200).json({ data: result });
   } catch (error) {
     res.status(500).json({
       message: error.message,

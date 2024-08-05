@@ -1,6 +1,6 @@
 import { productModel } from "../models/index.js";
 
-async function getProducts(page, page_size, order_by, is_hot, is_sale) {
+async function getProducts(page, page_size, order_by, is_hot, is_sale, brand) {
   try {
     //convert string to object
     let objOrderBy;
@@ -15,6 +15,9 @@ async function getProducts(page, page_size, order_by, is_hot, is_sale) {
     }
     if (is_sale !== undefined) {
       filter.is_sale = is_sale;
+    }
+    if (brand !== undefined) {
+      filter.brand = brand;
     }
     const total = await productModel.countDocuments(filter);
     const skip = (page - 1) * page_size;

@@ -102,7 +102,6 @@ const cartSlice = createSlice({
         state.total = action.payload?.cart?.total_of_price;
         state.products = action.payload?.cart?.items;
         state.number_of_product = action.payload?.cart?.total_of_product;
-        // console.log(action.payload);
       })
       .addCase(addToCart.rejected, (state, action) => {
         state.loading = false;
@@ -114,7 +113,6 @@ const cartSlice = createSlice({
       })
       .addCase(removeFromCart.fulfilled, (state, action) => {
         state.loading = false;
-
 
         state.total = action.payload?.cart?.total_of_price;
         state.products = action.payload?.cart?.items;

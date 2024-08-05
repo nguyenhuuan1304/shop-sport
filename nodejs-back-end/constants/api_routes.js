@@ -18,6 +18,7 @@ const ORDER_ADDRESS_ROUTES = {
 
 const ORDER_ROUTES = {
   GET_BY_USER_ID: "/",
+  ADD: "/",
 };
 
 const PRODUCT_ROUTES = {

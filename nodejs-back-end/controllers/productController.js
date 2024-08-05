@@ -9,12 +9,14 @@ async function getProducts(req, res) {
     const orderBy = req.query.orderBy ? req.query.orderBy : undefined;
     const isHot = req.query.hot ? req.query.hot === "true" : undefined;
     const isSale = req.query.sale ? req.query.sale === "true" : undefined;
+    const brand = req.query.brand ? req.query.brand : undefined;
     const result = await productService.getProducts(
       page,
       pageSize,
       orderBy,
       isHot,
-      isSale
+      isSale,
+      brand
     );
     return res.status(200).json(result);
   } catch (error) {

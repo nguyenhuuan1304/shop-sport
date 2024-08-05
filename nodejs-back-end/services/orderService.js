@@ -1,5 +1,6 @@
 import { orderModel } from "../models/index.js";
 import { userService } from "./index.js";
+import { cartService } from "./index.js";
 
 async function getOrdersByUserId(user_id) {
   try {
@@ -22,11 +23,17 @@ async function getOrdersByUserId(user_id) {
     throw error;
   }
 }
-async function createOrder(order) {
+async function createOrder(user_id, order) {
   try {
-    const new_order = new orderModel(order);
-    await new_order.save();
-    return new_order;
+    const user = await userService.getUserById(user_id);
+    if (user) {
+      const new_order = new orderModel(order);
+      await new_order.save();
+      user.orders.push(new_order._id);
+      await user.save();
+      await cartService.clearCart(user.cart);
+      return new_order;
+    } else throw new Error("User not found");
   } catch (error) {
     throw error;
   }

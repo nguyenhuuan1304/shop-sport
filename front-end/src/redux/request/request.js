@@ -412,5 +412,24 @@ const request = {
       throw error;
     }
   },
+  CreateOrder: async (order) => {
+    try {
+      console.log("request", order);
+      const response = await axiosInstance.post(API_ENDPOINTS.ADD_ORDER, order);
+      console.log("response", response);
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        console.error("Error response:", error.response.data);
+        console.error("Error status:", error.response.status);
+        console.error("Error headers:", error.response.headers);
+      } else if (error.request) {
+        console.error("Error request:", error.request);
+      } else {
+        console.error("Error message:", error.message);
+      }
+      throw error;
+    }
+  },
 };
 export default request;

@@ -10,20 +10,25 @@ async function addCart() {
     throw error;
   }
 }
-async function clearCart(cart_id) {
+const clearCart = async (cart_id) => {
   try {
     const cart = await cartModel.findById(cart_id);
-    if (cart) {
-      cart.total_of_product = 0;
-      cart.total_of_price = 0;
-      cart.items = [];
+    if (!cart) {
+      throw new Error("Cart not found");
     }
+
+    cart.total_of_product = 0;
+    cart.total_of_price = 0;
+    cart.items = [];
+
     await cart.save();
     return cart;
   } catch (error) {
+    console.error("Error clearing cart:", error);
     throw error;
   }
-}
+};
+
 async function updateCart(user_id, cart) {
   try {
     const user = await userService.getUserById(user_id);

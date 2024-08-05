@@ -35,6 +35,7 @@ const API_ENDPOINTS = {
 
   //order
   GET_ORDERS: `/order`,
+  ADD_ORDER: `/order`,
 };
 
 export default API_ENDPOINTS;
