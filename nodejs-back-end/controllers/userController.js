@@ -27,7 +27,9 @@ async function updateUser(req, res) {
     const updated_user = await userService.updateUser(user_id, user);
 
     if (updated_user) {
-      return res.status(200).json({ message: "updated user successfully!" });
+      return res
+        .status(200)
+        .json({ message: "updated user successfully!", data: updated_user });
     } else return res.status(404).json({ message: "not found product" });
   } catch (error) {
     res.status(500).json({

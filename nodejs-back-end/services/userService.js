@@ -50,7 +50,9 @@ async function updateUser(user_id, user) {
     delete copyUser.cart;
     delete copyUser.__v;
 
-    const updated_user = await userModel.findByIdAndUpdate(user_id, copyUser);
+    const updated_user = await userModel.findByIdAndUpdate(user_id, copyUser, {
+      new: true,
+    });
     return updated_user;
   } catch (error) {
     throw error;

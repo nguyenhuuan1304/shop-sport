@@ -1,6 +1,18 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../request";
 
+export const fetchUserDetail = createAsyncThunk(
+  "user/fetchUserDetail",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await request.UserDetail();
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const fetchUpdateUser = createAsyncThunk(
   "user/fetchUpdateUser",
   async ({ data }, { rejectWithValue }) => {
@@ -36,11 +48,27 @@ const userSlice = createSlice({
     user: null,
     loading: false,
     error: null,
-    success: false
+    success: false,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(fetchUserDetail.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = false;
+      })
+      .addCase(fetchUserDetail.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+        console.log("fetch user ", action.payload);
+        state.success = true;
+      })
+      .addCase(fetchUserDetail.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.success = false;
+      })
       .addCase(fetchUpdateUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -48,25 +76,14 @@ const userSlice = createSlice({
       })
       .addCase(fetchUpdateUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.user = action.payload.data;
+        console.log("update user", action.payload.data);
         state.success = true;
       })
       .addCase(fetchUpdateUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         state.success = false;
-      })
-      .addCase(fetchUpdateRelationUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchUpdateRelationUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload;
-      })
-      .addCase(fetchUpdateRelationUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
       });
   },
 });

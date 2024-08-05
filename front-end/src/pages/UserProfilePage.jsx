@@ -7,10 +7,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Divider } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Outlet, NavLink } from "react-router-dom";
 import { logout } from "../redux/slices/authSlice";
+import { fetchUserDetail } from "../redux/slices/userSlice";
 const iconMap = {
   user: faUser,
   newspaper: faNewspaper,
@@ -48,11 +49,13 @@ const optionProfile = [
 
 export default function UserProfilePage() {
   const dispatch = useDispatch();
-  const currenUser = useSelector((state) => state.auth?.currentUser);
-
+  const currentUser = useSelector((state) => state.user?.user);
   const handleLogout = () => {
     dispatch(logout());
   };
+  useEffect(() => {
+    dispatch(fetchUserDetail());
+  }, []);
   return (
     <div className="bg-slate-50 w-full">
       <div className="flex flex-col sm:flex-row justify-center gap-2 p-12">
@@ -60,12 +63,12 @@ export default function UserProfilePage() {
         <div className="flex flex-col bg-white p-5 sm:w-1/4 sm:h-3/4 w-full rounded-lg shadow-xl">
           <div className="flex flex-col text-center text-neutral-500 w-full">
             <span className="uppercase font-semibold">
-              {currenUser?.username}
+              {currentUser?.username}
             </span>
-            <span>{`${currenUser?.first_name || ""} ${
-              currenUser?.last_name || ""
+            <span>{`${currentUser?.first_name || ""} ${
+              currentUser?.last_name || ""
             }`}</span>
-            <span className="text-base">{currenUser?.email}</span>
+            <span className="text-base">{currentUser?.email}</span>
           </div>
           <Divider />
 
