@@ -40,6 +40,7 @@ export default function ProductPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const sortParam = searchParams.get("sort");
   const titleParam = searchParams.get("title");
+  const search = searchParams.get("search");
   // console.log("aaa",sortParam + titleParam)
   const handleFilterChange = (item, index) => {
     //lưu id button
@@ -72,7 +73,7 @@ export default function ProductPage() {
           );
         })}
       </div>
-      <ProductList sortParam={sortParam} titleParam={titleParam} />
+      <ProductList sortParam={sortParam} titleParam={titleParam} searchParam={search}/>
       <FloatButton.BackTop type="primary" />
     </motion.div>
   );

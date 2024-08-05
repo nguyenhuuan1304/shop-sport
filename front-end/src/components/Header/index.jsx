@@ -93,7 +93,7 @@ export default function Header() {
     (state) => state.cart?.number_of_product
   );
 
-  console.log(number_of_product);
+  // console.log(number_of_product);
   const products = useSelector((state) => state.cart.products);
   // console.log(location.pathname);
 

@@ -116,7 +116,6 @@ const productSlice = createSlice({
     highPriceProductList: [],
     expensiveProductList: [],
     productListWithSearchbyPage: [],
-    productListByPage: [],
     combinedProductList: [],
     productDetails: null,
     loading: false,
@@ -132,6 +131,7 @@ const productSlice = createSlice({
     setActiveFilter(state, action) {
       const { title, sort } = action.payload;
       state.activeFilter = { title: title, sort: sort };
+      state.productList = [];
       state.newProductList = [];
       state.saleProductList = [];
       state.hotProductList = [];
@@ -139,8 +139,9 @@ const productSlice = createSlice({
       state.expensiveProductList = [];
       state.productListWithSortOrTitleByPage = [];
       state.combinedProductList = [];
+      state.productListWithSearchbyPage = [];
       state.totalProductItems = 0;
-      console.log("active ", state.activeFilter, state.combinedProductList);
+      console.log("active 1", state.activeFilter, state.combinedProductList);
     },
   },
   extraReducers: (builder) => {
@@ -150,8 +151,8 @@ const productSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchProductListWithSortOrTitle.fulfilled, (state, action) => {
+        console.log("Reset state check:", state.combinedProductList);
         const title = state.activeFilter.title;
-
         switch (title) {
           case "New":
           case "Mới Nhất":
@@ -215,8 +216,8 @@ const productSlice = createSlice({
           ...action.payload.data,
         ];
         console.log(
-          "state.productListWithSearchbyPage , ",
-          state.productListWithSearchbyPage
+          "state.productListWithSearchbyPage ",
+          action.payload.data
         );
         state.combinedProductList = [...state.productListWithSearchbyPage];
         console.log("state.combinedProductList , ", state.combinedProductList);
@@ -232,13 +233,14 @@ const productSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchProductList.fulfilled, (state, action) => {
+        console.log("Reset state check:", state.combinedProductList);
         state.loading = false;
-        state.productListByPage = [
-          ...state.productListByPage,
+        state.productList = [
+          ...state.productList,
           ...action.payload.data,
         ];
         // console.log("state.productListByPage , ", state.productListByPage);
-        state.combinedProductList = [...state.productListByPage];
+        state.combinedProductList = [...state.productList];
         // console.log("state.combinedProductList , ", state.combinedProductList);
         state.totalProductItems = action.payload.meta?.pagination?.total;
         state.pageSize = action.payload.meta.pagination.pageSize;

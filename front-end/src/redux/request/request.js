@@ -19,7 +19,8 @@ const request = {
       const response = await axiosInstance.get(
         API_ENDPOINTS.SEARCH_FIVE_PRODUCTS(keyWord)
       );
-      return successHandler(response);
+      console.log(response);
+      return response.data.data;
     } catch (error) {
       return errorHandler(error);
     }
@@ -29,8 +30,8 @@ const request = {
       const response = await axiosInstance.get(
         API_ENDPOINTS.SEARCH_LIST_PRODUCTS(keyWord, currentPage, pageSize)
       );
-      // console.log("Response data:", response.data);
-      return response;
+      console.log("Response data:", response.data.data);
+      return response.data.data;
     } catch (error) {
       return errorHandler(error);
     }
@@ -205,7 +206,8 @@ const request = {
         updatedProducts = [...userCart.data.items, cartItem];
       }
       //updated total value
-      const updatedTotal = userCart?.data?.total_of_price + cartItem?.product?.price;
+      const updatedTotal =
+        userCart?.data?.total_of_price + cartItem?.product?.price;
       //number of product
       const numberOfProduct = updatedProducts.reduce((accumulator, product) => {
         return accumulator + product.count;

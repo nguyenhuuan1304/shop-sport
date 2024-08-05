@@ -32,6 +32,7 @@ export default function SearchBar({ keyWord }) {
     setKeyWordSearchListProducts(value);
     navigate(`/products?search=${value}`);
   };
+
   useEffect(() => {
     if (keyWordSearchListProducts) {
       dispatch(
@@ -67,10 +68,7 @@ export default function SearchBar({ keyWord }) {
   }, [dispatch, useDebounceSearchTerm]);
 
   const urlImg = (item) => {
-    return item?.attributes?.image?.data?.[0]?.attributes?.url
-      ? import.meta.env.VITE_IMG_URL +
-          item?.attributes?.image?.data?.[0]?.attributes?.url
-      : placeholder;
+    return item?.images[0] ? item?.images[0] : placeholder;
   };
 
   return (
@@ -100,8 +98,8 @@ export default function SearchBar({ keyWord }) {
                   split={true}
                   renderItem={(item, index) => (
                     <Link
-                      to={`/product/${item?.id}`}
-                      key={item?.id}
+                      to={`/product/${item?._id}`}
+                      key={item?._id}
                       onClick={handleInputBlur}
                     >
                       <List.Item className="w-full border-b border-gray-300 last:border-b-0">
@@ -112,10 +110,10 @@ export default function SearchBar({ keyWord }) {
                               className="w-20 h-20 rounded-full shadow-xl border-4 border-neutral-100"
                             />
                           }
-                          title={<p>{item?.attributes?.name}</p>}
+                          title={<p>{item?.name}</p>}
                           description={
                             isAuthenticated ? (
-                              <p>{item?.attributes?.price} $</p>
+                              <p>{item?.price} $</p>
                             ) : (
                               <p className="font-semibold">
                                 Đăng nhập để xem giá

@@ -3,9 +3,9 @@ const API_ENDPOINTS = {
   GET_LIST_PRODUCTS: (currentPage, pageSize) =>
     `/products?page=${currentPage}&pageSize=${pageSize}`,
   SEARCH_FIVE_PRODUCTS: (keyWord) =>
-    `/products?populate=*&filters[name][$containsi]=${keyWord.toUpperCase()}&pagination[limit]=5&sort[0]=createdAt:asc`,
+    `/products/search?q=${keyWord}&pageSize=5&page=1`,
   SEARCH_LIST_PRODUCTS: (keyWord, currentPage, pageSize) =>
-    `/products?populate=*&filters[name][$containsi]=${keyWord.toUpperCase()}&pagination[page]=${currentPage}&pagination[pageSize]=${pageSize}`,
+    `/products/search?q=${keyWord}&pageSize=${pageSize}&page=${currentPage}`,
   LIST_SORT: (sort, currentPage, pageSize) =>
     `products?page=${currentPage}&pageSize=${pageSize}&orderBy=${sort}`,
   LIST_FILLTER: (title, sort, currentPage, pageSize) =>
