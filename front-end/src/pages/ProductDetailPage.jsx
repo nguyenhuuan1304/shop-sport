@@ -141,35 +141,32 @@ export default function ProductDetailPage() {
     // console.log(saleProducts);
   }, [dispatch, productId]);
 
-  // +/ sản phẩm để thêm vào giỏ hàng
-  const handleQuantityChange = (RowItem) => {
-    // console.log("key.size", RowItem);
+  const handleQuantityChange = (RowItem, newCount) => {
     const key = RowItem.key;
-    // Kiểm tra xem sản phẩm có trong cart chưa
     const existingItem = cart.find((item) => item.key === key);
+  
     if (existingItem) {
-      // Nếu sản phẩm đã có trong cart, cập nhật count
       const updatedCart = cart
         .map((item) =>
           item.key === key
             ? {
                 ...item,
                 product: product,
-                count: item.count + 1,
+                count: newCount,
                 size: RowItem.size_name,
               }
             : item
         )
-        .filter((item) => item.count > 0); // Lọc ra các mục có count > 0
+        .filter((item) => item.count > 0);
       setCart(updatedCart);
     } else {
       const newItem = {
         key,
-        count: 1,
+        count: newCount,
         product: product,
         size: RowItem.size_name,
       };
-      const updatedCart = [...cart, newItem].filter((item) => item.count > 0); // Lọc ra các mục có count > 0
+      const updatedCart = [...cart, newItem].filter((item) => item.count > 0);
       setCart(updatedCart);
     }
   };
@@ -209,7 +206,8 @@ export default function ProductDetailPage() {
         <QuantityEditor
           min={0}
           max={record.quantity}
-          onChange={() => handleQuantityChange(record)}
+          value={record.count}
+          onChange={(newCount) => handleQuantityChange(record, newCount)}
         />
       ),
     },
