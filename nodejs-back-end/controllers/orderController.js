@@ -12,4 +12,16 @@ async function getOrdersByUserId(req, res) {
   }
 }
 
-export { getOrdersByUserId };
+async function createOrder(req, res) {
+  try {
+    const order = req.body;
+    const result = await orderService.createOrder(order);
+    return res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+}
+
+export { getOrdersByUserId, createOrder };

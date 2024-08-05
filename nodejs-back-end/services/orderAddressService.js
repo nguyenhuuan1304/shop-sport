@@ -78,7 +78,7 @@ async function setDefaultOrderAddress(user_id, order_address_id) {
     const order_address = await orderAddressModel.findById(order_address_id);
     if (!order_address) throw new Error("Order Address not found!");
     const updates = order_addresses.map(async (address) => {
-      if (address._id.toString() === order_address_id) {
+      if (address?._id.toString() === order_address_id) {
         if (address.is_default === false) {
           address.is_default = true;
         }

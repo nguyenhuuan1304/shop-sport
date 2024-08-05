@@ -6,6 +6,14 @@ const order_schema = mongoose.Schema({
     type: Number,
     required: true,
   },
+  number_phone: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
   status: {
     type: Boolean,
     default: false,
@@ -22,6 +30,10 @@ const order_schema = mongoose.Schema({
   },
   order_address: {
     type: String,
+  },
+  notes: {
+    type: String,
+    default: "",
   },
   created_at: {
     type: Date,

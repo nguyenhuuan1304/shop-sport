@@ -35,6 +35,7 @@ export default function PersonalInformationForm() {
   }, [currentUser]);
 
   const handleChange = (e) => {
+    console.log(e.target);
     const { name, value } = e.target;
     setFormData({
       ...formData,

@@ -178,7 +178,7 @@ export default function ProductDetailPage() {
   const addToCart = () => {
     // if cart not empty
     if (cart && cart?.length > 0) {
-      dispatch(addManyToCart({ userId: currentUser?.id, products: cart }));
+      dispatch(addManyToCart({ userId: currentUser?._id, products: cart }));
       showDrawer();
       console.log("cart: ", cart);
     } else error();
@@ -209,7 +209,7 @@ export default function ProductDetailPage() {
         <QuantityEditor
           min={0}
           max={record.quantity}
-          onChange={() => handleQuantityChange(record, 1)}
+          onChange={() => handleQuantityChange(record)}
         />
       ),
     },
@@ -381,7 +381,7 @@ export default function ProductDetailPage() {
           <div className="flex justify-center items-center pb-2">
             {saleProducts?.map((item) => {
               return (
-                <div key={item.id} className="w-full flex justify-center">
+                <div key={item._id} className="w-full flex justify-center">
                   <ProductCard
                     key={item._id}
                     product={item}

@@ -1,14 +1,11 @@
-import {
-  Button,
-  Drawer
-} from "antd";
+import { Button, Drawer } from "antd";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import {
   addToCart,
   deleteFromCart,
-  removeFromCart
+  removeFromCart,
 } from "../../redux/slices/cartSlice";
 import CartItem from "../CartItem";
 import EmptyCart from "../EmptyCart";
@@ -17,12 +14,16 @@ import EmptyCart from "../EmptyCart";
 const DrawerFooter = () => {
   return (
     <div className="flex flex-row gap-2 items-center justify-center">
-      <Button size="large" type="primary" className="w-full">
-        <Link to="/products">Chọn thêm</Link>
-      </Button>
-      <Button size="large" danger type="primary" className="w-full">
-        <Link to="/cart">Đặt ngay</Link>
-      </Button>
+      <Link to="/products" className="w-full">
+        <Button size="large" type="primary" className="w-full">
+          Chọn thêm
+        </Button>
+      </Link>
+      <Link to="/cart" className="w-full">
+        <Button size="large" danger type="primary" className="w-full">
+          Đặt ngay
+        </Button>
+      </Link>
     </div>
   );
 };

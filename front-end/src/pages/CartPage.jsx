@@ -1,10 +1,6 @@
-import {
-  Button,
-  Divider,
-  Input
-} from "antd";
+import { Button, Divider, Input } from "antd";
 import { motion } from "framer-motion";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CartItem from "../components/CartItem";
@@ -13,18 +9,31 @@ import {
   addToCart,
   deleteFromCart,
   fetchCartData,
-  removeFromCart
+  removeFromCart,
 } from "../redux/slices/cartSlice";
+import { fetchOrderAddress } from "../redux/slices/orderAddressSlice";
 const { TextArea } = Input;
 
 export default function CartPage() {
   const dispatch = useDispatch();
-  const userId = useSelector((state) => state.auth?.currentUser?.id);
+  const currentUser = useSelector((state) => state.auth?.currentUser);
+  const [orderForm, setOrderForm] = useState({
+    total_of_price: 0,
+    order_address: {},
+    cart: {},
+    notes: "",
+    number_phone: "",
+    email: "",
+  });
+  const userId = useSelector((state) => state.auth?.currentUser?._id);
   const cartData = useSelector((state) => state.cart?.products);
-  // console.log(cartData)
+  //tổng tiền của giỏ hàng
+  const default_address = useSelector(
+    (state) => state.orderAddress?.defaultOrderAddress
+  );
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
   //tổng giá tiền sản phẩm của giỏ hàng
-  const total = useSelector((state) => state.cart.total);
+  const total = useSelector((state) => state.cart?.total);
   // tổng số lượng sản phẩm có trong giỏ hàng (tính cả size)
   const totalProduct = useSelector((state) => state.cart?.number_of_product);
   // xử lý thêm sản phẩm vào giỏ hàng trên strapi
@@ -37,11 +46,45 @@ export default function CartPage() {
   const handleDeleteFromCart = (userId, cartItem) => {
     dispatch(deleteFromCart({ userId, cartItem }));
   };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setOrderForm((prevForm) => ({
+      ...prevForm,
+      [name]: value,
+    }));
+  };
+  //kiểm tra số lượng sản phẩm trước khi thanh toán (số lương sp có vượt quá tồn kho hay ko)
+  const checkQuantityCartItem = () => {
+    return cartData.every((cartItem) =>
+      cartItem.product?.size_list.some(
+        (sizeItem) =>
+          cartItem.size === sizeItem.size_name &&
+          cartItem.count <= sizeItem.quantity
+      )
+    );
+  };
+  //xử lý nút đặt hàng
+  const handleOrder = () => {
+    if (checkQuantityCartItem()) {
+      console.log(orderForm);
+      console.log(cartData);
+      console.log("order address", default_address);
+      console.log("total price", total);
+    } else alert("Số lượng sản phẩm trong giỏ hạn vượt quá sản phẩm tồn kho");
+  };
 
   useEffect(() => {
+    dispatch(fetchOrderAddress());
     dispatch(fetchCartData(userId));
-  }, [dispatch, userId]);
-
+  }, [currentUser]);
+  useEffect(() => {
+    if (currentUser) {
+      setOrderForm({
+        number_phone: currentUser?.number_phone,
+        email: currentUser?.email,
+      });
+    }
+  }, [currentUser]);
   return (
     <>
       {" "}
@@ -62,15 +105,21 @@ export default function CartPage() {
               <div className="flex flex-col gap-2">
                 <span className="text-sm">Số điện thoại</span>
                 <Input
-                  placeholder="Điện thoại liên lạc với bạn."
+                  id="number_phone"
+                  name="number_phone"
+                  value={orderForm?.number_phone}
                   className="rounded-full pr-20"
+                  onChange={handleChange}
                 />
               </div>
               <div className="flex flex-col gap-2">
                 <span className="text-sm">Email</span>
                 <Input
-                  placeholder="Địa chỉ email của bạn."
+                  id="number_phone"
+                  name="email"
+                  value={orderForm?.email}
                   className="rounded-full pr-20"
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -82,16 +131,22 @@ export default function CartPage() {
                   Địa chỉ khác
                 </Link>
               </div>
-              <span className="font-semibold text-lg">Tiền Vệ Football</span>
+              <span className="font-semibold text-lg">
+                {default_address?.name}
+              </span>
               <p className="text-gray-500 text-base">
-                83/5 Huỳnh Văn Luỹ, P.Phú Lợi, TP. Thủ Dầu Một, Bình Dương,
-                Phường Phú Lợi, Thành phố Thủ Dầu Một, Bình Dương
+                {default_address?.address}
               </p>
             </div>
             {/* Ghi chú */}
             <div>
               <span className="text-sm">Ghi chú</span>
-              <TextArea allowClear className="rounded-lg" />
+              <TextArea
+                name="notes"
+                allowClear
+                className="rounded-lg"
+                onChange={handleChange}
+              />
             </div>
           </div>
           {/* divider */}
@@ -149,7 +204,7 @@ export default function CartPage() {
               </div>
               <Divider />
             </div>
-            <Button danger type="primary">
+            <Button onClick={handleOrder} danger type="primary">
               <span size="large" className="text-lg">
                 Đặt hàng
               </span>

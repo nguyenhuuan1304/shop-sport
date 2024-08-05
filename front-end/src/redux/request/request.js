@@ -103,7 +103,6 @@ const request = {
   fetchOrderAddress: async () => {
     try {
       const response = await axiosInstance.get(API_ENDPOINTS.GET_ORDER_ADDRESS);
-      console.log(response);
       return response;
     } catch (error) {
       return errorHandler(error);
@@ -314,7 +313,7 @@ const request = {
       // Check if product exists in cart (key === key)
       products.forEach((productItem) => {
         const existingItemIndex = updatedCartProducts.findIndex(
-          (cartItem) => cartItem.key === productItem.key
+          (cartItem) => cartItem.size === productItem.size
         );
         if (existingItemIndex !== -1) {
           updatedCartProducts[existingItemIndex].count += productItem.count;

@@ -22,5 +22,14 @@ async function getOrdersByUserId(user_id) {
     throw error;
   }
 }
+async function createOrder(order) {
+  try {
+    const new_order = new orderModel(order);
+    await new_order.save();
+    return new_order;
+  } catch (error) {
+    throw error;
+  }
+}
 
-export { getOrdersByUserId };
+export { getOrdersByUserId, createOrder };

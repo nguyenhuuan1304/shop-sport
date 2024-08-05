@@ -29,7 +29,9 @@ function App() {
   const products = useSelector((state) => state.cart.products);
   useEffect(() => {
     dispatch(fetchUserDetail());
-    dispatch(fetchCartData(currentUser?.id));
+    if (currentUser) {
+      dispatch(fetchCartData(currentUser?.id));
+    }
   }, [dispatch, currentUser?.id]);
   return (
     // <Provider store={store}>

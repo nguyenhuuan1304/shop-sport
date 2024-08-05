@@ -6,7 +6,6 @@ export const fetchCreateOrderAddress = createAsyncThunk(
   async (order_address, { rejectWithValue }) => {
     try {
       const response = await request.createOrderAddress(order_address);
-      console.log("fetch create ", response);
       return response;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -31,6 +30,7 @@ const OrderAddressSlice = createSlice({
   initialState: {
     order_addresses: [],
     orderAddress: null,
+    defaultOrderAddress: null,
     loading: false,
     error: null,
   },
@@ -44,7 +44,6 @@ const OrderAddressSlice = createSlice({
       .addCase(fetchCreateOrderAddress.fulfilled, (state, action) => {
         state.loading = false;
         state.orderAddress = action.payload;
-        console.log(action.payload);
         state.order_addresses = [...state.order_addresses, state.orderAddress];
       })
       .addCase(fetchCreateOrderAddress.rejected, (state, action) => {
@@ -58,6 +57,9 @@ const OrderAddressSlice = createSlice({
       .addCase(fetchOrderAddress.fulfilled, (state, action) => {
         state.loading = false;
         state.order_addresses = action.payload;
+        state.defaultOrderAddress = action.payload?.find(
+          (item) => item.is_default === true
+        );
       })
       .addCase(fetchOrderAddress.rejected, (state, action) => {
         state.loading = false;
