@@ -4,8 +4,22 @@ import { request } from "../request";
 const initialState = {
   orders: [],
   loading: false,
+  paymentUrl: null,
   error: null,
 };
+
+export const createCheckoutSession = createAsyncThunk(
+  "order/createCheckoutSession",
+  async (cart, { rejectWithValue }) => {
+    try {
+      const response = await request.CreateCheckoutSession(cart);
+      console.log("order slice", response);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 export const fetchOrders = createAsyncThunk(
   "order/fetchOrders",
@@ -57,6 +71,18 @@ const orderSlice = createSlice({
         // state.orders = action.payload.data;
       })
       .addCase(createOrder.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(createCheckoutSession.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createCheckoutSession.fulfilled, (state, action) => {
+        state.loading = false;
+        state.paymentUrl = action.payload.url;
+      })
+      .addCase(createCheckoutSession.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

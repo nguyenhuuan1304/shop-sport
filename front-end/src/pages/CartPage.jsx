@@ -12,7 +12,7 @@ import {
   removeFromCart,
 } from "../redux/slices/cartSlice";
 import { fetchOrderAddress } from "../redux/slices/orderAddressSlice";
-import { createOrder } from "../redux/slices/orderSlice";
+import { createCheckoutSession, createOrder } from "../redux/slices/orderSlice";
 const { TextArea } = Input;
 
 export default function CartPage() {
@@ -79,10 +79,13 @@ export default function CartPage() {
         cart: cartData,
         total_of_price: total,
       };
-      dispatch(createOrder(order));
+      // dispatch(createOrder(order));
+      dispatch(createCheckoutSession(cartData));
     } else alert("Số lượng sản phẩm trong giỏ hạn vượt quá sản phẩm tồn kho");
   };
 
+  //link chuyển hướng đến stripe
+  const paymentUrl = useSelector((state) => state.order?.paymentUrl);
   useEffect(() => {
     dispatch(fetchOrderAddress());
     dispatch(fetchCartData(userId));
@@ -95,6 +98,11 @@ export default function CartPage() {
       });
     }
   }, [currentUser]);
+  useEffect(() => {
+    if (paymentUrl) {
+      window.location.href = paymentUrl;
+    }
+  }, [paymentUrl]);
   return (
     <>
       {" "}

@@ -431,5 +431,18 @@ const request = {
       throw error;
     }
   },
+  CreateCheckoutSession: async (cart) => {
+    try {
+      console.log("request js", cart);
+      const response = await axiosInstance.post(
+        API_ENDPOINTS.CREATE_CHECKOUT_SESSION,
+        cart
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error when create checkout session:", error);
+      throw error;
+    }
+  },
 };
 export default request;

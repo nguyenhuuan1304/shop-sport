@@ -36,6 +36,9 @@ const API_ENDPOINTS = {
   //order
   GET_ORDERS: `/order`,
   ADD_ORDER: `/order`,
+
+  //payment
+  CREATE_CHECKOUT_SESSION: `/payment/create-checkout-session`,
 };
 
 export default API_ENDPOINTS;
