@@ -1,6 +1,5 @@
+import { Dropdown, List, Menu } from "antd";
 import React from "react";
-import { Divider, List, Typography, Menu } from "antd";
-import { Dropdown, Space } from "antd";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { Link } from "react-router-dom";
 const data = [
@@ -10,11 +9,11 @@ const data = [
     children: [
       {
         title: "ADIDAS",
-        to: "bulbal-hd",
+        to: "products?title=brand&sort=adidas",
       },
       {
         title: "NIKE",
-        to: "riki-cv",
+        to: "products?title=brand&sort=nike",
       },
     ],
   },

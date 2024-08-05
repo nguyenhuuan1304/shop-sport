@@ -41,7 +41,7 @@ export const fetchProductListWithSortOrTitle = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log("current page ", currentPage);
+      console.log(" ------ ", sortParam, titleParam);
       return await request.ListSort({
         sort: sortParam,
         title: titleParam,
@@ -110,6 +110,7 @@ const productSlice = createSlice({
   name: "products",
   initialState: {
     productList: [],
+    productBrandList: [],
     newProductList: [],
     saleProductList: [],
     hotProductList: [],
@@ -140,6 +141,7 @@ const productSlice = createSlice({
       state.productListWithSortOrTitleByPage = [];
       state.combinedProductList = [];
       state.productListWithSearchbyPage = [];
+      state.productBrandList = [];
       state.totalProductItems = 0;
       console.log("active 1", state.activeFilter, state.combinedProductList);
     },
@@ -151,7 +153,6 @@ const productSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchProductListWithSortOrTitle.fulfilled, (state, action) => {
-        console.log("Reset state check:", state.combinedProductList);
         const title = state.activeFilter.title;
         switch (title) {
           case "New":
@@ -194,6 +195,13 @@ const productSlice = createSlice({
             ];
             console.log("Giá cao ", state.expensiveProductList);
             state.combinedProductList = [...state.expensiveProductList];
+            break;
+          case "brand":
+            state.productBrandList = [
+              ...state.productBrandList,
+              ...action.payload.data,
+            ];
+            state.combinedProductList = [...state.productBrandList];
             break;
         }
         // console.log("state.combinedProductList , ", state.combinedProductList);

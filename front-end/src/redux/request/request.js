@@ -38,14 +38,16 @@ const request = {
   },
 
   ListSort: async ({ sort, title, currentPage, pageSize }) => {
-    console.log("listsort ", sort);
+    console.log("listsort ", title);
     try {
       let url = "";
-      if (sort != "true" && sort != "false") {
+      if (sort != "true" && sort != "false" && title != "brand") {
         url += API_ENDPOINTS.LIST_SORT(sort, currentPage, pageSize);
       } else {
         if (title == "Hot") {
           title = "hot";
+        } else if (title == "brand") {
+          title = "brand";
         } else {
           title = "sale";
         }

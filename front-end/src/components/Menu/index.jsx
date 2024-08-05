@@ -38,7 +38,7 @@ export default function _Menu() {
         <NavLink
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          to=""
+          to="/categories"
           className="bg-blue-500 text-white text-sm p-3 rounded-md flex flex-row gap-2 items-center"
         >
           <svg

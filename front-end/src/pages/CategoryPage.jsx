@@ -1,15 +1,16 @@
-import React from "react";
 import { Image } from "antd";
+import React from "react";
 import { Link } from "react-router-dom";
 
 export default function CategoryPage() {
+
   return (
     <div className="flex flex-col">
       <div className="bg-blue-500 text-white p-2 text-lg">
         QUẦN ÁO BÓNG ĐÁ THƯƠNG HIỆU
       </div>
       <div className="flex sm:flex-row flex-col p-2 gap-2">
-        <Link className="flex flex-col items-center">
+        <Link to={"/products?title=brand&sort=nike"} className="flex flex-col items-center">
           <Image
             width={250}
             height={250}
@@ -17,7 +18,7 @@ export default function CategoryPage() {
           />
           NIKE
         </Link>
-        <Link className="flex flex-col items-center">
+        <Link to={`/products?title=brand&sort=adidas`} className="flex flex-col items-center">
           <Image
             width={250}
             height={250}

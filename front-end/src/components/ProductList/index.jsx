@@ -24,14 +24,14 @@ function ProductList({ sortParam, titleParam, searchParam }) {
     (state) => state.products?.totalProductItems
   );
   const [currentPage, setCurrentPage] = useState(1);
-  console.log("productListByPage ", productListByPage);
+  // console.log("productListByPage ", productListByPage);
   // Fetch products when filters or currentPage change
   useEffect(() => {
     // Reset currentPage and fetch products when filters change
     setCurrentPage(1);
     dispatch(setActiveFilter({ title: titleParam, sort: sortParam }));
     getProductList(1);
-    console.log("object");
+    // console.log("object");
   }, [sortParam, titleParam, searchParam]);
 
   // useEffect(() => {
@@ -55,7 +55,6 @@ function ProductList({ sortParam, titleParam, searchParam }) {
   // }, [location]);
 
   useEffect(() => {
-    // Update hasMore based on totalProductItems and current data length
     if (productListByPage.length >= totalProductItems) {
       setHasMore(false);
     } else {
@@ -77,9 +76,9 @@ function ProductList({ sortParam, titleParam, searchParam }) {
   };
 
   const getProductList = (page) => {
-    console.log("Fetching product list for page", page);
+    // console.log("Fetching product list for page", page);
     if (sortParam) {
-      if (titleParam === "Hot" || titleParam === "Sale") {
+      if (titleParam === "Hot" || titleParam === "Sale" || titleParam === "brand") {
         dispatch(
           fetchProductListWithSortOrTitle({
             sortParam,
