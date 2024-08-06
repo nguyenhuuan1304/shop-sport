@@ -88,7 +88,7 @@ async function setDefaultOrderAddress(user_id, order_address_id) {
       return await address.save();
     });
     await Promise.all(updates);
-    return order_address_id;
+    return order_addresses;
   } catch (error) {
     throw error;
   }

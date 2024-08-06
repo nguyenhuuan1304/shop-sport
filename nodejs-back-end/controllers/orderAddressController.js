@@ -78,7 +78,8 @@ async function setDefaultOrderAddress(req, res) {
       return res.status(404).json({ message: "not found order address id!" });
     else
       return res.status(200).json({
-        message: `set default is success with order address id ${result}`,
+        message: `set default is success with order address id ${order_address_id}`,
+        data: result,
       });
   } catch (error) {
     res.status(500).json({

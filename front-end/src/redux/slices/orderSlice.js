@@ -3,6 +3,7 @@ import { request } from "../request";
 
 const initialState = {
   orders: [],
+  session_detail: null,
   loading: false,
   paymentUrl: null,
   error: null,
@@ -10,10 +11,23 @@ const initialState = {
 
 export const createCheckoutSession = createAsyncThunk(
   "order/createCheckoutSession",
-  async (cart, { rejectWithValue }) => {
+  async (order, { rejectWithValue }) => {
     try {
-      const response = await request.CreateCheckoutSession(cart);
+      const response = await request.CreateCheckoutSession(order);
       console.log("order slice", response);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const checkoutSession = createAsyncThunk(
+  "order/checkoutSession",
+  async (session_id, { rejectWithValue }) => {
+    try {
+      const response = await request.CheckoutSession(session_id);
+      console.log("checkout session ", response);
       return response;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -83,6 +97,18 @@ const orderSlice = createSlice({
         state.paymentUrl = action.payload.url;
       })
       .addCase(createCheckoutSession.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(checkoutSession.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(checkoutSession.fulfilled, (state, action) => {
+        state.loading = false;
+        state.session_detail = action.payload;
+      })
+      .addCase(checkoutSession.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

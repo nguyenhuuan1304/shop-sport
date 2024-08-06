@@ -121,6 +121,18 @@ const request = {
       return errorHandler(error);
     }
   },
+  SetDefaultOrderAddress: async (order_address_id) => {
+    try {
+      const response = await axiosInstance.put(
+        API_ENDPOINTS.SET_DEFAULT_ORDER_ADDRESS(order_address_id)
+      );
+      console.log(order_address_id);
+      return response.data;
+    } catch (error) {
+      console.error("Error set default order address:", error);
+      throw error;
+    }
+  },
   Cart: async (userId) => {
     try {
       const response = await axiosInstance.get(
@@ -431,16 +443,28 @@ const request = {
       throw error;
     }
   },
-  CreateCheckoutSession: async (cart) => {
+  CreateCheckoutSession: async (order) => {
     try {
-      console.log("request js", cart);
+      console.log("request js", order);
       const response = await axiosInstance.post(
         API_ENDPOINTS.CREATE_CHECKOUT_SESSION,
-        cart
+        order
       );
       return response.data;
     } catch (error) {
       console.error("Error when create checkout session:", error);
+      throw error;
+    }
+  },
+  CheckoutSession: async (session_id) => {
+    try {
+      const response = await axiosInstance.get(
+        API_ENDPOINTS.CHECKOUT_SESSION(session_id)
+      );
+      console.log("request checkout session", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error when checkout session:", error);
       throw error;
     }
   },

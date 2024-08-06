@@ -13,6 +13,18 @@ export const fetchCreateOrderAddress = createAsyncThunk(
   }
 );
 
+export const setDefaultOrderAddress = createAsyncThunk(
+  "orderAddress/setDefaultOrderAddress",
+  async (order_address_id, { rejectWithValue }) => {
+    try {
+      const response = await request.SetDefaultOrderAddress(order_address_id);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const fetchOrderAddress = createAsyncThunk(
   "orderAddress/fetchOrderAddress",
   async (_, { rejectWithValue }) => {
@@ -62,6 +74,21 @@ const OrderAddressSlice = createSlice({
         );
       })
       .addCase(fetchOrderAddress.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(setDefaultOrderAddress.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(setDefaultOrderAddress.fulfilled, (state, action) => {
+        state.loading = false;
+        state.order_addresses = action.payload;
+        state.defaultOrderAddress = action.payload?.find(
+          (item) => item.is_default === true
+        );
+      })
+      .addCase(setDefaultOrderAddress.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
