@@ -110,18 +110,18 @@ async function webhook(req, res) {
     console.log(`🔔  Payment received!`);
   }
 
-  if (eventType === "checkout.session.expired") {
-    const session = data.object;
-    const order_id = session.metadata?.order_id;
-    const user_id = session.metadata?.user_id;
-    try {
-      // delete order
-      await orderService.deleteOrder(user_id, order_id);
-      console.log("Order has been deleted.");
-    } catch (err) {
-      console.error("Error deleting order:", err);
-    }
-  }
+  // if (eventType === "checkout.session.expired") {
+  //   const session = data.object;
+  //   const order_id = session.metadata?.order_id;
+  //   const user_id = session.metadata?.user_id;
+  //   try {
+  //     // delete order
+  //     await orderService.deleteOrder(user_id, order_id);
+  //     console.log("Order has been deleted.");
+  //   } catch (err) {
+  //     console.error("Error deleting order:", err);
+  //   }
+  // }
   res.sendStatus(200);
 }
 export { checkoutSession, createCheckoutSession, webhook };
