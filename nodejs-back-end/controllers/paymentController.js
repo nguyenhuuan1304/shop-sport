@@ -1,5 +1,7 @@
 import dotenv from "dotenv";
 import { orderService } from "../services/index.js";
+import { cartService } from "../services/index.js";
+import { userService } from "../services/index.js";
 import { Stripe } from "stripe";
 dotenv.config();
 
@@ -17,9 +19,19 @@ async function createCheckoutSession(req, res) {
 
   //create order with status = 'pending'
   const user_id = req.user.user_id;
+  // Kiểm tra xem người dùng đã có session đang chờ thanh toán chưa
+  const existingOrder = await orderService.findPendingOrderByUserId(user_id);
+  console.log("existing order", existingOrder);
+  if (existingOrder) {
+    return res.json({
+      message:
+        "Bạn có đơn hàng chưa thanh toán, vui lòng thanh toán trước khi tạo đơn hàng mới!",
+      prev_url: existingOrder.payment_url,
+      // prev_url: `${domainURL}/profile/orders`,
+    });
+  }
+
   let order = req.body;
-  //add expires_at 5 minutes
-  // order = { ...order, expires_at: new Date(Date.now() + 2 * 60 * 1000) };
   const createOrder = await orderService.createOrder(user_id, order);
   if (!createOrder) {
     throw new Error("Failed to create order");
@@ -46,12 +58,17 @@ async function createCheckoutSession(req, res) {
       line_items: line_items,
       customer_email: customer_email,
       success_url: `${domainURL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${domainURL}/cart`,
+      cancel_url: `${domainURL}/payment-cancel?session_id={CHECKOUT_SESSION_ID}`,
       metadata: {
         order_id: createOrder?._id.toString(),
         user_id: user_id,
       },
     });
+    //add payment_url = session.url
+    await orderService.updateOrder(createOrder._id, {
+      payment_url: session.url,
+    });
+
     // Trả về URL của phiên thanh toán dưới dạng JSON
     res.json({ url: session.url });
   } catch (error) {
@@ -92,6 +109,7 @@ async function webhook(req, res) {
   if (eventType === "checkout.session.completed") {
     const session = data.object;
     const order_id = session.metadata?.order_id;
+    const user_id = session.metadata?.user_id;
 
     // console.log("Session metadata:", session.metadata);
 
@@ -99,6 +117,11 @@ async function webhook(req, res) {
       // Cập nhật trạng thái đơn hàng thành 'shipping'
       if (order_id) {
         await orderService.updateOrderStatus(order_id, "shipping");
+        // clear cart
+        const user = await userService.getUserById(user_id);
+        const cart_id = user?.cart;
+        await cartService.clearCart(cart_id);
+
         console.log(`Order ${order_id} status updated to 'shipping'.`);
       } else {
         console.log("Order ID not found in metadata.");
@@ -110,18 +133,19 @@ async function webhook(req, res) {
     console.log(`🔔  Payment received!`);
   }
 
-  // if (eventType === "checkout.session.expired") {
-  //   const session = data.object;
-  //   const order_id = session.metadata?.order_id;
-  //   const user_id = session.metadata?.user_id;
-  //   try {
-  //     // delete order
-  //     await orderService.deleteOrder(user_id, order_id);
-  //     console.log("Order has been deleted.");
-  //   } catch (err) {
-  //     console.error("Error deleting order:", err);
-  //   }
-  // }
+  if (eventType === "invoice.payment_failed") {
+    const session = data.object;
+    // console.log(session.metadata);
+    const order_id = session.metadata?.order_id;
+    const user_id = session.metadata?.user_id;
+    try {
+      // delete order
+      await orderService.deleteOrder(user_id, order_id);
+      console.log("Order has been deleted.");
+    } catch (err) {
+      console.error("Error deleting order:", err);
+    }
+  }
   res.sendStatus(200);
 }
 export { checkoutSession, createCheckoutSession, webhook };

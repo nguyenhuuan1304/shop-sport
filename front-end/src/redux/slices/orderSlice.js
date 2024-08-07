@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../request";
-
 const initialState = {
   orders: [],
   session_detail: null,
   loading: false,
   paymentUrl: null,
+  prevPaymentUrl: null,
   error: null,
 };
 
@@ -14,7 +14,6 @@ export const createCheckoutSession = createAsyncThunk(
   async (order, { rejectWithValue }) => {
     try {
       const response = await request.CreateCheckoutSession(order);
-      console.log("order slice", response);
       return response;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -58,6 +57,18 @@ export const createOrder = createAsyncThunk(
   }
 );
 
+export const deleteOrder = createAsyncThunk(
+  "order/deleteOrder",
+  async (order_id, { rejectWithValue }) => {
+    try {
+      const response = await request.DeleteOrder(order_id);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const orderSlice = createSlice({
   name: "order",
   initialState: initialState,
@@ -94,7 +105,9 @@ const orderSlice = createSlice({
       })
       .addCase(createCheckoutSession.fulfilled, (state, action) => {
         state.loading = false;
-        state.paymentUrl = action.payload.url;
+        state.paymentUrl = action.payload?.url;
+        state.prevPaymentUrl = action.payload?.prev_url;
+        state.error = action.payload?.message;
       })
       .addCase(createCheckoutSession.rejected, (state, action) => {
         state.loading = false;
@@ -109,6 +122,17 @@ const orderSlice = createSlice({
         state.session_detail = action.payload;
       })
       .addCase(checkoutSession.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteOrder.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteOrder.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(deleteOrder.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

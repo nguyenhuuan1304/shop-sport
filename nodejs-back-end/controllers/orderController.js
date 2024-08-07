@@ -26,4 +26,19 @@ async function createOrder(req, res) {
   }
 }
 
-export { getOrdersByUserId, createOrder };
+async function deleteOrder(req, res) {
+  try {
+    const user_id = req.user.user_id;
+    const order_id = req.params.id;
+    const result = await orderService.deleteOrder(user_id, order_id);
+    if (result) {
+      return res.status(200).json({ message: "delete successfull!" });
+    } else return res.status(404).json({ message: "not found order id!" });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+}
+
+export { getOrdersByUserId, createOrder, deleteOrder };

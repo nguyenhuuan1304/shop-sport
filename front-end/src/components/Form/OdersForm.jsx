@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchOrders } from "../../redux/slices/orderSlice";
 import { format } from "date-fns";
+import { Link } from "react-router-dom";
 
 const columns = [
   {
@@ -39,7 +40,7 @@ const columns = [
           tagColor = "processing";
           tagText = "Pending";
           break;
-        case "shipped":
+        case "completed":
           tagColor = "success";
           tagText = "Đã giao";
           break;
@@ -74,6 +75,12 @@ const columns = [
       </div>
     ),
   },
+  {
+    title: "Thanh toán",
+    dataIndex: "payment_url",
+    key: "payment_url",
+    render: (payment_url) => <Link to={payment_url}>Link thanh toán</Link>,
+  },
 ];
 
 export default function OdersForm() {
@@ -82,7 +89,6 @@ export default function OdersForm() {
     console.log("params", pagination, filters, sorter, extra);
   };
   const orders = useSelector((state) => state.order?.orders);
-  console.log("orders", orders);
   useEffect(() => {
     dispatch(fetchOrders());
   }, [dispatch]);

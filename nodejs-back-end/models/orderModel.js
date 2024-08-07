@@ -17,7 +17,7 @@ const order_schema = mongoose.Schema({
   status: {
     type: String,
     default: "pending",
-    enum: ["pending", "shipped", "shipping"],
+    enum: ["pending", "completed", "shipping"],
     required: true,
   },
   cart: {
@@ -35,6 +35,9 @@ const order_schema = mongoose.Schema({
   notes: {
     type: String,
     default: "",
+  },
+  payment_url: {
+    type: String,
   },
   created_at: {
     type: Date,

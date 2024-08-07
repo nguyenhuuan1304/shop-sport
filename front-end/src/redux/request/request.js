@@ -443,6 +443,17 @@ const request = {
       throw error;
     }
   },
+  DeleteOrder: async (order_id) => {
+    try {
+      const response = await axiosInstance.delete(
+        API_ENDPOINTS.DELETE_ORDER(order_id)
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error when delete:", error);
+      throw error;
+    }
+  },
   CreateCheckoutSession: async (order) => {
     try {
       console.log("request js", order);

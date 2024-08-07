@@ -1,4 +1,4 @@
-import { Button, Divider, Input } from "antd";
+import { Button, Divider, Input, notification } from "antd";
 import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +16,7 @@ import { createCheckoutSession, createOrder } from "../redux/slices/orderSlice";
 const { TextArea } = Input;
 
 export default function CartPage() {
+  const [api, contextHolder] = notification.useNotification();
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth?.currentUser);
   const [orderForm, setOrderForm] = useState({
@@ -54,6 +55,7 @@ export default function CartPage() {
       [name]: value,
     }));
   };
+
   //kiểm tra số lượng sản phẩm trước khi thanh toán (số lương sp có vượt quá tồn kho hay ko)
   const checkQuantityCartItem = () => {
     return cartData.every((cartItem) =>
@@ -79,11 +81,30 @@ export default function CartPage() {
         cart: cartData,
         total_of_price: total,
       };
+
       // dispatch(createOrder(order));
       dispatch(createCheckoutSession(order));
+      if (message) {
+        api.warning({
+          message: "Thông báo",
+          description: (
+            <div>
+              {message}
+              <br />
+              <Link className="underline text-blue-600" to={prevPaymentUrl}>
+                Đơn hàng chưa thanh toán
+              </Link>
+            </div>
+          ),
+          duration: 0,
+        });
+      }
     } else alert("Số lượng sản phẩm trong giỏ hạn vượt quá sản phẩm tồn kho");
   };
 
+  const message = useSelector((state) => state.order?.error);
+  //link thanh toán đơn hàng trước đó đang có trạng thái pending
+  const prevPaymentUrl = useSelector((state) => state.order?.prevPaymentUrl);
   //link chuyển hướng đến stripe
   const paymentUrl = useSelector((state) => state.order?.paymentUrl);
   const isLoading = useSelector((state) => state.order?.loading);
@@ -113,7 +134,7 @@ export default function CartPage() {
       {!isAuthenticated || cartData?.length === 0 ? (
         <EmptyCart />
       ) : (
-        <div className="flex flex-col sm:flex-row gap-2 p-5">
+        <>
           {isLoading && (
             <div className="absolute inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-10">
               <div role="status">
@@ -137,125 +158,128 @@ export default function CartPage() {
               </div>
             </div>
           )}
-          {/* thông tin vận chuyển */}
-          <div className="flex flex-col gap-5 basis-1/2 h-full">
-            <div>
-              <span className="text-xl text-neutral-700 font-semibold">
-                THÔNG TIN VẬN CHUYỂN
-              </span>
-              <Divider />
-            </div>
+          <div className="flex flex-col sm:flex-row gap-2 p-5">
+            {/* thông tin vận chuyển */}
+            <div className="flex flex-col gap-5 basis-1/2 h-full">
+              <div>
+                <span className="text-xl text-neutral-700 font-semibold">
+                  THÔNG TIN VẬN CHUYỂN
+                </span>
+                <Divider />
+              </div>
 
-            <div className="flex sm:flex-row flex-col gap-3 text-xs">
-              <div className="flex flex-col gap-2">
-                <span className="text-sm">Số điện thoại</span>
-                <Input
-                  id="number_phone"
-                  name="number_phone"
-                  value={orderForm?.number_phone}
-                  className="rounded-full pr-20"
+              <div className="flex sm:flex-row flex-col gap-3 text-xs">
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm">Số điện thoại</span>
+                  <Input
+                    id="number_phone"
+                    name="number_phone"
+                    value={orderForm?.number_phone}
+                    className="rounded-full pr-20"
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm">Email</span>
+                  <Input
+                    id="number_phone"
+                    name="email"
+                    value={orderForm?.email}
+                    className="rounded-full pr-20"
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+              {/* Địa chỉ  */}
+              <div className="flex flex-col gap-2 text-xs">
+                <div className="flex flex-row gap-2">
+                  <span>Địa chỉ</span>
+                  <Link to="" className="text-blue-600">
+                    Địa chỉ khác
+                  </Link>
+                </div>
+                <span className="font-semibold text-lg">
+                  {default_address?.name}
+                </span>
+                <p className="text-gray-500 text-base">
+                  {default_address?.address}
+                </p>
+              </div>
+              {/* Ghi chú */}
+              <div>
+                <span className="text-sm">Ghi chú</span>
+                <TextArea
+                  name="notes"
+                  allowClear
+                  className="rounded-lg"
                   onChange={handleChange}
                 />
               </div>
-              <div className="flex flex-col gap-2">
-                <span className="text-sm">Email</span>
-                <Input
-                  id="number_phone"
-                  name="email"
-                  value={orderForm?.email}
-                  className="rounded-full pr-20"
-                  onChange={handleChange}
+            </div>
+            {/* divider */}
+            {/* giỏ hàng */}
+            {contextHolder}
+            <div className=" basis-1/2 flex flex-col sm:border-l border-l-0 border-gray-300 pl-3">
+              <div>
+                <span className="text-xl text-neutral-700 font-semibold">
+                  GIỎ HÀNG
+                </span>
+                <Divider />
+              </div>
+              {cartData?.map((cartItem, index) => (
+                <CartItem
+                  key={index}
+                  cartItem={cartItem}
+                  size={cartItem.size}
+                  productQuantity={cartItem.count}
+                  addToCart={(cartItem) => handleAddToCart(userId, cartItem)}
+                  removeFromCart={(cartItem) =>
+                    handleRemoveFromCart(userId, cartItem)
+                  }
+                  deleteFromCart={(cartItem) =>
+                    handleDeleteFromCart(userId, cartItem)
+                  }
                 />
+              ))}
+              {/* tổng tiền */}
+              <div>
+                <Divider />
+                <div className="flex flex-row items-center justify-between">
+                  <span>Tạm tính</span>
+                  <motion.span
+                    key={total}
+                    initial={{ scale: 1 }}
+                    animate={{ scale: [1.2, 1.3, 1] }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    {total?.toLocaleString()}đ
+                  </motion.span>
+                </div>
+                <div className="flex flex-row items-center justify-between">
+                  <span>Tổng</span>
+                  <motion.span
+                    key={total}
+                    initial={{ scale: 1 }}
+                    animate={{
+                      scale: [1.2, 1.3, 1],
+                      fontWeight: [800, 500],
+                    }}
+                    transition={{ duration: 0.3 }}
+                    className="text-red-500 text-lg font-semibold"
+                  >
+                    {total?.toLocaleString()}đ
+                  </motion.span>
+                </div>
+                <Divider />
               </div>
-            </div>
-            {/* Địa chỉ  */}
-            <div className="flex flex-col gap-2 text-xs">
-              <div className="flex flex-row gap-2">
-                <span>Địa chỉ</span>
-                <Link to="" className="text-blue-600">
-                  Địa chỉ khác
-                </Link>
-              </div>
-              <span className="font-semibold text-lg">
-                {default_address?.name}
-              </span>
-              <p className="text-gray-500 text-base">
-                {default_address?.address}
-              </p>
-            </div>
-            {/* Ghi chú */}
-            <div>
-              <span className="text-sm">Ghi chú</span>
-              <TextArea
-                name="notes"
-                allowClear
-                className="rounded-lg"
-                onChange={handleChange}
-              />
+              <Button onClick={handleOrder} danger type="primary">
+                <span size="large" className="text-lg">
+                  Đặt hàng
+                </span>
+              </Button>
             </div>
           </div>
-          {/* divider */}
-          {/* giỏ hàng */}
-          <div className=" basis-1/2 flex flex-col sm:border-l border-l-0 border-gray-300 pl-3">
-            <div>
-              <span className="text-xl text-neutral-700 font-semibold">
-                GIỎ HÀNG
-              </span>
-              <Divider />
-            </div>
-            {cartData?.map((cartItem, index) => (
-              <CartItem
-                key={index}
-                cartItem={cartItem}
-                size={cartItem.size}
-                productQuantity={cartItem.count}
-                addToCart={(cartItem) => handleAddToCart(userId, cartItem)}
-                removeFromCart={(cartItem) =>
-                  handleRemoveFromCart(userId, cartItem)
-                }
-                deleteFromCart={(cartItem) =>
-                  handleDeleteFromCart(userId, cartItem)
-                }
-              />
-            ))}
-            {/* tổng tiền */}
-            <div>
-              <Divider />
-              <div className="flex flex-row items-center justify-between">
-                <span>Tạm tính</span>
-                <motion.span
-                  key={total}
-                  initial={{ scale: 1 }}
-                  animate={{ scale: [1.2, 1.3, 1] }}
-                  transition={{ duration: 0.4 }}
-                >
-                  {total?.toLocaleString()}đ
-                </motion.span>
-              </div>
-              <div className="flex flex-row items-center justify-between">
-                <span>Tổng</span>
-                <motion.span
-                  key={total}
-                  initial={{ scale: 1 }}
-                  animate={{
-                    scale: [1.2, 1.3, 1],
-                    fontWeight: [800, 500],
-                  }}
-                  transition={{ duration: 0.3 }}
-                  className="text-red-500 text-lg font-semibold"
-                >
-                  {total?.toLocaleString()}đ
-                </motion.span>
-              </div>
-              <Divider />
-            </div>
-            <Button onClick={handleOrder} danger type="primary">
-              <span size="large" className="text-lg">
-                Đặt hàng
-              </span>
-            </Button>
-          </div>
-        </div>
+        </>
       )}
     </>
   );
