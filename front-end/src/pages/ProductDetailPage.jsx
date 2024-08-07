@@ -404,19 +404,22 @@ const ProductDetailPage = React.memo(() => {
                 </span>
               </div>
             </div> */}
-            {viewedProducts?.slice(1).map((item) => (
-              <div key={item?.id} className="flex flex-row items-start gap-2">
-                <img className="w-20 h-auto" src={item?.images[0]} alt="" />
-                <div className="flex flex-col">
-                  <span className="text-slate-700">{item?.name}</span>
-                  <span className="text-red-500 text-lg font-semibold">
-                    {isAuthenticated
-                      ? `${item?.price}đ`
-                      : "Đăng nhập để xem giá"}
-                  </span>
+            {viewedProducts
+              ?.reverse()
+              .slice(1)
+              .map((item) => (
+                <div key={item?.id} className="flex flex-row items-start gap-2">
+                  <img className="w-20 h-auto" src={item?.images[0]} alt="" />
+                  <div className="flex flex-col">
+                    <span className="text-slate-700">{item?.name}</span>
+                    <span className="text-red-500 text-lg font-semibold">
+                      {isAuthenticated
+                        ? `${item?.price}đ`
+                        : "Đăng nhập để xem giá"}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       </div>
