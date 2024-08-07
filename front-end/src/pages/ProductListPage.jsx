@@ -10,10 +10,6 @@ const className =
 
 const FilterOption = [
   {
-    title: "Mới nhất",
-    sort: "created_at:-1",
-  },
-  {
     title: "New",
     sort: "created_at:1",
   },

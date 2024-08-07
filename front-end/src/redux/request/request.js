@@ -1,7 +1,6 @@
 import axiosInstance from "../../axios/axios";
 import API_ENDPOINTS from "./api-endpoints";
 import errorHandler from "./errorHandler";
-import successHandler from "./successHandler";
 const request = {
   List: async (currentPage, pageSize) => {
     try {
@@ -62,11 +61,12 @@ const request = {
     }
   },
 
-  ListSaleProduct: async () => {
-    // console.log("listsort ", sort);
+  ListSaleProduct: async (currentPage,pageSize) => {
+    console.log("currentPage,pageSize  ", currentPage,pageSize);
     try {
-      const response = await axiosInstance.get(API_ENDPOINTS.LIST_SALE);
-      return successHandler(response);
+      const response = await axiosInstance.get(API_ENDPOINTS.LIST_SALE(currentPage, pageSize));
+      console.log("object", response)
+      return response.data;
     } catch (error) {
       return errorHandler(error);
     }

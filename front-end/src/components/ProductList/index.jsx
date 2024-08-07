@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
 import {
   fetchProductList,
   fetchProductListWithSearch,
@@ -12,7 +11,6 @@ import {
 import ProductCard from "../ProductCard/";
 
 function ProductList({ sortParam, titleParam, searchParam }) {
-  const location = useLocation();
   const dispatch = useDispatch();
   const productListByPage = useSelector(
     (state) => state.products?.combinedProductList

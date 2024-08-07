@@ -96,10 +96,10 @@ export const fetchProductDetail = createAsyncThunk(
 //lấy các sản phẩm giảm giá
 export const fetchSaleProductList = createAsyncThunk(
   "products/fetchSaleProductList",
-  async (_, { rejectWithValue }) => {
+  async ({ currentPage, pageSize }, { rejectWithValue }) => {
     try {
-      const response = await request.ListSaleProduct();
-      return response.data;
+      const response = await request.ListSaleProduct(currentPage, pageSize);
+      return response;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -123,6 +123,8 @@ const productSlice = createSlice({
     error: null,
     pageSize: 3,
     totalProductItems: null,
+    currentPage: null,
+    totalPage: null,
     activeFilter: {
       title: null,
       sort: null,
@@ -144,6 +146,16 @@ const productSlice = createSlice({
       state.productBrandList = [];
       state.totalProductItems = 0;
       console.log("active 1", state.activeFilter, state.combinedProductList);
+    },
+    setActiveProductDetail(state, action) {
+      const { title, sort } = action.payload;
+      state.saleProductList = [];
+      state.activeFilter = { title: title, sort: sort };
+      console.log(
+        "active setActiveProductDetail",
+        state.activeFilter,
+        state.combinedProductList
+      );
     },
   },
   extraReducers: (builder) => {
@@ -223,10 +235,7 @@ const productSlice = createSlice({
           ...state.productListWithSearchbyPage,
           ...action.payload.data,
         ];
-        console.log(
-          "state.productListWithSearchbyPage ",
-          action.payload.data
-        );
+        console.log("state.productListWithSearchbyPage ", action.payload.data);
         state.combinedProductList = [...state.productListWithSearchbyPage];
         console.log("state.combinedProductList , ", state.combinedProductList);
         state.totalProductItems = action.payload.meta?.pagination?.total;
@@ -243,10 +252,7 @@ const productSlice = createSlice({
       .addCase(fetchProductList.fulfilled, (state, action) => {
         console.log("Reset state check:", state.combinedProductList);
         state.loading = false;
-        state.productList = [
-          ...state.productList,
-          ...action.payload.data,
-        ];
+        state.productList = [...state.productList, ...action.payload.data];
         // console.log("state.productListByPage , ", state.productListByPage);
         state.combinedProductList = [...state.productList];
         // console.log("state.combinedProductList , ", state.combinedProductList);
@@ -269,6 +275,29 @@ const productSlice = createSlice({
       .addCase(fetchProductDetail.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(fetchSaleProductList.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchSaleProductList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.saleProductList = [
+          ...state.saleProductList,
+          ...action.payload.data,
+        ];
+        console.log("fetchSaleProductList:", state.saleProductList);
+
+        // console.log("state.productListByPage , ", state.productListByPage);
+        state.totalProductItems = action.payload.meta?.pagination?.total;
+        state.pageSize = action.payload.meta.pagination.pageSize;
+        state.currentPage = action.payload.meta.pagination.page;
+        state.totalPage = action.payload.meta.pagination.totalPage;
+        // console.log(action.payload)
+      })
+      .addCase(fetchSaleProductList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
@@ -276,5 +305,10 @@ const productSlice = createSlice({
 export default productSlice.reducer;
 
 // Export các actions nếu cần (optional)
-export const { setProductList, setLoading, setError, setActiveFilter } =
-  productSlice.actions;
+export const {
+  setProductList,
+  setLoading,
+  setError,
+  setActiveFilter,
+  setActiveProductDetail,
+} = productSlice.actions;

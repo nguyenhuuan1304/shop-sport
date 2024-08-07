@@ -9,7 +9,7 @@ import {
   Table,
 } from "antd";
 import { motion } from "framer-motion";
-import { default as React, useEffect, useState } from "react";
+import { default as React, useEffect, useState, useRef } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -18,7 +18,8 @@ import ProductCard from "../components/ProductCard";
 import { addManyToCart } from "../redux/slices/cartSlice";
 import {
   fetchProductDetail,
-  fetchProductList,
+  fetchSaleProductList,
+  setActiveProductDetail,
 } from "../redux/slices/productSlice";
 const { Search } = Input;
 
@@ -98,29 +99,38 @@ function CustomArrow(props) {
   );
 }
 
-export default function ProductDetailPage() {
+const ProductDetailPage = React.memo(() => {
   const { productId } = useParams();
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth?.currentUser);
   const product = useSelector((state) => state.products?.productDetails);
   const saleProducts = useSelector((state) => state.products?.saleProductList);
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
+  const currentPageListSale = useSelector(
+    (state) => state.products?.currentPage
+  );
+  const [currentPage, setCurrentPage] = useState(1);
+  const [allSaleProducts, setAllSaleProducts] = useState([]);
+  const totalPageListSale = useSelector((state) => state.products?.totalPage);
   const loading = useSelector((state) => state.products?.loading);
   const dataSource = product?.size_list?.map((item, index) => ({
     ...item,
     key: `${index}`,
     count: 0,
   }));
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const carouselRef = useRef(null);
   const [messageApi, contextHolder] = message.useMessage();
+  const [cart, setCart] = useState([]);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   const error = () => {
     messageApi.open({
       type: "error",
       content: "Bạn chưa chọn sản phẩm!",
     });
   };
-  const [cart, setCart] = useState([]);
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const showDrawer = () => {
     setDrawerOpen(true);
   };
@@ -130,21 +140,12 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     dispatch(fetchProductDetail(productId));
-    dispatch(
-      fetchProductList({
-        sortParam: "true",
-        titleParam: "Sale",
-        currentPage: 0,
-        pageSize: 0,
-      })
-    );
-    // console.log(saleProducts);
   }, [dispatch, productId]);
 
   const handleQuantityChange = (RowItem, newCount) => {
     const key = RowItem.key;
     const existingItem = cart.find((item) => item.key === key);
-  
+
     if (existingItem) {
       const updatedCart = cart
         .map((item) =>
@@ -171,14 +172,14 @@ export default function ProductDetailPage() {
     }
   };
 
-  //xử lý thêm sản phẩm đã chọn vào giỏ hàng
   const addToCart = () => {
-    // if cart not empty
     if (cart && cart?.length > 0) {
       dispatch(addManyToCart({ userId: currentUser?._id, products: cart }));
       showDrawer();
       console.log("cart: ", cart);
-    } else error();
+    } else {
+      error();
+    }
   };
 
   const columns = [
@@ -212,6 +213,38 @@ export default function ProductDetailPage() {
       ),
     },
   ];
+
+  const handleBeforeChange = (current, next) => {
+    console.log(next, "----", saleProducts.length, "-----", current);
+    if (
+      next + 1 >= saleProducts.length &&
+      currentPageListSale < totalPageListSale
+    ) {
+      setCurrentSlide(next);
+      const newPage = currentPageListSale + 1;
+      getProductListSale(newPage);
+    }
+  };
+
+  const getProductListSale = (page) => {
+    dispatch(
+      fetchSaleProductList({
+        currentPage: page,
+        pageSize: 5,
+      })
+    );
+  };
+
+  useEffect(() => {
+    const loadInitialProducts = async () => {
+      await getProductListSale(1);
+    };
+    loadInitialProducts();
+  }, []);
+
+  useEffect(() => {
+    setAllSaleProducts((prevProducts) => [...prevProducts, ...saleProducts]);
+  }, [saleProducts]);
 
   return (
     <motion.div
@@ -365,6 +398,8 @@ export default function ProductDetailPage() {
         </span>
         <Carousel
           responsive={carouselResponsiveSetting}
+          ref={carouselRef}
+          beforeChange={handleBeforeChange}
           className="w-full h-auto pb-3 bg-white"
           autoplay
           arrows
@@ -375,23 +410,18 @@ export default function ProductDetailPage() {
           slidesToScroll={1}
           nextArrow={<CustomArrow />}
           prevArrow={<CustomArrow />}
+          initialSlide={currentSlide}
         >
-          <div className="flex justify-center items-center pb-2">
-            {saleProducts?.map((item) => {
-              return (
-                <div key={item._id} className="w-full flex justify-center">
-                  <ProductCard
-                    key={item._id}
-                    product={item}
-                    displayQuantity={false}
-                  />
-                </div>
-              );
-            })}
-          </div>
+          {allSaleProducts.map((item, index) => (
+            <div key={index} className="flex justify-center">
+              <ProductCard key={index} product={item} />
+            </div>
+          ))}
         </Carousel>
       </div>
       <CartDrawer open={drawerOpen} onClose={closeDrawer} />
     </motion.div>
   );
-}
+});
+ProductDetailPage.displayName = "ProductDetailPage";
+export default ProductDetailPage;

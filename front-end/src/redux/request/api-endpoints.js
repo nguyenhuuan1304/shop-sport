@@ -10,7 +10,7 @@ const API_ENDPOINTS = {
     `products?page=${currentPage}&pageSize=${pageSize}&orderBy=${sort}`,
   LIST_FILLTER: (title, sort, currentPage, pageSize) =>
     `/products?page=${currentPage}&pageSize=${pageSize}&${title}=${sort}`,
-  LIST_SALE: `/products?populate=*&is_discount_active=true`,
+  LIST_SALE: (currentPage, pageSize)  => `/products?page=${currentPage}&pageSize=${pageSize}&sale=true`,
   PRODUCT_DETAIL: (productId) => `/products/${productId}`,
 
   //user
