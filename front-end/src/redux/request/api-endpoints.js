@@ -36,7 +36,7 @@ const API_ENDPOINTS = {
   //order
   GET_ORDERS: `/order`,
   ADD_ORDER: `/order`,
-  DELETE_ORDER: (order_id) => `/order/${order_id}`,
+  UPDATE_ORDER_STATUS: (order_id) => `/order/update-order-status/${order_id}`,
 
   //payment
   CREATE_CHECKOUT_SESSION: `/payment/create-checkout-session`,

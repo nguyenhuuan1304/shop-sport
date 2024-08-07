@@ -42,11 +42,19 @@ const columns = [
           break;
         case "completed":
           tagColor = "success";
-          tagText = "Đã giao";
+          tagText = "Hoàn thành";
           break;
         case "shipping":
           tagColor = "warning";
           tagText = "Đang giao";
+          break;
+        case "paid":
+          tagColor = "success";
+          tagText = "Đã thanh toán";
+          break;
+        case "canceled":
+          tagColor = "error";
+          tagText = "Hủy bỏ";
           break;
         default:
           tagColor = "default";

@@ -8,9 +8,10 @@ dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_API_SECRET);
 async function checkoutSession(req, res) {
   const { sessionId } = req.query;
-  const session = await stripe.checkout.sessions.retrieve(sessionId);
-  const line_items = await stripe.checkout.sessions.listLineItems(sessionId);
-  res.send({ session: session, line_items: line_items });
+  const session = await stripe.checkout.sessions.retrieve(sessionId, {
+    expand: ["line_items"],
+  });
+  res.send({ session: session });
 }
 async function createCheckoutSession(req, res) {
   const domainURL = process.env.CLIENT_URL;
@@ -63,6 +64,7 @@ async function createCheckoutSession(req, res) {
         order_id: createOrder?._id.toString(),
         user_id: user_id,
       },
+      expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
     });
     //add payment_url = session.url
     await orderService.updateOrder(createOrder._id, {
@@ -116,13 +118,13 @@ async function webhook(req, res) {
     try {
       // Cập nhật trạng thái đơn hàng thành 'shipping'
       if (order_id) {
-        await orderService.updateOrderStatus(order_id, "shipping");
+        await orderService.updateOrderStatus(order_id, "paid");
         // clear cart
         const user = await userService.getUserById(user_id);
         const cart_id = user?.cart;
         await cartService.clearCart(cart_id);
 
-        console.log(`Order ${order_id} status updated to 'shipping'.`);
+        console.log(`Order ${order_id} status updated to 'paid'.`);
       } else {
         console.log("Order ID not found in metadata.");
       }
@@ -133,15 +135,21 @@ async function webhook(req, res) {
     console.log(`🔔  Payment received!`);
   }
 
-  if (eventType === "invoice.payment_failed") {
+  if (
+    eventType === "invoice.payment_failed" ||
+    eventType === "checkout.session.expired"
+  ) {
     const session = data.object;
     // console.log(session.metadata);
     const order_id = session.metadata?.order_id;
     const user_id = session.metadata?.user_id;
     try {
+      if (order_id) {
+        await orderService.updateOrderStatus(order_id, "canceled");
+      }
       // delete order
-      await orderService.deleteOrder(user_id, order_id);
-      console.log("Order has been deleted.");
+      // await orderService.deleteOrder(user_id, order_id);
+      // console.log("Order has been deleted.");
     } catch (err) {
       console.error("Error deleting order:", err);
     }

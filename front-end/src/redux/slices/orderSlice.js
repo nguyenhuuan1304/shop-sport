@@ -57,11 +57,11 @@ export const createOrder = createAsyncThunk(
   }
 );
 
-export const deleteOrder = createAsyncThunk(
-  "order/deleteOrder",
-  async (order_id, { rejectWithValue }) => {
+export const updateOrderStatus = createAsyncThunk(
+  "order/updateOrderStatus",
+  async ({ order_id, order_status }, { rejectWithValue }) => {
     try {
-      const response = await request.DeleteOrder(order_id);
+      const response = await request.UpdateOrderStatus(order_id, order_status);
       return response;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -125,14 +125,14 @@ const orderSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(deleteOrder.pending, (state) => {
+      .addCase(updateOrderStatus.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteOrder.fulfilled, (state, action) => {
+      .addCase(updateOrderStatus.fulfilled, (state, action) => {
         state.loading = false;
       })
-      .addCase(deleteOrder.rejected, (state, action) => {
+      .addCase(updateOrderStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

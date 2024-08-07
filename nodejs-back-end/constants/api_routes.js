@@ -20,6 +20,7 @@ const ORDER_ROUTES = {
   GET_BY_USER_ID: "/",
   ADD: "/",
   DELETE: "/:id",
+  UPDATE_ORDER_STATUS: "/update-order-status/:id",
 };
 
 const PRODUCT_ROUTES = {

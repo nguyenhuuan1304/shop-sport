@@ -52,11 +52,12 @@ async function updateOrder(orderId, order_data) {
 
 async function updateOrderStatus(order_id, status) {
   try {
-    await orderModel.findByIdAndUpdate(
+    const update = await orderModel.findByIdAndUpdate(
       order_id,
       { status: status },
       { new: true }
     );
+    return update;
     console.log(`Order ${order_id} updated to ${status}`);
   } catch (error) {
     console.error("Error updating order:", error);

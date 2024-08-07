@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { checkoutSession, deleteOrder } from "../redux/slices/orderSlice";
+import { checkoutSession, updateOrderStatus } from "../redux/slices/orderSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Result, Button } from "antd";
 
@@ -23,8 +23,10 @@ export default function PaymentCancelPage() {
     const payment_status = session_detail?.session?.payment_status;
 
     if (order_id && payment_status === "unpaid") {
-      dispatch(deleteOrder(order_id));
-      console.log("deleted");
+      dispatch(
+        updateOrderStatus({ order_id: order_id, order_status: "canceled" })
+      );
+      console.log("canceled");
     }
   }, [dispatch, session_detail]);
 

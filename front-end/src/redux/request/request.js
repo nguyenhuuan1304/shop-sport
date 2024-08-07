@@ -443,10 +443,12 @@ const request = {
       throw error;
     }
   },
-  DeleteOrder: async (order_id) => {
+  UpdateOrderStatus: async (order_id, order_status) => {
     try {
-      const response = await axiosInstance.delete(
-        API_ENDPOINTS.DELETE_ORDER(order_id)
+      console.log("request order_id and order_status", order_id, order_status);
+      const response = await axiosInstance.put(
+        API_ENDPOINTS.UPDATE_ORDER_STATUS(order_id),
+        { order_status }
       );
       return response.data;
     } catch (error) {

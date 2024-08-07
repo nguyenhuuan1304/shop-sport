@@ -41,4 +41,20 @@ async function deleteOrder(req, res) {
   }
 }
 
-export { getOrdersByUserId, createOrder, deleteOrder };
+async function updateOrderStatus(req, res) {
+  try {
+    const order_id = req.params.id;
+    const orderStatus = req.body.order_status;
+    console.log(orderStatus);
+    const result = await orderService.updateOrderStatus(order_id, orderStatus);
+    if (result) {
+      return res.status(200).json({ message: "update status successfull!" });
+    } else return res.status(404).json({ message: "not found order id!" });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+}
+
+export { getOrdersByUserId, createOrder, deleteOrder, updateOrderStatus };

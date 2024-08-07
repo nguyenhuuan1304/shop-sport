@@ -71,7 +71,7 @@ export default function PaymentSuccessPage() {
               {/* Table  */}
               {/* <span>Sản phẩm</span> */}
               <Table
-                dataSource={session_detail?.line_items?.data}
+                dataSource={session_detail?.session?.line_items?.data}
                 columns={columns}
                 pagination={false} // Tắt phân trang nếu không cần
               />
