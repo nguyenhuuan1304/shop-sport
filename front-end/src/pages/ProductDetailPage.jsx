@@ -16,6 +16,7 @@ import { useParams } from "react-router-dom";
 import CartDrawer from "../components/CartDrawer";
 import ProductCard from "../components/ProductCard";
 import { addManyToCart } from "../redux/slices/cartSlice";
+import useSessionStorage from "../custom hooks/useSessionStorage";
 import {
   fetchProductDetail,
   fetchSaleProductList,
@@ -101,6 +102,11 @@ function CustomArrow(props) {
 
 const ProductDetailPage = React.memo(() => {
   const { productId } = useParams();
+  const [viewedProducts, setViewedProducts] = useSessionStorage(
+    "viewedProducts",
+    []
+  );
+
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth?.currentUser);
   const product = useSelector((state) => state.products?.productDetails);
@@ -141,6 +147,15 @@ const ProductDetailPage = React.memo(() => {
   useEffect(() => {
     dispatch(fetchProductDetail(productId));
   }, [dispatch, productId]);
+
+  useEffect(() => {
+    // Add the current product to the list of viewed products if it's not already there
+    const isProductViewed = viewedProducts.some((p) => p?._id === product?._id);
+    if (!isProductViewed) {
+      const updatedViewedProducts = [...viewedProducts, product];
+      setViewedProducts(updatedViewedProducts);
+    }
+  }, [product, viewedProducts, setViewedProducts]);
 
   const handleQuantityChange = (RowItem, newCount) => {
     const key = RowItem.key;
@@ -376,7 +391,7 @@ const ProductDetailPage = React.memo(() => {
             Sản phẩm đã xem
           </span>
           <div className=" flex flex-col hover:overflow-y-auto overflow-hidden gap-2 p-6">
-            <div className="flex flex-row items-start gap-2">
+            {/* <div className="flex flex-row items-start gap-2">
               <img
                 className="w-20 h-auto"
                 src="https://cdn2-retail-images.kiotviet.vn/locsporthcm/0026340ac87c4ffabb9b767698bf4c0b.jpg"
@@ -388,7 +403,20 @@ const ProductDetailPage = React.memo(() => {
                   {isAuthenticated ? "89,000đ" : "Đăng nhập để xem giá"}
                 </span>
               </div>
-            </div>
+            </div> */}
+            {viewedProducts?.slice(1).map((item) => (
+              <div key={item?.id} className="flex flex-row items-start gap-2">
+                <img className="w-20 h-auto" src={item?.images[0]} alt="" />
+                <div className="flex flex-col">
+                  <span className="text-slate-700">{item?.name}</span>
+                  <span className="text-red-500 text-lg font-semibold">
+                    {isAuthenticated
+                      ? `${item?.price}đ`
+                      : "Đăng nhập để xem giá"}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
