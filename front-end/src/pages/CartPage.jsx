@@ -109,8 +109,10 @@ export default function CartPage() {
   const paymentUrl = useSelector((state) => state.order?.paymentUrl);
   const isLoading = useSelector((state) => state.order?.loading);
   useEffect(() => {
-    dispatch(fetchOrderAddress());
-    dispatch(fetchCartData(userId));
+    if (currentUser && isAuthenticated) {
+      dispatch(fetchOrderAddress());
+      dispatch(fetchCartData(userId));
+    }
   }, [currentUser]);
 
   useEffect(() => {

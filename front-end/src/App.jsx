@@ -34,7 +34,7 @@ function App() {
     if (currentUser) {
       dispatch(fetchCartData(currentUser?.id));
     }
-  }, [dispatch, currentUser?.id]);
+  }, [dispatch, currentUser?._id]);
   return (
     // <Provider store={store}>
     <BrowserRouter>

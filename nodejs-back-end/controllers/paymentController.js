@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import { orderService } from "../services/index.js";
 import { cartService } from "../services/index.js";
 import { userService } from "../services/index.js";
+import { productService } from "../services/index.js";
 import { Stripe } from "stripe";
 dotenv.config();
 
@@ -100,7 +101,7 @@ async function webhook(req, res) {
     // Extract the object from the event.
     data = event.data;
     eventType = event.type;
-    console.log(data);
+    // console.log(data);
   } else {
     // Webhook signing is recommended, but if the secret is not configured in `config.js`,
     // retrieve the event data directly from the request body.
@@ -122,6 +123,7 @@ async function webhook(req, res) {
         // clear cart
         const user = await userService.getUserById(user_id);
         const cart_id = user?.cart;
+        await productService.updateProductSizeListFromCart(user_id);
         await cartService.clearCart(cart_id);
 
         console.log(`Order ${order_id} status updated to 'paid'.`);

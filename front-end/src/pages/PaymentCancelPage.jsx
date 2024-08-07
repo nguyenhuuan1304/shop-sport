@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import { checkoutSession, updateOrderStatus } from "../redux/slices/orderSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Result, Button } from "antd";
 
 export default function PaymentCancelPage() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const dispatch = useDispatch();
@@ -15,7 +16,7 @@ export default function PaymentCancelPage() {
   useEffect(() => {
     if (sessionId) {
       dispatch(checkoutSession(sessionId));
-    }
+    } else navigate("/");
   }, [dispatch, sessionId]);
 
   useEffect(() => {
@@ -55,8 +56,8 @@ export default function PaymentCancelPage() {
           </div>
         </div>
       ) : (
-        <div className="flex flex-row-reverse items-center justify-center h-screen">
-          <div className="flex flex-col shadow w-96">
+        <div className="flex flex-row-reverse items-center justify-center h-screen ">
+          <div className="flex flex-col shadow w-96 border-t-4 border-red-600">
             <Result
               className="h-full"
               status="error"

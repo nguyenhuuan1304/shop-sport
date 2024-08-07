@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Divider, Table, Result } from "antd";
 import { checkoutSession } from "../redux/slices/orderSlice";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 export default function PaymentSuccessPage() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const dispatch = useDispatch();
@@ -28,7 +29,9 @@ export default function PaymentSuccessPage() {
     },
   ];
   useEffect(() => {
-    dispatch(checkoutSession(sessionId));
+    if (sessionId) {
+      dispatch(checkoutSession(sessionId));
+    } else navigate("/");
   }, [dispatch]);
   return (
     <>
@@ -56,7 +59,7 @@ export default function PaymentSuccessPage() {
         </div>
       )}
       {!isLoading && (
-        <div className="flex flex-row-reverse items-center justify-center h-screen">
+        <div className="flex sm:flex-row-reverse flex-col-reverse h-3/4 sm:gap-0 gap-3 items-center justify-center sm:h-screen">
           {/* left */}
           <div className="flex flex-col bg-neutral-100 shadow p-5 w-96 gap-3 border-t-4 border-blue-600 h-3/4">
             {/* total  */}
