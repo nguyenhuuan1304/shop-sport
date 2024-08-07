@@ -21,6 +21,8 @@ import CategoryPage from "./pages/CategoryPage";
 import { fetchUserDetail } from "./redux/slices/authSlice";
 import { fetchCartData } from "./redux/slices/cartSlice";
 import RequireAuth from "./utils/requireAuth";
+import PaymentSuccessPage from "./pages/PaymentSuccessPage";
+import PaymentCancelPage from "./pages/PaymentCancelPage";
 function App() {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.currentUser);
@@ -57,9 +59,13 @@ function App() {
               <Route path="address-book" element={<AddresForm />} />
               <Route path="change-password" element={<ChangPasswordForm />} />
               <Route path="orders" element={<OdersForm />} />
+
+              <Route />
             </Route>
           </Route>
         </Route>
+        <Route path="payment-success" element={<PaymentSuccessPage />} />
+        <Route path="payment-cancel" element={<PaymentCancelPage />} />
         <Route path="login" element={<LoginPage />}></Route>
         <Route path="cart" element={<CartLayout />}>
           <Route index element={<CartPage />} />

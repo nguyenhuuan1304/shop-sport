@@ -25,7 +25,7 @@ const API_ENDPOINTS = {
   CREATE_ORDER_ADDRESS: `/order-address`,
   GET_ORDER_ADDRESS: `/order-address`,
   SET_DEFAULT_ORDER_ADDRESS: (order_address_id) =>
-    `/set-default/${order_address_id}`,
+    `/order-address/set-default/${order_address_id}`,
 
   // cart
   GET_CART_BY_ID_USER: () => `/cart`,
@@ -36,6 +36,12 @@ const API_ENDPOINTS = {
   //order
   GET_ORDERS: `/order`,
   ADD_ORDER: `/order`,
+  UPDATE_ORDER_STATUS: (order_id) => `/order/update-order-status/${order_id}`,
+
+  //payment
+  CREATE_CHECKOUT_SESSION: `/payment/create-checkout-session`,
+  CHECKOUT_SESSION: (session_id) =>
+    `/payment/checkout-session?sessionId=${session_id}`,
 };
 
 export default API_ENDPOINTS;

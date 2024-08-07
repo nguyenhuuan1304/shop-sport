@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchOrders } from "../../redux/slices/orderSlice";
 import { format } from "date-fns";
+import { Link } from "react-router-dom";
 
 const columns = [
   {
@@ -16,7 +17,7 @@ const columns = [
     dataIndex: "total_of_price",
     key: "total_of_price",
     render: (price) => {
-      return `${price.toLocaleString()}₫`;
+      return `${price?.toLocaleString()}₫`;
     },
   },
   {
@@ -31,12 +32,37 @@ const columns = [
     title: "Tình trạng",
     dataIndex: "status",
     key: "status",
-    render: (status) =>
-      status ? (
-        <Tag color="success">Đã giao</Tag>
-      ) : (
-        <Tag color="processing">Đang giao hàng</Tag>
-      ),
+    render: (status) => {
+      let tagColor, tagText;
+
+      switch (status) {
+        case "pending":
+          tagColor = "processing";
+          tagText = "Pending";
+          break;
+        case "completed":
+          tagColor = "success";
+          tagText = "Hoàn thành";
+          break;
+        case "shipping":
+          tagColor = "warning";
+          tagText = "Đang giao";
+          break;
+        case "paid":
+          tagColor = "success";
+          tagText = "Đã thanh toán";
+          break;
+        case "canceled":
+          tagColor = "error";
+          tagText = "Hủy bỏ";
+          break;
+        default:
+          tagColor = "default";
+          tagText = "Unknown";
+      }
+
+      return <Tag color={tagColor}>{tagText}</Tag>;
+    },
   },
 
   {
@@ -45,7 +71,7 @@ const columns = [
     key: "cart",
     render: (cart) => (
       <div>
-        {cart.map((item, index) => (
+        {cart?.map((item, index) => (
           <div key={index}>
             <span>- Sản phẩm: {item.product.name}</span>
             <br />
@@ -57,16 +83,11 @@ const columns = [
       </div>
     ),
   },
-];
-
-const data = [
   {
-    key: "1",
-    orderId: "DH001",
-    totalAmount: "1,200,000 VNĐ",
-    purchaseDate: "2024-07-18",
-    status: "Đã giao hàng",
-    details: "Xem chi tiết",
+    title: "Thanh toán",
+    dataIndex: "payment_url",
+    key: "payment_url",
+    render: (payment_url) => <Link to={payment_url}>Link thanh toán</Link>,
   },
 ];
 
@@ -76,7 +97,6 @@ export default function OdersForm() {
     console.log("params", pagination, filters, sorter, extra);
   };
   const orders = useSelector((state) => state.order?.orders);
-  console.log("orders", orders);
   useEffect(() => {
     dispatch(fetchOrders());
   }, [dispatch]);

@@ -5,6 +5,7 @@ import userRoutes from "../routes/userRoutes.js";
 import orderAddressRoutes from "../routes/orderAddressRoutes.js";
 import orderRoutes from "../routes/orderRoutes.js";
 import cartRoutes from "../routes/cartRoutes.js";
+import paymentRoutes from "../routes/paymentRoutes.js";
 import { verifyToken } from "../middlewares/jwt.js";
 
 const router = express.Router();
@@ -15,5 +16,6 @@ router.use("/auth", authRoutes);
 router.use("/order-address", verifyToken, orderAddressRoutes);
 router.use("/order", verifyToken, orderRoutes);
 router.use("/cart", verifyToken, cartRoutes);
+router.use("/payment", paymentRoutes);
 
 export default router;
