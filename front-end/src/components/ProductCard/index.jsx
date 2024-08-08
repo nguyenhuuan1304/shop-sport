@@ -138,20 +138,27 @@ const ProductCard = React.memo(function ProductCard({
                 <div className="flex flex-col gap-8">
                   <div className="flex flex-col gap-2 h-40 overflow-y-auto">
                     {product?.size_list?.map((item, index) => (
-                      <li key={index} className="flex flex-row gap-5 text-left">
-                        <span className="flex-grow">{item.size_name}</span>
+                      <li
+                        key={index}
+                        className="flex flex-row items-center gap-5 text-left"
+                      >
+                        <span className="flex-grow items-center">
+                          {item.size_name}
+                        </span>
                         {islogIN ? (
                           item.quantity === 0 ? (
-                            <span className="text-right text-red-600 px-2 opacity-40">
+                            <div className="text-right text-red-600 px-2">
                               {item.quantity}
-                            </span>
+                            </div>
                           ) : (
                             <span className="text-right text-green-600 px-2">
                               {item.quantity}
                             </span>
                           )
                         ) : (
-                          <FaRegEyeSlash />
+                          <div>
+                            <FaRegEyeSlash />
+                          </div>
                         )}
                       </li>
                     ))}
@@ -159,7 +166,7 @@ const ProductCard = React.memo(function ProductCard({
                   {/* <Button size="small">Thêm giỏ hàng</Button> */}
                 </div>
               ) : (
-                <div className="flex flex-col gap-2 h-40 overflow-y-auto">
+                <div className="flex flex-col gap-2  h-40 overflow-y-auto">
                   {Object.entries(sizes).map(([size, quantity]) => (
                     <li key={size} className="flex flex-row gap-5 text-left">
                       <span className="flex-grow">{size}</span>

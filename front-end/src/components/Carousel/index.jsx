@@ -52,21 +52,21 @@ export default function _Carousel() {
           <img
             src={carousel2}
             alt=""
-            className="h-96 w-full rounded-lg object-none"
+            className="h-96 w-full rounded-lg object-cover"
           />
         </div>
         <div key="3" className="bg-red-100 flex items-center justify-center">
           <img
             src={carousel3}
             alt=""
-            className="h-96 w-full rounded-lg object-none"
+            className="h-96 w-full rounded-lg object-cover"
           />
         </div>
         <div key="4" className="bg-red-100 flex items-center justify-center">
           <img
             src={carousel4}
             alt=""
-            className="h-96 w-full rounded-lg object-none"
+            className="h-96 w-full rounded-lg object-cover"
           />
         </div>
       </Carousel>

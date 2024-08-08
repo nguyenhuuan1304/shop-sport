@@ -1,7 +1,8 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import Header from "../components/Header";
 import _Menu from "../components/Menu";
+import Loading from "../components/Loading";
 import Footer from "../components/Footer";
 import BottomNavigation from "../components/BottomNavigation";
 import ResponsiveHeader from "../components/ResponsiveHeader";
@@ -13,7 +14,9 @@ export default function Layout() {
       <ResponsiveHeader />
       <_Menu />
       <div className="p-2">
-        <Outlet />
+        <Suspense fallback={<Loading />}>
+          <Outlet />
+        </Suspense>
       </div>
       <BottomNavigation />
       <Footer />

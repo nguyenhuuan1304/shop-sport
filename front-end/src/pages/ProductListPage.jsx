@@ -3,8 +3,11 @@ import { motion } from "framer-motion";
 import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import _Breadcrumb from "../components/Breadcrumb";
-import ProductList from "../components/ProductList";
+// import ProductList from "../components/ProductList";
+import Loading from "../components/Loading";
+import { lazy, Suspense } from "react";
 
+const ProductList = lazy(() => import("../components/ProductList"));
 const className =
   "hover:text-blue-500 hover:opacity-100 hover:font-semibold hover:text-2xl duration-200 border-b-2 hover:border-blue-500 border-transparent p-4";
 
@@ -69,8 +72,14 @@ export default function ProductPage() {
           );
         })}
       </div>
-      <ProductList sortParam={sortParam} titleParam={titleParam} searchParam={search}/>
+      <Suspense fallback={<Loading />}>
+        <ProductList
+          sortParam={sortParam}
+          titleParam={titleParam}
+          searchParam={search}
+        />
+      </Suspense>
       <FloatButton.BackTop type="primary" />
     </motion.div>
   );
-} 
+}
