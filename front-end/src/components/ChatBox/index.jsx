@@ -37,7 +37,7 @@ export default function ChatBox() {
 
             {/* Chatbox */}
             <motion.div
-              className="flex flex-col h-[550px] max-w-md fixed bottom-1 right-16 m-4 rounded-2xl bg-gray-100 shadow-xl z-50"
+              className="flex flex-col h-[550px] max-w-md fixed bottom-1   right-16 m-4 rounded-2xl bg-gray-100 shadow-xl z-50"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
@@ -123,17 +123,17 @@ export default function ChatBox() {
       >
         {!isChatBoxVisible && (
           <BsChatRightHeart
-            size={50}
+            size={30}
             style={{
               position: "absolute",
-              bottom: "90",
-              right: "70",
+              bottom: "70",
+              right: "60",
               zIndex: 1,
             }}
           />
         )}
         <FaRobot
-          size={80}
+          size={50}
           style={{ position: "absolute", bottom: "30", right: "10" }}
         />
       </motion.div>
