@@ -100,8 +100,9 @@ export default function SearchBar({ keyWord }) {
                     key={item?._id}
                     onClick={handleInputBlur}
                   >
-                    <List.Item className="w-full border-b border-gray-300 last:border-b-0">
+                    <List.Item className="w-full border-b border-gray-300 last:border-b-0 ">
                       <List.Item.Meta
+                        className="hover:scale-105 duration-500 "
                         avatar={
                           <Avatar
                             src={urlImg(item)}
@@ -111,7 +112,9 @@ export default function SearchBar({ keyWord }) {
                         title={<p>{item?.name}</p>}
                         description={
                           isAuthenticated ? (
-                            <p>{item?.price} $</p>
+                            <p className="text-red-600 font-semibold">
+                              {item?.price.toLocaleString()}₫
+                            </p>
                           ) : (
                             <p className="font-semibold">
                               Đăng nhập để xem giá

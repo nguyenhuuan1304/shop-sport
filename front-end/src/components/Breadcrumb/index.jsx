@@ -1,12 +1,14 @@
 import { Breadcrumb } from "antd";
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 
 export default function _Breadcrumb({ title }) {
   const location = useLocation();
-  // console.log(location);
-  //   let matches = useMatches();
+  const [searchParams] = useSearchParams();
+  const category = searchParams.get("title");
+  const brand_name = searchParams.get("sort");
+
   return (
     <div className="bg-gray-500 flex flex-col items-center justify-center w-full h-40 gap-5">
       <motion.span
@@ -34,6 +36,17 @@ export default function _Breadcrumb({ title }) {
             {
               title: <Link to={location?.pathname}>{title}</Link>,
             },
+            ...(brand_name && category === "brand"
+              ? [
+                  {
+                    title: (
+                      <Link to={`/products?title=brand&sort=${brand_name}`}>
+                        {brand_name.toUpperCase()}
+                      </Link>
+                    ),
+                  },
+                ]
+              : []),
           ]}
         />
       </motion.div>

@@ -9,11 +9,12 @@ import {
   Skeleton,
   Table,
 } from "antd";
+import _Breadcrumb from "../components/Breadcrumb";
 import { motion } from "framer-motion";
 import { default as React, useEffect, useState, useRef } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import CartDrawer from "../components/CartDrawer";
 import ProductCard from "../components/ProductCard";
 import { addManyToCart } from "../redux/slices/cartSlice";
@@ -286,12 +287,11 @@ const ProductDetailPage = React.memo(() => {
               transition={{ duration: 0.5 }}
             >
               <Image
-                preview={false}
                 rootClassName="w-4/5"
                 className="rounded-xl hidden sm:block"
                 src={product?.images[0]}
                 alt=""
-                fallback={PlaceHolderImage}
+                // fallback={PlaceHolderImage}
               />
               <Image
                 className="rounded-xl sm:hidden"
@@ -314,9 +314,23 @@ const ProductDetailPage = React.memo(() => {
                 <span className="text-sm text-yellow-400">(0 đánh giá)</span>
               </div>
               <span className="text-red-500 font-semibold text-lg">
-                {isAuthenticated
-                  ? `${product?.price?.toLocaleString()}đ`
-                  : "Đăng nhập để xem giá"}
+                {isAuthenticated ? (
+                  product?.is_sale ? (
+                    <div>
+                      <span className="line-through">
+                        {`Giá gốc: ${product?.price?.toLocaleString()}đ`}
+                      </span>
+                      <br />
+                      <span className="text-green-500">
+                        {`Giá khuyến mãi: ${product?.sale_price?.toLocaleString()}đ`}
+                      </span>
+                    </div>
+                  ) : (
+                    `Giá gốc: ${product?.price?.toLocaleString()}đ`
+                  )
+                ) : (
+                  "Đăng nhập để xem giá"
+                )}
               </span>
               <span className="text-sm">
                 Tình trạng:{" "}
@@ -391,26 +405,28 @@ const ProductDetailPage = React.memo(() => {
             {product?.description}
           </span>
         </div>
-        <div className=" flex flex-col shadow-xl rounded-lg sm:w-1/3 basis-1/3">
+        <div className=" flex flex-col shadow-xl rounded-lg sm:w-1/3 basis-1/3 h-96">
           <span className="bg-blue-500 text-white p-3 text-center rounded-t-lg">
             Sản phẩm đã xem
           </span>
-          <div className=" flex flex-col hover:overflow-y-auto overflow-hidden gap-2 p-6">
+          <div className=" flex flex-col overflow-auto gap-2 p-6">
             {viewedProducts.reverse().map((item, index) => (
-              <div
-                key={item?._id || index}
-                className="flex flex-row items-start gap-2"
-              >
-                <img className="w-20 h-auto" src={item?.images[0]} alt="" />
-                <div className="flex flex-col">
-                  <span className="text-slate-700">{item?.name}</span>
-                  <span className="text-red-500 text-lg font-semibold">
-                    {isAuthenticated
-                      ? `${item?.price}đ`
-                      : "Đăng nhập để xem giá"}
-                  </span>
+              <Link to={`/product/${item?._id}`}>
+                <div
+                  key={item?._id || index}
+                  className="flex flex-row items-start gap-2"
+                >
+                  <img className="w-20 h-auto" src={item?.images[0]} alt="" />
+                  <div className="flex flex-col">
+                    <span className="text-slate-700">{item?.name}</span>
+                    <span className="text-red-500 text-lg font-semibold">
+                      {isAuthenticated
+                        ? `Giá: ${item?.price.toLocaleString()}đ`
+                        : "Đăng nhập để xem giá"}
+                    </span>
+                  </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
