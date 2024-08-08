@@ -62,7 +62,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.user = action.payload;
         console.log("fetch user ", action.payload);
-        state.success = true;
+        // state.success = true;
       })
       .addCase(fetchUserDetail.rejected, (state, action) => {
         state.loading = false;
