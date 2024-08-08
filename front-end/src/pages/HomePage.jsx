@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, lazy, Suspense } from "react";
 import _Carousel from "../components/Carousel";
 import AdsCard from "../components/AdsCard";
 import homeImage1 from "../assets/home-image1.jpg";

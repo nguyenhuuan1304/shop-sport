@@ -48,7 +48,7 @@ const userSlice = createSlice({
     user: null,
     loading: false,
     error: null,
-    success: false,
+    success: null,
   },
   reducers: {},
   extraReducers: (builder) => {

@@ -1,4 +1,5 @@
 import { productModel } from "../models/index.js";
+import { cartService } from "./index.js";
 
 async function getProducts(page, page_size, order_by, is_hot, is_sale, brand) {
   try {
@@ -115,6 +116,36 @@ async function searchProduct(search_query, page, pageSize) {
     throw error;
   }
 }
+//cập nhật lại số lượng size_list từ giỏ hàng của người dùng đã thanh toán
+async function updateProductSizeListFromCart(user_id) {
+  try {
+    // console.log("user id", user_id);
+    // console.log("update product size lize from cart service");
+    const cart = await cartService.getCartByUserId(user_id);
+
+    if (!cart) throw new Error("Cart not found");
+    const cartItems = cart.items;
+    // console.log("cart ", cart);
+    for (const item of cartItems) {
+      // Lấy thông tin sản phẩm
+      let product = await getProductById(item.product);
+      let size_list = product.size_list;
+
+      // Duyệt qua size_list của sản phẩm và kiểm tra size trong giỏ hàng === size_name trong size_list của sản phẩm
+      size_list.forEach((size) => {
+        if (item.size === size.size_name) {
+          size.quantity -= item.count;
+        }
+      });
+
+      // Lưu sản phẩm đã được cập nhật
+      await product.save();
+    }
+  } catch (error) {
+    console.error("Error updating product size list from cart:", error);
+    throw error;
+  }
+}
 
 export {
   getProducts,
@@ -123,4 +154,5 @@ export {
   deleteProduct,
   updateProduct,
   searchProduct,
+  updateProductSizeListFromCart,
 };

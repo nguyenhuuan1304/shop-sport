@@ -6,6 +6,7 @@ import {
   InputNumber,
   message,
   Rate,
+  Skeleton,
   Table,
 } from "antd";
 import { motion } from "framer-motion";
@@ -16,11 +17,13 @@ import { useParams } from "react-router-dom";
 import CartDrawer from "../components/CartDrawer";
 import ProductCard from "../components/ProductCard";
 import { addManyToCart } from "../redux/slices/cartSlice";
+import useSessionStorage from "../custom hooks/useSessionStorage";
 import {
   fetchProductDetail,
   fetchSaleProductList,
   setActiveProductDetail,
 } from "../redux/slices/productSlice";
+import PlaceHolderImage from "../assets/placeholder-image.jpg";
 const { Search } = Input;
 
 const carouselResponsiveSetting = [
@@ -101,6 +104,11 @@ function CustomArrow(props) {
 
 const ProductDetailPage = React.memo(() => {
   const { productId } = useParams();
+  const [viewedProducts, setViewedProducts] = useSessionStorage(
+    "viewedProducts",
+    []
+  );
+
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth?.currentUser);
   const product = useSelector((state) => state.products?.productDetails);
@@ -109,6 +117,7 @@ const ProductDetailPage = React.memo(() => {
   const currentPageListSale = useSelector(
     (state) => state.products?.currentPage
   );
+  console.log("SALE PRODUCTS", saleProducts);
   const [currentPage, setCurrentPage] = useState(1);
   const [allSaleProducts, setAllSaleProducts] = useState([]);
   const totalPageListSale = useSelector((state) => state.products?.totalPage);
@@ -142,6 +151,21 @@ const ProductDetailPage = React.memo(() => {
     dispatch(fetchProductDetail(productId));
   }, [dispatch, productId]);
 
+  //check viewed product
+  useEffect(() => {
+    if (product) {
+      setViewedProducts((prevViewedProducts) => {
+        const isProductViewed = prevViewedProducts.some(
+          (p) => p?._id === product?._id
+        );
+        if (!isProductViewed) {
+          return [...prevViewedProducts, product];
+        }
+
+        return prevViewedProducts;
+      });
+    }
+  }, [product]);
   const handleQuantityChange = (RowItem, newCount) => {
     const key = RowItem.key;
     const existingItem = cart.find((item) => item.key === key);
@@ -237,14 +261,10 @@ const ProductDetailPage = React.memo(() => {
 
   useEffect(() => {
     const loadInitialProducts = async () => {
-      await getProductListSale(1);
+      getProductListSale(1);
     };
     loadInitialProducts();
   }, []);
-
-  useEffect(() => {
-    setAllSaleProducts((prevProducts) => [...prevProducts, ...saleProducts]);
-  }, [saleProducts]);
 
   return (
     <motion.div
@@ -254,7 +274,6 @@ const ProductDetailPage = React.memo(() => {
       className="flex flex-col gap-10"
     >
       {contextHolder}
-      {loading && <div className="flex flex-col items-center">Loading...</div>}
       {!loading && !product ? (
         <div>Không có sản phẩm này!</div>
       ) : (
@@ -272,6 +291,7 @@ const ProductDetailPage = React.memo(() => {
                 className="rounded-xl hidden sm:block"
                 src={product?.images[0]}
                 alt=""
+                fallback={PlaceHolderImage}
               />
               <Image
                 className="rounded-xl sm:hidden"
@@ -376,19 +396,22 @@ const ProductDetailPage = React.memo(() => {
             Sản phẩm đã xem
           </span>
           <div className=" flex flex-col hover:overflow-y-auto overflow-hidden gap-2 p-6">
-            <div className="flex flex-row items-start gap-2">
-              <img
-                className="w-20 h-auto"
-                src="https://cdn2-retail-images.kiotviet.vn/locsporthcm/0026340ac87c4ffabb9b767698bf4c0b.jpg"
-                alt=""
-              />
-              <div className="flex flex-col">
-                <span className="text-slate-700">EAGLE HỒNG</span>
-                <span className="text-red-500 text-lg font-semibold">
-                  {isAuthenticated ? "89,000đ" : "Đăng nhập để xem giá"}
-                </span>
+            {viewedProducts.reverse().map((item, index) => (
+              <div
+                key={item?._id || index}
+                className="flex flex-row items-start gap-2"
+              >
+                <img className="w-20 h-auto" src={item?.images[0]} alt="" />
+                <div className="flex flex-col">
+                  <span className="text-slate-700">{item?.name}</span>
+                  <span className="text-red-500 text-lg font-semibold">
+                    {isAuthenticated
+                      ? `${item?.price}đ`
+                      : "Đăng nhập để xem giá"}
+                  </span>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
@@ -412,7 +435,7 @@ const ProductDetailPage = React.memo(() => {
           prevArrow={<CustomArrow />}
           initialSlide={currentSlide}
         >
-          {allSaleProducts.map((item, index) => (
+          {saleProducts.map((item, index) => (
             <div key={index} className="flex justify-center">
               <ProductCard key={index} product={item} />
             </div>

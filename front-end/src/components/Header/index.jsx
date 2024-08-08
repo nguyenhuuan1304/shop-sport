@@ -178,7 +178,7 @@ export default function Header() {
             <NavigationLink
               title="Kiểm tra đơn hàng"
               Icon={PiNotepadFill}
-              to=""
+              to="/profile/orders"
             />
             {isAuthenticated && currentUser ? (
               <NavigationLink

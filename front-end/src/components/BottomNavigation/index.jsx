@@ -34,7 +34,7 @@ const navLinks = [
   {
     Icon: CiViewList,
     title: "Đơn hàng",
-    to: "",
+    to: "/profile/orders",
   },
   {
     Icon: CiUser,

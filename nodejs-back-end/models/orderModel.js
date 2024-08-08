@@ -15,8 +15,9 @@ const order_schema = mongoose.Schema({
     required: true,
   },
   status: {
-    type: Boolean,
-    default: false,
+    type: String,
+    default: "pending",
+    enum: ["pending", "completed", "shipping", "paid", "canceled"],
     required: true,
   },
   cart: {
@@ -35,9 +36,20 @@ const order_schema = mongoose.Schema({
     type: String,
     default: "",
   },
+  payment_url: {
+    type: String,
+  },
   created_at: {
     type: Date,
     default: Date.now,
+    required: true,
+  },
+  expires_at: {
+    type: Date,
+  },
+  is_deleted: {
+    type: Boolean,
+    default: false,
     required: true,
   },
 });
