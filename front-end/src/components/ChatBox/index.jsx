@@ -12,7 +12,6 @@ import { BsChatRightHeart } from "react-icons/bs";
 import { GoHubot } from "react-icons/go";
 import { FaRobot } from "react-icons/fa";
 
-
 export default function ChatBox() {
   const [isChatBoxVisible, setIsChatBoxVisible] = useState(false);
 
@@ -38,7 +37,7 @@ export default function ChatBox() {
 
             {/* Chatbox */}
             <motion.div
-              className="flex flex-col h-[550px] max-w-md fixed bottom-28 right-16 m-4 rounded-2xl bg-gray-100 shadow-xl z-50"
+              className="flex flex-col h-[550px] max-w-md fixed bottom-1 right-16 m-4 rounded-2xl bg-gray-100 shadow-xl z-50"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
@@ -115,12 +114,12 @@ export default function ChatBox() {
         )}
       </AnimatePresence>
       <motion.div
-        className="fixed bottom-6 right-6 p-3 rounded-xl cursor-pointer border-neutral-600"
+        className="fixed bottom-16 right-6 p-3 rounded-xl cursor-pointer border-neutral-600"
         initial={{ scale: 1 }}
         whileHover={{ scale: 1.2 }}
         transition={{ duration: 0.3 }}
         onClick={toggleChatBox}
-        style={{ width: "80px", height: "80px" }} 
+        style={{ width: "80px", height: "80px" }}
       >
         {!isChatBoxVisible && (
           <BsChatRightHeart
