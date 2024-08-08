@@ -5,6 +5,7 @@ import _Menu from "../components/Menu";
 import Footer from "../components/Footer";
 import BottomNavigation from "../components/BottomNavigation";
 import ResponsiveHeader from "../components/ResponsiveHeader";
+import ChatBox from "../components/ChatBox";
 
 export default function Layout() {
   return (
@@ -16,6 +17,7 @@ export default function Layout() {
         <Outlet />
       </div>
       <BottomNavigation />
+      <ChatBox />
       <Footer />
     </div>
   );
