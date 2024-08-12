@@ -137,7 +137,10 @@ export default function RegisterPage() {
   }, [valueDistrict, dataProvinces, valueProvince]);
 
   useEffect(() => {
-    if (payload.confirmPassword != payload.password && payload.confirmPassword) {
+    if (
+      payload.confirmPassword != payload.password &&
+      payload.confirmPassword
+    ) {
       setError("Mật khẩu và xác nhận mật khẩu không khớp");
     } else {
       setError("");
@@ -247,7 +250,7 @@ export default function RegisterPage() {
                         password: e.target.value,
                       }));
                     }}
-                    className="h-12 rounded-md text-gray-900 placeholder:text-gray-400 text-lg"
+                    className="h-12 rounded-md text-gray-900 placeholder:text-gray-400 text-lg border-2"
                   />
                 </div>
               </div>
@@ -274,7 +277,7 @@ export default function RegisterPage() {
                         confirmPassword: e.target.value,
                       }));
                     }}
-                    className="h-12 rounded-md text-gray-900 placeholder:text-gray-400 text-lg"
+                    className="h-12 rounded-md text-gray-900 placeholder:text-gray-400 text-lg border-2 font-medium"
                   />
                   {error && <p style={{ color: "red" }}>{error}</p>}
                 </div>

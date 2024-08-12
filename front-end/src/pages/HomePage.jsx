@@ -97,9 +97,11 @@ export default function HomePage() {
                   Đăng nhập
                 </Button>
               </Link>
-              <Button danger size={"large"}>
-                Đăng ký
-              </Button>
+              <Link to="register">
+                <Button type="primary" size={"large"}>
+                  Đăng ký
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
