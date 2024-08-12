@@ -2,6 +2,7 @@ const AUTH_ROUTES = {
   LOGIN: "/login",
   REGISTER: "/register",
   CHANGE_PASSWORD: "/change-password",
+  REFRESH_TOKEN: "/refresh-token",
 };
 const CART_ROUTES = {
   GET: "/",

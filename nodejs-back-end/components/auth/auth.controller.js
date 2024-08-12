@@ -6,6 +6,8 @@ import {
   registerService,
   changePasswordService,
 } from "./auth.service.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 async function loginController(req, res) {
   try {

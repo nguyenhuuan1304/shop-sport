@@ -1,5 +1,4 @@
 import axios from "axios";
-import { logout } from "../redux/slices/authSlice";
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -27,6 +26,10 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error) => {
+    const { response } = error;
+    console.log(response);
+    if (response && (response.status === 401 || response.status === 403)) {
+    }
     return Promise.reject(error);
   }
 );

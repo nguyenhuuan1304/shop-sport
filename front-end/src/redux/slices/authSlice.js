@@ -7,7 +7,8 @@ export const login = createAsyncThunk(
     try {
       const response = await request.loginService(payload);
       const { jwt, user } = response.data;
-      localStorage.setItem("jwt", jwt);
+      localStorage.setItem("jwt", jwt?.access_token);
+      // localStorage.setItem("refresh_token", jwt?.refresh_token);
       return user;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -19,7 +20,7 @@ export const register = createAsyncThunk(
   "auth/register",
   async (data, { rejectWithValue }) => {
     try {
-      console.log("creating dispatch", data)
+      console.log("creating dispatch", data);
       const response = await request.Register(data);
       return response;
     } catch (error) {
@@ -72,7 +73,7 @@ const initialState = {
   isLoading: false,
   success: false,
   createdAccountSuccess: false,
-  registerForm: null
+  registerForm: null,
 };
 
 const authSlice = createSlice({
@@ -95,7 +96,7 @@ const authSlice = createSlice({
     builder.addCase(login.fulfilled, (state, action) => {
       state.isLoading = false;
       state.currentUser = action.payload;
-      state.jwt = action.payload.jwt;
+      state.jwt = action.payload.jwt?.access_token;
       state.isAuthenticated = true;
     });
     builder.addCase(login.rejected, (state, action) => {

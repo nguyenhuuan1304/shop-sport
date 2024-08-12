@@ -97,9 +97,9 @@ const request = {
   },
   loginService: async (payload) => {
     try {
-      const reponse = await axiosInstance.post(API_ENDPOINTS.LOGIN, payload);
-      console.log("login: ", reponse);
-      return reponse;
+      const response = await axiosInstance.post(API_ENDPOINTS.LOGIN, payload);
+      console.log("login: ", response);
+      return response;
     } catch (error) {
       console.error("Error fetching login:", error);
       throw error;
@@ -503,13 +503,13 @@ const request = {
   },
   Register: async (data) => {
     try {
-      console.log("request ", data)
-      const response = await axiosInstance.post(API_ENDPOINTS.RIGISTER, data)
+      console.log("request ", data);
+      const response = await axiosInstance.post(API_ENDPOINTS.RIGISTER, data);
       return response.data;
     } catch (error) {
       console.error("Error when register:", error);
       throw error;
     }
-  }
+  },
 };
 export default request;
