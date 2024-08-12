@@ -1,6 +1,7 @@
 import express from "express";
 import productRoutes from "../routes/productRoutes.js";
-import authRoutes from "../routes/authRoutes.js";
+// import authRoutes from "../routes/authRoutes.js";
+import authRoutes from "../components/auth/auth.routes.js";
 import userRoutes from "../routes/userRoutes.js";
 import orderAddressRoutes from "../routes/orderAddressRoutes.js";
 import orderRoutes from "../routes/orderRoutes.js";

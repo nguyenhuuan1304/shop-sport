@@ -1,7 +1,3 @@
-import { verifyToken, generateToken } from "../middlewares/jwt.js";
-import { userModel } from "../models/index.js";
-import bcrypt from "bcryptjs";
-import { userService } from "../services/index.js";
 import { authService } from "../services/index.js";
 
 async function login(req, res) {
