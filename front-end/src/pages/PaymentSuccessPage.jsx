@@ -66,7 +66,7 @@ export default function PaymentSuccessPage() {
             <div className="flex flex-col">
               <span>Số tiền đã thanh toán</span>
               <span className="text-blue-600 text-2xl">
-                {session_detail?.session?.amount_total}$
+                {session_detail?.session?.amount_total.toLocaleString()}$
               </span>
             </div>
             <Divider />
@@ -82,7 +82,7 @@ export default function PaymentSuccessPage() {
             {/* total  */}
             <div className="flex flex-row-reverse items-center gap-2 h-20">
               <span className="text-xl">
-                {session_detail?.session?.amount_total}$
+                {session_detail?.session?.amount_total.toLocaleString()}$
               </span>
               <span className="text-sm">Tổng tiền:</span>
             </div>
