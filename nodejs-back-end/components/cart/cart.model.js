@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import Product from "../../models/productModel.js";
+import Product from "../product/product.model.js";
 export const items = Schema({
   size: {
     type: String,

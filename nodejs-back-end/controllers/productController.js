@@ -49,7 +49,7 @@ async function deleteProduct(req, res) {
     } else return res.status(404).json({ message: "not found product id!" });
   } catch (error) {
     res.status(500).json({
-      message: error.message,
+      message: error.message,a
     });
   }
 }
