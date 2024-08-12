@@ -6,12 +6,12 @@ import logo from "../assets/logo.jpg";
 import { getProvincesWithDetail } from "vietnam-provinces";
 import Select from "react-select";
 import { Input } from "antd";
+import { register } from "../redux/slices/authSlice";
 
 export default function RegisterPage() {
   const isLoading = useSelector((state) => state.auth.isLoading);
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const currentUser = useSelector((state) => state.auth.currentUser);
   const errorMessages = useSelector((state) => state.auth.errorMessages);
+  const success = useSelector((state) => state.auth.createdAccountSuccess);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
@@ -30,14 +30,15 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
 
   const [payload, setPayload] = useState({
-    username: "",
+    email: "",
     password: "",
     confirmPassword: "",
-    firstName: "",
-    lastName: "",
-    phone: "",
+    first_name: "",
+    last_name: "",
+    number_phone: "",
     address: "",
     dob: "",
+    username: "",
   });
 
   const setValueAddress = () => {
@@ -53,6 +54,12 @@ export default function RegisterPage() {
         valueProvince?.label,
     }));
   };
+
+  useEffect(() => {
+    if (success == true) {
+      navigate("/login");
+    }
+  }, [success]);
 
   useEffect(() => {
     setPayload((prevState) => ({
@@ -77,7 +84,7 @@ export default function RegisterPage() {
       ...payload,
     };
 
-    // dispatch(register(payload));
+    dispatch(register(payloadWithoutConfirmPassword));
   };
 
   useEffect(() => {
@@ -147,6 +154,13 @@ export default function RegisterPage() {
     }
   }, [payload.confirmPassword, payload.password]);
 
+  useEffect(() => {
+    setPayload((prevState) => ({
+      ...prevState,
+      username: payload.first_name + " " + payload.last_name,
+    }));
+  }, [payload.first_name, payload.last_name]);
+
   const changeHandlerProvice = (selectedOption) => {
     setValueProvicce(selectedOption);
     setValueDistrict(null);
@@ -210,21 +224,22 @@ export default function RegisterPage() {
                 </label>
                 <div className="mt-2">
                   <input
-                    id="username"
-                    name="username"
+                    id="email"
+                    name="email"
                     type="text"
-                    autoComplete="username"
+                    autoComplete="email"
                     required
                     placeholder="Nhập tên đăng nhập"
-                    value={payload.username}
+                    value={payload.email}
                     onChange={(e) => {
                       setPayload((prevState) => ({
                         ...prevState,
-                        username: e.target.value,
+                        email: e.target.value,
                       }));
                     }}
                     className="block w-full h-12 pl-4 focus:outline-none rounded-md border-2 border-gray-300 py-2 text-gray-900 placeholder:text-gray-400 focus:border-blue-500"
                   />
+                  {errorMessages && <p style={{ color: "red" }}>{errorMessages?.message}</p>}
                 </div>
               </div>
 
@@ -285,24 +300,24 @@ export default function RegisterPage() {
 
               <div>
                 <label
-                  htmlFor="lastName"
+                  htmlFor="last_name"
                   className="block text-lg font-medium leading-6 text-gray-900"
                 >
                   Họ
                 </label>
                 <div className="mt-2">
                   <input
-                    id="lastName"
-                    name="lastName"
+                    id="last_name"
+                    name="last_name"
                     type="text"
                     autoComplete="family-name"
                     required
                     placeholder="Nhập họ của bạn"
-                    value={payload.lastName}
+                    value={payload.last_name}
                     onChange={(e) => {
                       setPayload((prevState) => ({
                         ...prevState,
-                        lastName: e.target.value,
+                        last_name: e.target.value,
                       }));
                     }}
                     className="block w-full h-12 pl-4 focus:outline-none rounded-md border-2 border-gray-300 py-2 text-gray-900 placeholder:text-gray-400 focus:border-blue-500"
@@ -312,24 +327,24 @@ export default function RegisterPage() {
 
               <div>
                 <label
-                  htmlFor="firstName"
+                  htmlFor="first_name"
                   className="block text-lg font-medium leading-6 text-gray-900"
                 >
                   Tên
                 </label>
                 <div className="mt-2">
                   <input
-                    id="firstName"
-                    name="firstName"
+                    id="first_name"
+                    name="first_name"
                     type="text"
                     autoComplete="given-name"
                     required
                     placeholder="Nhập tên của bạn"
-                    value={payload.firstName}
+                    value={payload.first_name}
                     onChange={(e) => {
                       setPayload((prevState) => ({
                         ...prevState,
-                        firstName: e.target.value,
+                        first_name: e.target.value,
                       }));
                     }}
                     className="block w-full h-12 pl-4 focus:outline-none rounded-md border-2 border-gray-300 py-2 text-gray-900 placeholder:text-gray-400 focus:border-blue-500"
@@ -339,7 +354,7 @@ export default function RegisterPage() {
 
               <div>
                 <label
-                  htmlFor="firstName"
+                  htmlFor="dob"
                   className="block text-lg font-medium leading-6 text-gray-900"
                 >
                   Ngày sinh
@@ -366,24 +381,24 @@ export default function RegisterPage() {
 
               <div>
                 <label
-                  htmlFor="phone"
+                  htmlFor="number_phone"
                   className="block text-lg font-medium leading-6 text-gray-900"
                 >
                   Số điện thoại
                 </label>
                 <div className="mt-2">
                   <input
-                    id="phone"
-                    name="phone"
+                    id="number_phone"
+                    name="number_phone"
                     type="text"
                     autoComplete="tel"
                     required
                     placeholder="Nhập số điện thoại"
-                    value={payload.phone}
+                    value={payload.number_phone}
                     onChange={(e) => {
                       setPayload((prevState) => ({
                         ...prevState,
-                        phone: e.target.value,
+                        number_phone: e.target.value,
                       }));
                     }}
                     className="block w-full h-12 pl-4 focus:outline-none rounded-md border-2 border-gray-300 py-2 text-gray-900 placeholder:text-gray-400 focus:border-blue-500"
@@ -469,11 +484,11 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {errorMessages.length > 0 && (
+            {errorMessages?.length > 0 && (
               <Alert
                 message={
                   <ul>
-                    {errorMessages.map((err, index) => (
+                    {errorMessages?.map((err, index) => (
                       <li key={index}>{err.message}</li>
                     ))}
                   </ul>

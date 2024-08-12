@@ -501,5 +501,15 @@ const request = {
       throw error;
     }
   },
+  Register: async (data) => {
+    try {
+      console.log("request ", data)
+      const response = await axiosInstance.post(API_ENDPOINTS.RIGISTER, data)
+      return response.data;
+    } catch (error) {
+      console.error("Error when register:", error);
+      throw error;
+    }
+  }
 };
 export default request;

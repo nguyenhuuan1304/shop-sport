@@ -72,6 +72,7 @@ export default function PersonalInformationForm() {
                 description="tài khoản của bạn đã được thay đổi thành công vui lòng kiểm tra thông tin tài khoản."
                 type="success"
                 showIcon
+                t
               />
             ) : (
               <>
