@@ -8,7 +8,7 @@ export default function PersonalInformationForm() {
   const isLoadingUpdate = useSelector((state) => state.user?.loading);
   const isErrorUpdate = useSelector((state) => state.user?.error);
   const dispatch = useDispatch();
-  const currentUser = useSelector((state) => state.auth?.currentUser);
+  const currentUser = useSelector((state) => state.user?.user);
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -45,8 +45,10 @@ export default function PersonalInformationForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form Data: ", formData);
+    // console.log("Form Data: ", formData);
+
     dispatch(fetchUpdateUser({ data: formData }));
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   };
 
   return (

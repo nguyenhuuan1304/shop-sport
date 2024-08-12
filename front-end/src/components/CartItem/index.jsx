@@ -1,11 +1,4 @@
-import {
-  Button,
-  Image,
-  Input,
-  InputNumber,
-  Popconfirm,
-  Space
-} from "antd";
+import { Button, Image, Input, InputNumber, Popconfirm, Space } from "antd";
 import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { CiWarning } from "react-icons/ci";
@@ -132,17 +125,12 @@ const CartItem = ({
           className="rounded-2xl"
           width={170}
           height={170}
-          src={
-           
-            cartItem?.product?.images[0]
-          }
+          src={cartItem?.product?.images[0]}
         />
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex flex-row justify-between items-center gap-2">
-          <span className="font-semibold">
-            {cartItem?.product?.name}
-          </span>
+          <span className="font-semibold">{cartItem?.product?.name}</span>
           {/* <Button size="small" type="text" danger>
             <FaTrashAlt size={15} />
           </Button> */}
@@ -165,10 +153,21 @@ const CartItem = ({
             </span>
           </span>
         )}
+        {!cartItem?.product?.is_sale ? (
+          <span className="font-semibold text-red-500">
+            {cartItem?.product?.price?.toLocaleString()}đ
+          </span>
+        ) : (
+          <>
+            <span className="font-semibold text-sm text-red-500 line-through">
+              {cartItem?.product?.price?.toLocaleString()}đ
+            </span>
+            <span className="font-semibold text-green-500">
+              {cartItem?.product?.sale_price?.toLocaleString()}đ
+            </span>
+          </>
+        )}
 
-        <span className="font-semibold text-red-500">
-          {cartItem?.product?.price?.toLocaleString()}đ
-        </span>
         <div className="flex flex-row justify-between items-center">
           <QuantityEditor
             max={foundItem?.quantity}

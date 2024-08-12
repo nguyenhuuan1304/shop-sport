@@ -61,11 +61,13 @@ const request = {
     }
   },
 
-  ListSaleProduct: async (currentPage,pageSize) => {
-    console.log("currentPage,pageSize  ", currentPage,pageSize);
+  ListSaleProduct: async (currentPage, pageSize) => {
+    console.log("currentPage,pageSize  ", currentPage, pageSize);
     try {
-      const response = await axiosInstance.get(API_ENDPOINTS.LIST_SALE(currentPage, pageSize));
-      console.log("object", response)
+      const response = await axiosInstance.get(
+        API_ENDPOINTS.LIST_SALE(currentPage, pageSize)
+      );
+      console.log("object", response);
       return response.data;
     } catch (error) {
       return errorHandler(error);
@@ -223,9 +225,15 @@ const request = {
       } else {
         updatedProducts = [...userCart.data.items, cartItem];
       }
+      let updatedTotal = 0;
       //updated total value
-      const updatedTotal =
-        userCart?.data?.total_of_price + cartItem?.product?.price;
+      if (cartItem?.product?.is_sale) {
+        updatedTotal =
+          userCart?.data?.total_of_price + cartItem?.product?.sale_price;
+      } else {
+        updatedTotal =
+          userCart?.data?.total_of_price + cartItem?.product?.price;
+      }
       //number of product
       const numberOfProduct = updatedProducts.reduce((accumulator, product) => {
         return accumulator + product.count;
@@ -284,8 +292,14 @@ const request = {
         updatedProducts = [...userCart.data.items, cartItem];
       }
       //updated total value
-      const updatedTotal =
-        userCart?.data?.total_of_price - cartItem?.product?.price;
+      let updatedTotal = 0;
+      if (cartItem?.product?.is_sale) {
+        updatedTotal =
+          userCart?.data?.total_of_price - cartItem?.product?.sale_price;
+      } else {
+        updatedTotal =
+          userCart?.data?.total_of_price - cartItem?.product?.price;
+      }
 
       const numberOfProduct = updatedProducts.reduce((accumulator, product) => {
         return accumulator + product.count;
@@ -311,7 +325,9 @@ const request = {
     try {
       // Get total in products
       const productsTotal = products.reduce((total, item) => {
-        const price = item.product?.price;
+        const price = item.product.is_sale
+          ? item.product?.sale_price
+          : item.product?.price;
         const count = item.count;
         return total + price * count;
       }, 0);
@@ -393,7 +409,9 @@ const request = {
             )
         );
       }
-      const productPrice = cartItem.product.price;
+      const productPrice = cartItem.product?.is_sale
+        ? cartItem.product?.sale_price
+        : cartItem.product?.price;
       const productCount = existingProduct.count;
       const productTotalPrice = productPrice * productCount;
       //updated total value
@@ -483,5 +501,15 @@ const request = {
       throw error;
     }
   },
+  Register: async (data) => {
+    try {
+      console.log("request ", data)
+      const response = await axiosInstance.post(API_ENDPOINTS.RIGISTER, data)
+      return response.data;
+    } catch (error) {
+      console.error("Error when register:", error);
+      throw error;
+    }
+  }
 };
 export default request;

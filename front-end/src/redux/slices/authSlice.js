@@ -14,6 +14,20 @@ export const login = createAsyncThunk(
     }
   }
 );
+
+export const register = createAsyncThunk(
+  "auth/register",
+  async (data, { rejectWithValue }) => {
+    try {
+      console.log("creating dispatch", data)
+      const response = await request.Register(data);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const changePassword = createAsyncThunk(
   "auth/changePassword",
   async (data, { rejectWithValue }) => {
@@ -57,6 +71,8 @@ const initialState = {
   errorMessages: "",
   isLoading: false,
   success: false,
+  createdAccountSuccess: false,
+  registerForm: null
 };
 
 const authSlice = createSlice({
@@ -113,6 +129,23 @@ const authSlice = createSlice({
       state.jwt = null;
       state.isAuthenticated = false;
       localStorage.removeItem("jwt");
+    });
+    builder.addCase(register.pending, (state) => {
+      state.isLoading = true;
+      state.errorMessages = null;
+      state.createdAccountSuccess = false;
+    });
+    builder.addCase(register.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.registerForm = action.payload;
+      state.errorMessages = null;
+      state.createdAccountSuccess = true;
+    });
+    builder.addCase(register.rejected, (state, action) => {
+      state.isLoading = false;
+      state.errorMessages = action.payload;
+      state.registerForm = null;
+      state.createdAccountSuccess = false;
     });
   },
 });

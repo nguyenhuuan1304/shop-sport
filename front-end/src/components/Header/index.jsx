@@ -187,7 +187,7 @@ export default function Header() {
                 to="profile"
               />
             ) : (
-              <NavigationLink title="Đăng ký" Icon={IoPersonAddSharp} to="" />
+              <NavigationLink title="Đăng ký" Icon={IoPersonAddSharp} to="/register" />
             )}
             {isAuthenticated && currentUser ? (
               <Link

@@ -141,6 +141,15 @@ export default function LoginPage() {
               </Link> */}
             </div>
           </form>
+          <p className="mt-10 text-center text-lg text-gray-500">
+            Bạn chưa có tài khoản?{" "}
+            <Link
+              to="/register"
+              className="font-semibold leading-6 text-blue-500 hover:text-blue-400"
+            >
+              Đăng ký
+            </Link>
+          </p>
         </div>
       </div>
     </div>

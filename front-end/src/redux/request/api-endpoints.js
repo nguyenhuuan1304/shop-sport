@@ -20,6 +20,7 @@ const API_ENDPOINTS = {
   //authentication
   LOGIN: `auth/login`,
   CHANGE_PASSWORD: `/auth/change-password`,
+  RIGISTER: `/auth/register`,
 
   //order address
   CREATE_ORDER_ADDRESS: `/order-address`,

@@ -50,6 +50,7 @@ const CategoryPage = lazy(() => import("./pages/CategoryPage"));
 const RequireAuth = lazy(() => import("./utils/requireAuth"));
 const PaymentSuccessPage = lazy(() => import("./pages/PaymentSuccessPage"));
 const PaymentCancelPage = lazy(() => import("./pages/PaymentCancelPage"));
+const RegisterPage = lazy(() => import("./pages/RegisterPage"));
 
 function App() {
   const dispatch = useDispatch();
@@ -100,6 +101,7 @@ function App() {
           <Route path="payment-success" element={<PaymentSuccessPage />} />
           <Route path="payment-cancel" element={<PaymentCancelPage />} />
           <Route path="login" element={<LoginPage />} />
+          <Route path="register" element={<RegisterPage/>}/>
           <Route path="cart" element={<CartLayout />}>
             <Route index element={<CartPage />} />
           </Route>
