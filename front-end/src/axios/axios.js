@@ -1,4 +1,5 @@
 import axios from "axios";
+import { logout } from "../redux/slices/authSlice";
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,

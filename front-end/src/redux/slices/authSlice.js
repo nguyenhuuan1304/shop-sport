@@ -74,17 +74,17 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(login.pending, (state) => {
       state.isLoading = true;
+      state.errorMessages = "";
     });
     builder.addCase(login.fulfilled, (state, action) => {
       state.isLoading = false;
       state.currentUser = action.payload;
-      // console.log(action.payload);
       state.jwt = action.payload.jwt;
       state.isAuthenticated = true;
     });
     builder.addCase(login.rejected, (state, action) => {
       state.isLoading = false;
-      state.errorMessages = action.payload.error?.message;
+      state.errorMessages = action.payload?.message;
     });
     builder.addCase(changePassword.pending, (state) => {
       state.isLoading = true;
