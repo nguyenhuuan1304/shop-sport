@@ -64,13 +64,13 @@ export default function PersonalInformationForm() {
           </>
         ) : (
           <>
-            {" "}
             {isSuccessUpdate ? (
               <Alert
                 message="Cập nhật tài khoản thành công"
                 description="tài khoản của bạn đã được thay đổi thành công vui lòng kiểm tra thông tin tài khoản."
                 type="success"
                 showIcon
+                t
               />
             ) : (
               <>
