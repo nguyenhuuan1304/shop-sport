@@ -131,7 +131,9 @@ export default function SearchBar({ keyWord }) {
                             title={<p>{item?.name}</p>}
                             description={
                               isAuthenticated ? (
-                                <p>{item?.price} $</p>
+                                <p className="text-red-600 font-semibold">
+                                  {item?.price?.toLocaleString()}₫
+                                </p>
                               ) : (
                                 <p className="font-semibold">
                                   Đăng nhập để xem giá
