@@ -30,6 +30,7 @@ export const fetchOrderAddress = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await request.fetchOrderAddress();
+      console.log("data ", response.data)
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);

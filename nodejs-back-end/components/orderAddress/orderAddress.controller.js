@@ -10,6 +10,7 @@ async function getOrderAddressByUserIdController(req, res) {
   try {
     const user_id = req.user.user_id;
     const order_addresses = await getOrderAddressByUserId(user_id);
+    console.log("get oder ", order_addresses)
     return res.status(200).json(order_addresses);
   } catch (error) {
     res.status(500).json({
@@ -20,10 +21,11 @@ async function getOrderAddressByUserIdController(req, res) {
 
 async function addOrderAddressController(req, res) {
   try {
-    console.log("object", req.body)
+    console.log("object", req.body);
     const user_id = req.user.user_id;
     const order_address = req.body.order_address;
     const result = await addOrderAddress(user_id, order_address);
+    console.log("result ", result)
     if (result) return res.status(200).json(result);
     else return res.status(404).json({ message: "add unsuccessfully" });
   } catch (error) {

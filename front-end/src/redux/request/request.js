@@ -108,6 +108,7 @@ const request = {
   fetchOrderAddress: async () => {
     try {
       const response = await axiosInstance.get(API_ENDPOINTS.GET_ORDER_ADDRESS);
+      console.log("data ", response)
       return response;
     } catch (error) {
       return errorHandler(error);
@@ -439,8 +440,18 @@ const request = {
   GetOrders: async () => {
     try {
       const response = await axiosInstance.get(API_ENDPOINTS.GET_ORDERS);
+      console.log("data ", response)
       return response.data;
     } catch (error) {
+      if (error.response) {
+        console.error("Error response:", error.response.data);
+        console.error("Error status:", error.response.status);
+        console.error("Error headers:", error.response.headers);
+      } else if (error.request) {
+        console.error("Error request:", error.request);
+      } else {
+        console.error("Error message:", error.message);
+      }
       throw error;
     }
   },
