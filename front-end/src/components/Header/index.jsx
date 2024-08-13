@@ -187,7 +187,11 @@ export default function Header() {
                 to="profile"
               />
             ) : (
-              <NavigationLink title="Đăng ký" Icon={IoPersonAddSharp} to="/register" />
+              <NavigationLink
+                title="Đăng ký"
+                Icon={IoPersonAddSharp}
+                to="/register"
+              />
             )}
             {isAuthenticated && currentUser ? (
               <Link
@@ -201,7 +205,13 @@ export default function Header() {
               <NavigationLink title="Đăng nhập" Icon={IoPersonCircle} />
             )}
             <NavigationLink
-              count={number_of_product ? number_of_product : 0}
+              count={
+                isAuthenticated
+                  ? number_of_product
+                    ? number_of_product
+                    : 0
+                  : 0
+              }
               title="Giỏ hàng"
               Icon={FaShoppingCart}
               to="cart"
