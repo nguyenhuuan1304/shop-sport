@@ -20,12 +20,14 @@ async function getOrderAddressByUserIdController(req, res) {
 
 async function addOrderAddressController(req, res) {
   try {
+    console.log("object", req.body)
     const user_id = req.user.user_id;
     const order_address = req.body.order_address;
     const result = await addOrderAddress(user_id, order_address);
     if (result) return res.status(200).json(result);
     else return res.status(404).json({ message: "add unsuccessfully" });
   } catch (error) {
+    console.log("trung hàn code ", error.message);
     res.status(500).json({
       message: error.message,
     });
