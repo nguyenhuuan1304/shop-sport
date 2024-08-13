@@ -158,7 +158,7 @@ export default function ResponsiveHeader() {
           ) : (
             <div className="flex flex-row gap-5 items-center justify-center text-blue-600 font-base">
               <Link to="login">Đăng nhập</Link>
-              <Link to="">Đăng ký</Link>
+              <Link to="register">Đăng ký</Link>
             </div>
           )
         }
