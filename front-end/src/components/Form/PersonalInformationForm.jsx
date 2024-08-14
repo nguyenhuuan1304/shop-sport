@@ -9,6 +9,8 @@ export default function PersonalInformationForm() {
   const isErrorUpdate = useSelector((state) => state.user?.error);
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user?.user);
+  const [visible, setVisible] = useState(false);
+
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -17,6 +19,17 @@ export default function PersonalInformationForm() {
     dob: "",
     address: "",
   });
+
+  useEffect(() => {
+    if (isSuccessUpdate) {
+      setVisible(true);
+      const timer = setTimeout(() => {
+        setVisible(false);
+      }, 5000); // Điều chỉnh thời gian (mili giây) nếu cần
+      return () => clearTimeout(timer); // Dọn dẹp timer khi component unmount
+    }
+  }, [isSuccessUpdate]);
+
   useEffect(() => {
     if (currentUser) {
       const dob = currentUser.dob
@@ -66,7 +79,7 @@ export default function PersonalInformationForm() {
           </>
         ) : (
           <>
-            {isSuccessUpdate ? (
+            {visible ? (
               <Alert
                 message="Cập nhật tài khoản thành công"
                 description="tài khoản của bạn đã được thay đổi thành công vui lòng kiểm tra thông tin tài khoản."
