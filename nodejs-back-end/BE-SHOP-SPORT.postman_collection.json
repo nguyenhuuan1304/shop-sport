@@ -42,7 +42,33 @@
 					"name": "get products",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/products?page=1&pageSize=2&orderBy=price:-1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"products"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "2"
+								},
+								{
+									"key": "orderBy",
+									"value": "price:-1"
+								}
+							]
+						}
 					},
 					"response": []
 				},
@@ -91,11 +117,21 @@
 				{
 					"name": "update product by id",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZhMjAyODM1MDU0MDQ5YTcyYzE1NzllIiwiaWF0IjoxNzIyNDA3ODYyLCJleHAiOjE3MjI0MTE0NjJ9.00WkRD0rJE4PRaAEjzewfb58uYVGhDSFfAGfLjWlqzA",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"state\" : \"false\"\r\n}",
+							"raw": "{\r\n    \"status\" : false\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -103,7 +139,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:4000/api/products/66a0acc41f2e14d228b91593",
+							"raw": "http://localhost:4000/api/products/66a9a1b08f6234187ccc01c5",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -112,7 +148,42 @@
 							"path": [
 								"api",
 								"products",
-								"66a0acc41f2e14d228b91593"
+								"66a9a1b08f6234187ccc01c5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "search product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/products/search?q=nike&page=2&pageSize=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"products",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "nike"
+								},
+								{
+									"key": "page",
+									"value": "2"
+								},
+								{
+									"key": "pageSize",
+									"value": "1"
+								}
 							]
 						}
 					},
@@ -130,7 +201,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"trung@gmail.com\",\r\n    \"password\": \"123\",\r\n    \"number_phone\": \"0702491751\",\r\n    \"username\": \"trunghan\",\r\n    \"first_name\": \"Hàn Quốc\",\r\n    \"last_name\": \"Trung\"\r\n}",
+							"raw": "{\r\n    \"email\": \"trung@gmail.com\",\r\n    \"password\": \"123\",\r\n    \"number_phone\": \"0702491751\",\r\n    \"username\": \"trunghan\",\r\n    \"first_name\": \"Hàn Quốc\",\r\n    \"last_name\": \"Trung\",\r\n    \"address\": \"95 đường 1 tháng 5, TP.Quy Nhơn\",\r\n    \"dob\": \"2002-25-06T00:00:00Z\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -222,6 +293,14 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "get refresh token",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
 				}
 			]
 		},
@@ -244,7 +323,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZhMjAyODM1MDU0MDQ5YTcyYzE1NzllIiwiaWF0IjoxNzIyMjM1NDk4LCJleHAiOjE3MjIyMzkwOTh9.5yoi8Zg3Pwj8dc1d-4-iQesKWNUlDHHkB_LAzpncWEQ",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZhMjAyODM1MDU0MDQ5YTcyYzE1NzllIiwiaWF0IjoxNzIyMzkzNjA1LCJleHAiOjE3MjIzOTcyMDV9.1y1i8ngGyBmRpo8R6ydePrJCHQOoHR1YKyZGW5GJyQU",
 									"type": "string"
 								}
 							]
@@ -253,7 +332,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "",
+							"raw": "{\r\n    \"number_phone\": \"113\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -326,8 +405,40 @@
 				{
 					"name": "update cart",
 					"request": {
-						"method": "GET",
-						"header": []
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZhMjAyODM1MDU0MDQ5YTcyYzE1NzllIiwiaWF0IjoxNzIyMjE3NjYxLCJleHAiOjE3MjIyMjEyNjF9.rcR-aQyXgHedgFblc28q0-v8DdjIfzAu0HjvMxi54Ks",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"items\": [{\r\n        \"key\": \"2\",\r\n        \"count\": 1,\r\n        \"product\": {\r\n            \"_id\": \"66a9aff9ca7be1a735c3bc2d\",\r\n            \"status\": true,\r\n            \"name\": \"Nike Sportswear Premium\\nMen's T-Shirt\",\r\n            \"price\": 40000,\r\n            \"category\": \"T-shirt\",\r\n            \"images\": [\r\n                \"https://res.cloudinary.com/dgnzdcv7l/image/upload/v1722396623/erwmid90pb0hi1gxqx4h.webp\",\r\n                \"https://res.cloudinary.com/dgnzdcv7l/image/upload/v1722396625/jawgqhvrvqiodq55m323.webp\"\r\n            ],\r\n            \"description\": \"Made from soft, midweight cotton, this tee has a slight drape for a familiar feel straight out of the bag.\",\r\n            \"size_list\": [\r\n                {\r\n                    \"size_name\": \"S\",\r\n                    \"quantity\": 10,\r\n                    \"_id\": \"66a9aff9ca7be1a735c3bc2e\"\r\n                },\r\n                {\r\n                    \"size_name\": \"M\",\r\n                    \"quantity\": 15,\r\n                    \"_id\": \"66a9aff9ca7be1a735c3bc2f\"\r\n                },\r\n                {\r\n                    \"size_name\": \"L\",\r\n                    \"quantity\": 20,\r\n                    \"_id\": \"66a9aff9ca7be1a735c3bc30\"\r\n                },\r\n                {\r\n                    \"size_name\": \"XL\",\r\n                    \"quantity\": 5,\r\n                    \"_id\": \"66a9aff9ca7be1a735c3bc31\"\r\n                },\r\n                {\r\n                    \"size_name\": \"XXL\",\r\n                    \"quantity\": 8,\r\n                    \"_id\": \"66a9aff9ca7be1a735c3bc32\"\r\n                }\r\n            ],\r\n            \"sale_price\": 0,\r\n            \"is_hot\": true,\r\n            \"is_sale\": true,\r\n            \"is_deleted\": false,\r\n            \"updated_at\": \"2024-07-31T03:31:05.985Z\",\r\n            \"created_at\": \"2024-07-31T03:31:05.985Z\",\r\n            \"__v\": 0\r\n        },\r\n        \"size\": \"L\"\r\n    },\r\n    {\r\n        \"key\": \"3\",\r\n        \"count\": 1,\r\n        \"product\": {\r\n            \"_id\": \"66a9aff9ca7be1a735c3bc2d\",\r\n            \"status\": true,\r\n            \"name\": \"Nike Sportswear Premium\\nMen's T-Shirt\",\r\n            \"price\": 40000,\r\n            \"category\": \"T-shirt\",\r\n            \"images\": [\r\n                \"https://res.cloudinary.com/dgnzdcv7l/image/upload/v1722396623/erwmid90pb0hi1gxqx4h.webp\",\r\n                \"https://res.cloudinary.com/dgnzdcv7l/image/upload/v1722396625/jawgqhvrvqiodq55m323.webp\"\r\n            ],\r\n            \"description\": \"Made from soft, midweight cotton, this tee has a slight drape for a familiar feel straight out of the bag.\",\r\n            \"size_list\": [\r\n                {\r\n                    \"size_name\": \"S\",\r\n                    \"quantity\": 10,\r\n                    \"_id\": \"66a9aff9ca7be1a735c3bc2e\"\r\n                },\r\n                {\r\n                    \"size_name\": \"M\",\r\n                    \"quantity\": 15,\r\n                    \"_id\": \"66a9aff9ca7be1a735c3bc2f\"\r\n                },\r\n                {\r\n                    \"size_name\": \"L\",\r\n                    \"quantity\": 20,\r\n                    \"_id\": \"66a9aff9ca7be1a735c3bc30\"\r\n                },\r\n                {\r\n                    \"size_name\": \"XL\",\r\n                    \"quantity\": 5,\r\n                    \"_id\": \"66a9aff9ca7be1a735c3bc31\"\r\n                },\r\n                {\r\n                    \"size_name\": \"XXL\",\r\n                    \"quantity\": 8,\r\n                    \"_id\": \"66a9aff9ca7be1a735c3bc32\"\r\n                }\r\n            ],\r\n            \"sale_price\": 0,\r\n            \"is_hot\": true,\r\n            \"is_sale\": true,\r\n            \"is_deleted\": false,\r\n            \"updated_at\": \"2024-07-31T03:31:05.985Z\",\r\n            \"created_at\": \"2024-07-31T03:31:05.985Z\",\r\n            \"__v\": 0\r\n        },\r\n        \"size\": \"XL\"\r\n    },\r\n    {\r\n        \"key\": \"4\",\r\n        \"count\": 1,\r\n        \"product\": {\r\n            \"_id\": \"66a9aff9ca7be1a735c3bc2d\",\r\n            \"status\": true,\r\n            \"name\": \"Nike Sportswear Premium\\nMen's T-Shirt\",\r\n            \"price\": 40000,\r\n            \"category\": \"T-shirt\",\r\n            \"images\": [\r\n                \"https://res.cloudinary.com/dgnzdcv7l/image/upload/v1722396623/erwmid90pb0hi1gxqx4h.webp\",\r\n                \"https://res.cloudinary.com/dgnzdcv7l/image/upload/v1722396625/jawgqhvrvqiodq55m323.webp\"\r\n            ],\r\n            \"description\": \"Made from soft, midweight cotton, this tee has a slight drape for a familiar feel straight out of the bag.\",\r\n            \"size_list\": [\r\n                {\r\n                    \"size_name\": \"S\",\r\n                    \"quantity\": 10,\r\n                    \"_id\": \"66a9aff9ca7be1a735c3bc2e\"\r\n                },\r\n                {\r\n                    \"size_name\": \"M\",\r\n                    \"quantity\": 15,\r\n                    \"_id\": \"66a9aff9ca7be1a735c3bc2f\"\r\n                },\r\n                {\r\n                    \"size_name\": \"L\",\r\n                    \"quantity\": 20,\r\n                    \"_id\": \"66a9aff9ca7be1a735c3bc30\"\r\n                },\r\n                {\r\n                    \"size_name\": \"XL\",\r\n                    \"quantity\": 5,\r\n                    \"_id\": \"66a9aff9ca7be1a735c3bc31\"\r\n                },\r\n                {\r\n                    \"size_name\": \"XXL\",\r\n                    \"quantity\": 8,\r\n                    \"_id\": \"66a9aff9ca7be1a735c3bc32\"\r\n                }\r\n            ],\r\n            \"sale_price\": 0,\r\n            \"is_hot\": true,\r\n            \"is_sale\": true,\r\n            \"is_deleted\": false,\r\n            \"updated_at\": \"2024-07-31T03:31:05.985Z\",\r\n            \"created_at\": \"2024-07-31T03:31:05.985Z\",\r\n            \"__v\": 0\r\n        },\r\n        \"size\": \"XXL\"\r\n    }]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/cart/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"cart",
+								"update"
+							]
+						}
 					},
 					"response": []
 				}
@@ -467,6 +578,38 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "set default by order address id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZhMjAyODM1MDU0MDQ5YTcyYzE1NzllIiwiaWF0IjoxNzIyMzEwMDUyLCJleHAiOjE3MjIzMTM2NTJ9.eWjRjcCRMaxX8DiDu44oUQLZwuTplURrmdrA9QwDzvo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/order-address/set-default/66a8640531b16f89e58c059a",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"order-address",
+								"set-default",
+								"66a8640531b16f89e58c059a"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -476,6 +619,16 @@
 				{
 					"name": "get orders by user id",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZhMjAyODM1MDU0MDQ5YTcyYzE1NzllIiwiaWF0IjoxNzIyMzEwMDUyLCJleHAiOjE3MjIzMTM2NTJ9.eWjRjcCRMaxX8DiDu44oUQLZwuTplURrmdrA9QwDzvo",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -491,6 +644,78 @@
 								""
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete order by order id",
+					"request": {
+						"method": "DELETE",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PAYMENT",
+			"item": [
+				{
+					"name": "create checkout session",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cart\": [\r\n    {\r\n      \"size\": \"L\",\r\n      \"product\": {\r\n        \"_id\": \"66a9aebd73b6a22e133630fc\",\r\n        \"status\": true,\r\n        \"name\": \"áo nike 3\",\r\n        \"price\": 11221212,\r\n        \"category\": \"category\",\r\n        \"images\": [\r\n          \"https://res.cloudinary.com/dgnzdcv7l/image/upload/v1722396352/rqt30mvzauo50zpjkwgk.jpg\"\r\n        ],\r\n        \"size_list\": [\r\n          {\r\n            \"size_name\": \"M\",\r\n            \"quantity\": 10,\r\n            \"_id\": \"66a9aebd73b6a22e133630fd\"\r\n          },\r\n          {\r\n            \"size_name\": \"L\",\r\n            \"quantity\": 20,\r\n            \"_id\": \"66a9aebd73b6a22e133630fe\"\r\n          }\r\n        ],\r\n        \"is_hot\": false,\r\n        \"is_sale\": false,\r\n        \"is_deleted\": false,\r\n        \"updated_at\": \"2024-07-31T03:25:49.684Z\",\r\n        \"created_at\": \"2024-07-31T03:25:49.684Z\",\r\n        \"__v\": 0\r\n      },\r\n      \"count\": 2,\r\n      \"_id\": \"66b03a4ccf2b828bf2472c42\",\r\n      \"created_at\": \"2024-08-05T02:34:52.994Z\"\r\n    }\r\n  ]\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/payment/create-checkout-session",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"payment",
+								"create-checkout-session"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "webhook",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/payment/webhook",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"payment",
+								"webhook"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "checkout session",
+					"request": {
+						"method": "GET",
+						"header": []
 					},
 					"response": []
 				}

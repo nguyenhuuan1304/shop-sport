@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const data = [
   {
     title: "QUẦN ÁO THƯƠNG HIỆU",
-    to: "quan-ao-bong-da-thuong-hieu",
+    to: "/",
     children: [
       {
         title: "ADIDAS",
@@ -19,7 +19,7 @@ const data = [
   },
   {
     title: "CẦU LÔNG",
-    to: "quan-ao-bong-da-cau-lac-bo-doi-tuyen",
+    to: "/",
     children: [
       {
         title: "VỢT CẦU LÔNG",
@@ -33,7 +33,7 @@ const data = [
   },
   {
     title: "KHUYẾN MÃI",
-    to: "khuyen-mai-giam-gia-xa-hang",
+    to: "/",
     children: [
       // {
       //   title: "HÀNG ĐANG GIẢM GIÁ",

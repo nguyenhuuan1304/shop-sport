@@ -136,6 +136,9 @@ export default function LoginPage() {
               >
                 Đăng nhập
               </button>
+              {/* <div class="g-signin2" data-onsuccess="onSignIn">
+                Login with Google
+              </div> */}
               {/* <Link to="/" className="text-blue-500 underline">
                 Trang chủ
               </Link> */}

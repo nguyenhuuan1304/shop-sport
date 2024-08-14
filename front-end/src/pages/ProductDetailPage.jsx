@@ -357,6 +357,7 @@ const ProductDetailPage = React.memo(() => {
                       onClick={addToCart}
                       className="w-full"
                       type="primary"
+                      danger
                       size="large"
                     >
                       <div className="flex flex-col">
@@ -366,7 +367,7 @@ const ProductDetailPage = React.memo(() => {
                         </span>
                       </div>
                     </Button>
-                    <Button
+                    {/* <Button
                       className="w-full"
                       type="primary"
                       danger
@@ -376,7 +377,7 @@ const ProductDetailPage = React.memo(() => {
                         <span>Đặt ngay</span>
                         <span className="text-xs pb-1">Thanh toán ngay</span>
                       </div>
-                    </Button>
+                    </Button> */}
                   </div>
                 </>
               )}

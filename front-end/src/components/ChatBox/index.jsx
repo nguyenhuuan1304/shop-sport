@@ -7,10 +7,13 @@ import {
   FaCommentSlash,
   FaUserCircle,
 } from "react-icons/fa";
+import { Button, FloatButton } from "antd";
 import { IoLogoSnapchat } from "react-icons/io";
+import { CommentOutlined, CustomerServiceOutlined } from "@ant-design/icons";
 import { BsChatRightHeart } from "react-icons/bs";
 import { GoHubot } from "react-icons/go";
 import { FaRobot } from "react-icons/fa";
+import { MdArrowForwardIos } from "react-icons/md";
 
 export default function ChatBox() {
   const [isChatBoxVisible, setIsChatBoxVisible] = useState(false);
@@ -114,6 +117,16 @@ export default function ChatBox() {
         )}
       </AnimatePresence>
       <motion.div
+        className="fixed bottom-1/2 -left-3 p-3 rounded-xl cursor-pointer border-neutral-600"
+        initial={{ scale: 1 }}
+        whileHover={{ scale: 1.2 }}
+        transition={{ duration: 0.3 }}
+        onClick={toggleChatBox}
+        style={{ width: "80px", height: "80px" }}
+      >
+        {!isChatBoxVisible && <MdArrowForwardIos size={30} />}
+      </motion.div>
+      {/* <motion.div
         className="fixed bottom-16 right-6 p-3 rounded-xl cursor-pointer border-neutral-600"
         initial={{ scale: 1 }}
         whileHover={{ scale: 1.2 }}
@@ -136,7 +149,7 @@ export default function ChatBox() {
           size={50}
           style={{ position: "absolute", bottom: "30", right: "10" }}
         />
-      </motion.div>
+      </motion.div> */}
     </div>
   );
 }
