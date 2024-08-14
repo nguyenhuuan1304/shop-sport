@@ -1,5 +1,5 @@
 import orderAddressModel from "./orderAddress.model.js";
-import { getUserById } from "../../services/userService.js";
+import { getUserById } from "../user/user.service.js";
 
 async function addOrderAddress(user_id, order_address) {
   try {

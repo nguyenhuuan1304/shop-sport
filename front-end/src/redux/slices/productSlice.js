@@ -110,6 +110,7 @@ const productSlice = createSlice({
   name: "products",
   initialState: {
     productList: [],
+    productCategoryList: [],
     productBrandList: [],
     newProductList: [],
     saleProductList: [],
@@ -144,6 +145,7 @@ const productSlice = createSlice({
       state.combinedProductList = [];
       state.productListWithSearchbyPage = [];
       state.productBrandList = [];
+      state.productCategoryList = [];
       state.totalProductItems = 0;
       console.log("active 1", state.activeFilter, state.combinedProductList);
     },
@@ -214,6 +216,13 @@ const productSlice = createSlice({
               ...action.payload.data,
             ];
             state.combinedProductList = [...state.productBrandList];
+            break;
+          case "category":
+            state.productCategoryList = [
+              ...state.productCategoryList,
+              ...action.payload.data,
+            ];
+            state.combinedProductList = [...state.productCategoryList];
             break;
         }
         // console.log("state.combinedProductList , ", state.combinedProductList);

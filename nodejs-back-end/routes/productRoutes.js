@@ -1,18 +1,18 @@
-import express from "express";
-import { productController } from "../controllers/index.js";
-import upload from "../middlewares/upload.js";
-import { PRODUCT_ROUTES } from "../constants/api_routes.js";
-const router = express.Router();
+// import express from "express";
+// import { productController } from "../controllers/index.js";
+// import upload from "../middlewares/upload.js";
+// import { PRODUCT_ROUTES } from "../constants/api_routes.js";
+// const router = express.Router();
 
-router.get(PRODUCT_ROUTES.GET, productController.getProducts);
-router.get(PRODUCT_ROUTES.SEARCH, productController.searchProduct);
-router.get(PRODUCT_ROUTES.GET_BY_ID, productController.getProductById);
-router.put(PRODUCT_ROUTES.UPDATE, productController.updateProduct);
-router.delete(PRODUCT_ROUTES.DELETE, productController.deleteProduct);
-router.post(
-  PRODUCT_ROUTES.ADD,
-  upload.array("images"),
-  productController.addProduct
-);
+// router.get(PRODUCT_ROUTES.GET, productController.getProducts);
+// router.get(PRODUCT_ROUTES.SEARCH, productController.searchProduct);
+// router.get(PRODUCT_ROUTES.GET_BY_ID, productController.getProductById);
+// router.put(PRODUCT_ROUTES.UPDATE, productController.updateProduct);
+// router.delete(PRODUCT_ROUTES.DELETE, productController.deleteProduct);
+// router.post(
+//   PRODUCT_ROUTES.ADD,
+//   upload.array("images"),
+//   productController.addProduct
+// );
 
-export default router;
+// export default router;

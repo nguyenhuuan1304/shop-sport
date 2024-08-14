@@ -1,11 +1,11 @@
-import express from "express";
-import { ORDER_ROUTES } from "../constants/api_routes.js";
-import { orderController } from "../controllers/index.js";
-const router = express.Router();
+// import express from "express";
+// import { ORDER_ROUTES } from "../constants/api_routes.js";
+// import { orderController } from "../controllers/index.js";
+// const router = express.Router();
 
-router.get(ORDER_ROUTES.GET_BY_USER_ID, orderController.getOrdersByUserId);
-router.post(ORDER_ROUTES.ADD, orderController.createOrder);
-router.delete(ORDER_ROUTES.DELETE, orderController.deleteOrder);
-router.put(ORDER_ROUTES.UPDATE_ORDER_STATUS, orderController.updateOrderStatus);
+// router.get(ORDER_ROUTES.GET_BY_USER_ID, orderController.getOrdersByUserId);
+// router.post(ORDER_ROUTES.ADD, orderController.createOrder);
+// router.delete(ORDER_ROUTES.DELETE, orderController.deleteOrder);
+// router.put(ORDER_ROUTES.UPDATE_ORDER_STATUS, orderController.updateOrderStatus);
 
-export default router;
+// export default router;

@@ -40,19 +40,27 @@ const request = {
     console.log("listsort ", title);
     try {
       let url = "";
-      if (sort != "true" && sort != "false" && title != "brand") {
+      if (
+        sort != "true" &&
+        sort != "false" &&
+        title != "brand" &&
+        title != "category"
+      ) {
         url += API_ENDPOINTS.LIST_SORT(sort, currentPage, pageSize);
       } else {
         if (title == "Hot") {
           title = "hot";
         } else if (title == "brand") {
           title = "brand";
+        } else if (title == "category") {
+          title = "category";
         } else {
           title = "sale";
         }
         url += API_ENDPOINTS.LIST_FILLTER(title, sort, currentPage, pageSize);
         console.log("api: ", url);
       }
+      console.log("api 2: ", url);
       const response = await axiosInstance.get(url);
       // console.log("Response data:", response.data);
       return response.data;
@@ -108,7 +116,7 @@ const request = {
   fetchOrderAddress: async () => {
     try {
       const response = await axiosInstance.get(API_ENDPOINTS.GET_ORDER_ADDRESS);
-      console.log("data ", response)
+      console.log("data ", response);
       return response;
     } catch (error) {
       return errorHandler(error);
@@ -440,7 +448,7 @@ const request = {
   GetOrders: async () => {
     try {
       const response = await axiosInstance.get(API_ENDPOINTS.GET_ORDERS);
-      console.log("data ", response)
+      console.log("data ", response);
       return response.data;
     } catch (error) {
       if (error.response) {

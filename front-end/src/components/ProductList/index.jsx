@@ -36,17 +36,16 @@ function ProductList({ sortParam, titleParam, searchParam }) {
   //   const fetchData = async () => {
   //     // Reset state
   //     dispatch(setActiveFilter({ title: titleParam, sort: sortParam }));
-      
+
   //     // Wait for state to reset
   //     await new Promise((resolve) => setTimeout(resolve, 500));
-      
+
   //     // Fetch products
   //     getProductList(1);
   //   };
-  
+
   //   fetchData();
   // }, [sortParam, titleParam, searchParam]);
-  
 
   // useEffect(() => {
   //   dispatch(setActiveFilter({ title: titleParam, sort: sortParam }));
@@ -76,7 +75,12 @@ function ProductList({ sortParam, titleParam, searchParam }) {
   const getProductList = (page) => {
     // console.log("Fetching product list for page", page);
     if (sortParam) {
-      if (titleParam === "Hot" || titleParam === "Sale" || titleParam === "brand") {
+      if (
+        titleParam === "Hot" ||
+        titleParam === "Sale" ||
+        titleParam === "brand" ||
+        titleParam === "category"
+      ) {
         dispatch(
           fetchProductListWithSortOrTitle({
             sortParam,

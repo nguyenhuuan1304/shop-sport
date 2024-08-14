@@ -1,5 +1,5 @@
 import cartModel from "./cart.model.js";
-import { getUserById } from "../../services/userService.js";
+import { getUserById } from "../user/user.service.js";
 
 async function addCart() {
   try {

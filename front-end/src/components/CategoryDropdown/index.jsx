@@ -4,7 +4,7 @@ import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { Link } from "react-router-dom";
 const data = [
   {
-    title: "QUẦN ÁO BÓNG ĐÁ THƯƠNG HIỆU",
+    title: "QUẦN ÁO THƯƠNG HIỆU",
     to: "quan-ao-bong-da-thuong-hieu",
     children: [
       {
@@ -18,34 +18,34 @@ const data = [
     ],
   },
   {
-    title: "QUẦN ÁO BÓNG ĐÁ CÂU LẠC BỘ, ĐỘI TUYỂN",
+    title: "CẦU LÔNG",
     to: "quan-ao-bong-da-cau-lac-bo-doi-tuyen",
     children: [
       {
-        title: "MANCHESTER UNITED",
-        to: "quan-ao-clb-me-hd-kl",
+        title: "VỢT CẦU LÔNG",
+        to: "products?title=category&sort=vợt cầu lông",
       },
       {
-        title: "REAL MARID",
-        to: "quan-ao-clb-justplay",
+        title: "GIÀY CẦU LÔNG",
+        to: "products?title=category&sort=giày cầu lông",
       },
     ],
   },
   {
-    title: "KHUYẾN MÃI, GIẢM GIÁ, XẢ HÀNG",
+    title: "KHUYẾN MÃI",
     to: "khuyen-mai-giam-gia-xa-hang",
     children: [
-      {
-        title: "HÀNG ĐANG GIẢM GIÁ",
-        to: "hang-dang-giam-gia",
-      },
-      {
-        title: "HÀNG ĐANG XẢ GIÁ SHOCK",
-        to: "hang-dang-xa-gia-shock",
-      },
+      // {
+      //   title: "HÀNG ĐANG GIẢM GIÁ",
+      //   to: "hang-dang-giam-gia",
+      // },
+      // {
+      //   title: "HÀNG ĐANG XẢ GIÁ SHOCK",
+      //   to: "hang-dang-xa-gia-shock",
+      // },
       {
         title: "HÀNG ĐANG KHUYẾN MÃI",
-        to: "hang-dang-khuyen-mai",
+        to: "products?title=Sale&sort=true",
       },
     ],
   },

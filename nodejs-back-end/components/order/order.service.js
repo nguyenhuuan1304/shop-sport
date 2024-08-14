@@ -1,5 +1,5 @@
 import orderModel from "./order.model.js";
-import { getUserById } from "../../services/userService.js";
+import { getUserById } from "../user/user.service.js";
 // import { cartService } from "./index.js";
 
 async function getOrdersByUserId(user_id) {

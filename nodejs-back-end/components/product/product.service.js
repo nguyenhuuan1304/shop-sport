@@ -1,5 +1,5 @@
 import productModel from "../product/product.model.js"; // Assuming productModel is a named export
-import {getCartByUserId} from "../cart/cart.service.js"; // Assuming cartService is a named export
+import { getCartByUserId } from "../cart/cart.service.js"; // Assuming cartService is a named export
 import cloudinary from "../../config/cloudinary.config.js";
 import fs from "fs";
 
@@ -15,6 +15,7 @@ const getProducts = async (dto) => {
     if (dto.isHot !== undefined) filter.is_hot = dto.isHot;
     if (dto.isSale !== undefined) filter.is_sale = dto.isSale;
     if (dto.brand !== undefined) filter.brand = dto.brand;
+    if (dto.category !== undefined) filter.category = dto.category;
 
     const total = await productModel.countDocuments(filter);
     const skip = (dto.page - 1) * dto.pageSize;
@@ -84,7 +85,10 @@ const deleteProduct = async (product_id) => {
 const updateProduct = async (product_id, productDetails) => {
   try {
     productDetails.updated_at = Date.now();
-    const updatedProduct = await productModel.findByIdAndUpdate(product_id, productDetails);
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      product_id,
+      productDetails
+    );
     return updatedProduct;
   } catch (error) {
     throw error;
