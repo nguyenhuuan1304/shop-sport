@@ -54,7 +54,7 @@ async function createCheckoutSession(req, res) {
           id: item.product._id,
         },
       },
-      unit_amount: item.product.price,
+      unit_amount: item.product.price * 100,
     },
     quantity: item.count,
   }));
@@ -128,6 +128,7 @@ async function webhook(req, res) {
         // clear cart
         const user = await getUserById(user_id);
         const cart_id = user?.cart;
+        console.log("cart_id", cart_id);
         await productService.updateProductSizeListFromCart(user_id);
         await clearCart(cart_id);
 

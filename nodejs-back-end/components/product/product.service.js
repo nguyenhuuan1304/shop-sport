@@ -136,6 +136,8 @@ const updateProductSizeListFromCart = async (user_id) => {
           size.quantity -= item.count;
         }
       });
+      product.size_list = size_list;
+      product.updated_at = Date.now();
       await product.save();
     }
   } catch (error) {
