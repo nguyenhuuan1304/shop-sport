@@ -5,6 +5,7 @@ export default {
     extend: {
       fontFamily: {
         poppin: ["Poppins", "sans-serif"],
+        quicksand: ["quicksand", "sans-serif"],
       },
     },
   },

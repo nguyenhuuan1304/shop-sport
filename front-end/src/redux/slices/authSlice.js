@@ -70,6 +70,7 @@ const initialState = {
   isAuthenticated: false,
   jwt: null,
   errorMessages: "",
+  errorRegisterMessages: [],
   isLoading: false,
   success: false,
   createdAccountSuccess: false,
@@ -133,18 +134,18 @@ const authSlice = createSlice({
     });
     builder.addCase(register.pending, (state) => {
       state.isLoading = true;
-      state.errorMessages = null;
+      state.errorRegisterMessages = null;
       state.createdAccountSuccess = false;
     });
     builder.addCase(register.fulfilled, (state, action) => {
       state.isLoading = false;
       state.registerForm = action.payload;
-      state.errorMessages = null;
+      state.errorRegisterMessages = null;
       state.createdAccountSuccess = true;
     });
     builder.addCase(register.rejected, (state, action) => {
       state.isLoading = false;
-      state.errorMessages = action.payload;
+      state.errorRegisterMessages = action.payload.errors;
       state.registerForm = null;
       state.createdAccountSuccess = false;
     });

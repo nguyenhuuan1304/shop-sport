@@ -10,7 +10,9 @@ import { register } from "../redux/slices/authSlice";
 
 export default function RegisterPage() {
   const isLoading = useSelector((state) => state.auth.isLoading);
-  const errorMessages = useSelector((state) => state.auth.errorMessages);
+  const errorRegisterMessages = useSelector(
+    (state) => state.auth.errorRegisterMessages
+  );
   const success = useSelector((state) => state.auth.createdAccountSuccess);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -217,10 +219,10 @@ export default function RegisterPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label
-                  htmlFor="username"
+                  htmlFor="email"
                   className="block text-lg font-medium leading-6 text-gray-900"
                 >
-                  Tên đăng nhập
+                  Địa chỉ Email
                 </label>
                 <div className="mt-2">
                   <input
@@ -229,7 +231,7 @@ export default function RegisterPage() {
                     type="text"
                     autoComplete="email"
                     required
-                    placeholder="Nhập tên đăng nhập"
+                    placeholder="Nhập email"
                     value={payload.email}
                     onChange={(e) => {
                       setPayload((prevState) => ({
@@ -239,7 +241,11 @@ export default function RegisterPage() {
                     }}
                     className="block w-full h-12 pl-4 focus:outline-none rounded-md border-2 border-gray-300 py-2 text-gray-900 placeholder:text-gray-400 focus:border-blue-500"
                   />
-                  {errorMessages && <p style={{ color: "red" }}>{errorMessages?.message}</p>}
+                  {errorRegisterMessages && (
+                    <p style={{ color: "red" }}>
+                      {errorRegisterMessages?.message}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -484,12 +490,12 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {errorMessages?.length > 0 && (
+            {errorRegisterMessages && errorRegisterMessages?.length > 0 && (
               <Alert
                 message={
                   <ul>
-                    {errorMessages?.map((err, index) => (
-                      <li key={index}>{err.message}</li>
+                    {errorRegisterMessages?.map((err, index) => (
+                      <li key={index}>{err}</li>
                     ))}
                   </ul>
                 }
