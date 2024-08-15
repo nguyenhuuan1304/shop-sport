@@ -7,7 +7,7 @@ import {
 } from "../order/order.service.js";
 import { clearCart } from "../cart/cart.service.js";
 import { getUserById } from "../user/user.service.js";
-import { productService } from "../../services/index.js";
+import { productService } from "../product/product.service.js";
 import { Stripe } from "stripe";
 dotenv.config();
 

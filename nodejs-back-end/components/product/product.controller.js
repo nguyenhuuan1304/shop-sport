@@ -1,5 +1,9 @@
 import { productService } from "../product/product.service.js";
-import { GetProductsDto, AddProductDto, SearchProductDto } from "../product/product.dto.js";
+import {
+  GetProductsDto,
+  AddProductDto,
+  SearchProductDto,
+} from "../product/product.dto.js";
 
 async function getProducts(req, res) {
   try {
@@ -53,7 +57,10 @@ async function updateProduct(req, res) {
   try {
     const product_id = req.params.id;
     const product = req.body;
-    const updated_product = await productService.updateProduct(product_id, product);
+    const updated_product = await productService.updateProduct(
+      product_id,
+      product
+    );
     if (updated_product) {
       return res.status(200).json({ message: "Product updated successfully!" });
     } else {

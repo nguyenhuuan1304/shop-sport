@@ -1,10 +1,7 @@
 import userModel from "../user/user.model.js";
-import { userService } from "../../services/index.js";
+import { addUser } from "../user/user.service.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../../middlewares/jwt.js";
-import LoginDTO from "./dtos/login-auth.dto.js";
-import RegisterDTO from "./dtos/register-auth.dto.js";
-import ChangePasswordDTO from "./dtos/change-password-auth.dto.js";
 
 async function loginService(loginDTO) {
   const validationErrors = loginDTO.validate();
@@ -69,7 +66,7 @@ async function registerService(registerDTO) {
     password: hashedPassword,
   };
 
-  await userService.addUser(new_user);
+  await addUser(new_user);
   return new_user;
 }
 

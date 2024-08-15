@@ -12,19 +12,23 @@ const { Search } = Input;
 const DropDownItems = [
   {
     key: "1",
-    label: <Link to="/nike">NIKE</Link>,
+    label: <Link to="/products?title=brand&sort=nike">NIKE</Link>,
   },
   {
     key: "2",
-    label: <Link to="/adidas">ADIDAS</Link>,
+    label: <Link to="products?title=brand&sort=adidas">ADIDAS</Link>,
   },
   {
     key: "3",
-    label: <Link to="/manchester-united">MANCHESTER UNITED</Link>,
+    label: (
+      <Link to="products?title=category&sort=vợt cầu lông">VỢT CẦU LÔNG</Link>
+    ),
   },
   {
     key: "4",
-    label: <Link to="/real-madrid">REAL MADRID</Link>,
+    label: (
+      <Link to="products?title=category&sort=giày cầu lông">GIÀY CẦU LÔNG</Link>
+    ),
   },
 ];
 
