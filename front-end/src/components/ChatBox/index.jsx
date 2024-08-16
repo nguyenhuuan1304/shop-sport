@@ -14,6 +14,7 @@ import { BsChatRightHeart } from "react-icons/bs";
 import { GoHubot } from "react-icons/go";
 import { FaRobot } from "react-icons/fa";
 import { MdArrowForwardIos } from "react-icons/md";
+import VoiceCommand from "../VoiceCommand";
 
 export default function ChatBox() {
   const [isChatBoxVisible, setIsChatBoxVisible] = useState(false);
@@ -150,6 +151,7 @@ export default function ChatBox() {
           style={{ position: "absolute", bottom: "30", right: "10" }}
         />
       </motion.div> */}
+      <VoiceCommand/>
     </div>
   );
 }
