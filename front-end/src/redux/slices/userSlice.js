@@ -30,7 +30,7 @@ export const fetchUpdateRelationUser = createAsyncThunk(
   "user/fetchUpdateRelationUser",
   async ({ userId, orderAddressId }, { rejectWithValue }) => {
     try {
-      console.log("fetchupdateRelationUser ", userId, orderAddressId);
+      // console.log("fetchupdateRelationUser ", userId, orderAddressId);
       const response = await request.updateRelationUser({
         userId: userId,
         oderAddressId: orderAddressId,

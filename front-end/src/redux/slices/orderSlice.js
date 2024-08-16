@@ -26,7 +26,7 @@ export const checkoutSession = createAsyncThunk(
   async (session_id, { rejectWithValue }) => {
     try {
       const response = await request.CheckoutSession(session_id);
-      console.log("checkout session ", response);
+      // console.log("checkout session ", response);
       return response;
     } catch (error) {
       return rejectWithValue(error.message);

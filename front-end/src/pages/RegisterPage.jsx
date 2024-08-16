@@ -80,7 +80,7 @@ export default function RegisterPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log("form ", payload);
+    // console.log("form ", payload);
     // Tạo một bản sao của payload mà không có trường confirmPassword
     const { confirmPassword, ...payloadWithoutConfirmPassword } = {
       ...payload,

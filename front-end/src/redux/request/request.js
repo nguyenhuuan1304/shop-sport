@@ -58,9 +58,9 @@ const request = {
           title = "sale";
         }
         url += API_ENDPOINTS.LIST_FILLTER(title, sort, currentPage, pageSize);
-        console.log("api: ", url);
+        // console.log("api: ", url);
       }
-      console.log("api 2: ", url);
+      // console.log("api 2: ", url);
       const response = await axiosInstance.get(url);
       // console.log("Response data:", response.data);
       return response.data;
@@ -70,12 +70,12 @@ const request = {
   },
 
   ListSaleProduct: async (currentPage, pageSize) => {
-    console.log("currentPage,pageSize  ", currentPage, pageSize);
+    // console.log("currentPage,pageSize  ", currentPage, pageSize);
     try {
       const response = await axiosInstance.get(
         API_ENDPOINTS.LIST_SALE(currentPage, pageSize)
       );
-      console.log("object", response);
+      // console.log("object", response);
       return response.data;
     } catch (error) {
       return errorHandler(error);

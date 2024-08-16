@@ -103,7 +103,7 @@ function CustomArrow(props) {
   );
 }
 
-const ProductDetailPage = React.memo(() => {
+const ProductDetailPage = () => {
   const { productId } = useParams();
   const [viewedProducts, setViewedProducts] = useSessionStorage(
     "viewedProducts",
@@ -118,7 +118,7 @@ const ProductDetailPage = React.memo(() => {
   const currentPageListSale = useSelector(
     (state) => state.products?.currentPage
   );
-  console.log("SALE PRODUCTS", saleProducts);
+  // console.log("SALE PRODUCTS", saleProducts);
   const [currentPage, setCurrentPage] = useState(1);
   const [allSaleProducts, setAllSaleProducts] = useState([]);
   const totalPageListSale = useSelector((state) => state.products?.totalPage);
@@ -201,7 +201,7 @@ const ProductDetailPage = React.memo(() => {
     if (cart && cart?.length > 0) {
       dispatch(addManyToCart({ userId: currentUser?._id, products: cart }));
       showDrawer();
-      console.log("cart: ", cart);
+      // console.log("cart: ", cart);
     } else {
       error();
     }
@@ -240,7 +240,7 @@ const ProductDetailPage = React.memo(() => {
   ];
 
   const handleBeforeChange = (current, next) => {
-    console.log(next, "----", saleProducts.length, "-----", current);
+    // console.log(next, "----", saleProducts.length, "-----", current);
     if (
       next + 1 >= saleProducts.length &&
       currentPageListSale < totalPageListSale
@@ -412,7 +412,7 @@ const ProductDetailPage = React.memo(() => {
           </span>
           <div className=" flex flex-col overflow-auto gap-2 p-6">
             {viewedProducts.reverse().map((item, index) => (
-              <Link to={`/product/${item?._id}`}>
+              <Link key={item?._id || index} to={`/product/${item?._id}`}>
                 <div
                   key={item?._id || index}
                   className="flex flex-row items-start gap-2"
@@ -453,8 +453,8 @@ const ProductDetailPage = React.memo(() => {
           initialSlide={currentSlide}
         >
           {saleProducts.map((item, index) => (
-            <div key={index} className="flex justify-center">
-              <ProductCard key={index} product={item} />
+            <div key={item._id || index} className="flex justify-center">
+              <ProductCard key={item._id || index} product={item} />
             </div>
           ))}
         </Carousel>
@@ -462,6 +462,6 @@ const ProductDetailPage = React.memo(() => {
       <CartDrawer open={drawerOpen} onClose={closeDrawer} />
     </motion.div>
   );
-});
+};
 ProductDetailPage.displayName = "ProductDetailPage";
 export default ProductDetailPage;

@@ -20,7 +20,7 @@ export const register = createAsyncThunk(
   "auth/register",
   async (data, { rejectWithValue }) => {
     try {
-      console.log("creating dispatch", data);
+      // console.log("creating dispatch", data);
       const response = await request.Register(data);
       return response;
     } catch (error) {
@@ -33,7 +33,7 @@ export const changePassword = createAsyncThunk(
   "auth/changePassword",
   async (data, { rejectWithValue }) => {
     try {
-      console.log("create async thunk", data);
+      // console.log("create async thunk", data);
       const response = await request.changePassword(data);
       return response.data;
     } catch (error) {
