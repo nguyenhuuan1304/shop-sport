@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import placeholder from "../../assets/playholder.png";
 import useSessionStorage from "../../custom hooks/useSessionStorage";
-
+import useRedirectToLogin from "../../custom hooks/useRedirectToLogin";
 //thuộc tính displayQuantity = true : hiển thị số lượng tồn kho của sản phẩm
 const ProductCard = React.memo(function ProductCard({
   product,
@@ -30,6 +30,7 @@ const ProductCard = React.memo(function ProductCard({
     console.log(viewedProduct);
     navigate(`/product/${product?._id}`);
   };
+  const redirectToLogin = useRedirectToLogin();
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
   const [isDisCountActive, setIsDisCountActive] = useState(false);
@@ -191,11 +192,14 @@ const ProductCard = React.memo(function ProductCard({
             {islogIN ? (
               ""
             ) : (
-              <Link to="/login">
-                <button className="bg-blue-400 text-xs sm:text-sm rounded-full p-1 px-2 text-white hover:text-blue-400 hover:bg-white border-blue-400 border duration-500">
-                  Đăng nhập
-                </button>
-              </Link>
+              // <Link to="/login">
+              <button
+                onClick={redirectToLogin}
+                className="bg-blue-400 text-xs sm:text-sm rounded-full p-1 px-2 text-white hover:text-blue-400 hover:bg-white border-blue-400 border duration-500"
+              >
+                Đăng nhập
+              </button>
+              // </Link>
             )}
           </div>
         </div>
