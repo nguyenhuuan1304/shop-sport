@@ -196,9 +196,9 @@ export default function CartPage() {
               <div className="flex flex-col gap-2 text-xs">
                 <div className="flex flex-row gap-2">
                   <span>Địa chỉ</span>
-                  <Link to="" className="text-blue-600">
+                  {/* <Link to="" className="text-blue-600">
                     Địa chỉ khác
-                  </Link>
+                  </Link> */}
                 </div>
                 <span className="font-semibold text-lg">
                   {default_address?.name}

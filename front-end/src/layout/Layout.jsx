@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import BottomNavigation from "../components/BottomNavigation";
 import ResponsiveHeader from "../components/ResponsiveHeader";
 import ChatBox from "../components/ChatBox";
+import FloatMenuButton from "../components/FloatMenuButton";
 
 export default function Layout() {
   return (
@@ -20,7 +21,8 @@ export default function Layout() {
         </Suspense>
       </div>
       <BottomNavigation />
-      <ChatBox />
+      {/* <ChatBox /> */}
+      <FloatMenuButton />
       <Footer />
     </div>
   );

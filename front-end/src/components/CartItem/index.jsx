@@ -140,7 +140,7 @@ const CartItem = ({
         {quantity > foundItem?.quantity ? (
           <span className="text-xs text-red-600">
             Số lượng sản phẩm trong kho còn{" "}
-            <span className="font-bold ">
+            <span className="font-extrabold ">
               {foundItem ? foundItem?.quantity : 0}
             </span>{" "}
             (vượt quá sản phẩm)
@@ -148,7 +148,7 @@ const CartItem = ({
         ) : (
           <span className="text-xs text-green-600">
             Số lượng sản phẩm trong kho còn{" "}
-            <span className="font-bold ">
+            <span className="font-extrabold">
               {foundItem ? foundItem?.quantity : 0}
             </span>
           </span>

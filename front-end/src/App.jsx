@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { fetchUserDetail } from "./redux/slices/authSlice";
 import { fetchCartData } from "./redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { PrimeReactProvider, PrimeReactContext } from "primereact/api";
 
 // import AddresForm from "./components/Form/AddressForm";
 // import ChangPasswordForm from "./components/Form/ChangePasswordForm";
@@ -65,50 +66,55 @@ function App() {
     }
   }, [dispatch, currentUser?._id]);
   return (
-    <BrowserRouter>
-      <Suspense fallback={<Loading />}>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<HomePage />} />
-            <Route path="products" element={<ProductListPage />} />
-            <Route
-              path="product/:productId"
-              element={
-                <ScrollToTop>
-                  <ProductDetailPage />
-                </ScrollToTop>
-              }
-            />
-            <Route path="categories" element={<CategoryPage />} />
-            <Route path="search" element={<SearchPage />} />
-            <Route path="contact" element={<ContactPage />} />
-            <Route element={<RequireAuth />}>
-              <Route path="profile" element={<UserProfilePage />}>
-                <Route index element={<Navigate to="account-info" replace />} />
-                <Route
-                  path="account-info"
-                  element={<PersonalInformationForm />}
-                />
-                <Route path="address-book" element={<AddressForm />} />
-                <Route
-                  path="change-password"
-                  element={<ChangePasswordForm />}
-                />
-                <Route path="orders" element={<OrdersForm />} />
+    <PrimeReactProvider>
+      <BrowserRouter>
+        <Suspense fallback={<Loading />}>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<HomePage />} />
+              <Route path="products" element={<ProductListPage />} />
+              <Route
+                path="product/:productId"
+                element={
+                  <ScrollToTop>
+                    <ProductDetailPage />
+                  </ScrollToTop>
+                }
+              />
+              <Route path="categories" element={<CategoryPage />} />
+              <Route path="search" element={<SearchPage />} />
+              <Route path="contact" element={<ContactPage />} />
+              <Route element={<RequireAuth />}>
+                <Route path="profile" element={<UserProfilePage />}>
+                  <Route
+                    index
+                    element={<Navigate to="account-info" replace />}
+                  />
+                  <Route
+                    path="account-info"
+                    element={<PersonalInformationForm />}
+                  />
+                  <Route path="address-book" element={<AddressForm />} />
+                  <Route
+                    path="change-password"
+                    element={<ChangePasswordForm />}
+                  />
+                  <Route path="orders" element={<OrdersForm />} />
+                </Route>
               </Route>
             </Route>
-          </Route>
-          <Route path="payment-success" element={<PaymentSuccessPage />} />
-          <Route path="payment-cancel" element={<PaymentCancelPage />} />
-          <Route path="login" element={<LoginPage />} />
-          <Route path="register" element={<RegisterPage/>}/>
-          <Route path="cart" element={<CartLayout />}>
-            <Route index element={<CartPage />} />
-          </Route>
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+            <Route path="payment-success" element={<PaymentSuccessPage />} />
+            <Route path="payment-cancel" element={<PaymentCancelPage />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="register" element={<RegisterPage />} />
+            <Route path="cart" element={<CartLayout />}>
+              <Route index element={<CartPage />} />
+            </Route>
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </PrimeReactProvider>
   );
 }
 
