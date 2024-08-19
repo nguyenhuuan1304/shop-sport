@@ -1,23 +1,34 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { SlArrowRight } from "react-icons/sl";
 import { Button } from "antd";
 import { TiMicrophoneOutline } from "react-icons/ti";
 import { AiOutlineMessage } from "react-icons/ai";
+import ChatBox from "../ChatBox";
+import VoiceCommand from "../VoidCommand";
 
 export default function FloatMenuButton() {
   const [isShowed, setIsShowed] = useState(false);
   const [isHoveringMic, setIsHoveringMic] = useState(false);
   const [isHoveringMsg, setIsHoveringMsg] = useState(false);
+  const [isChatBoxVisible, setIsChatBoxVisible] = useState(false);
+  const [isVoiceVisible, setIsVoiceVisible] = useState(false);
+  const containerRef = useRef(null);
 
-  const handleClickEnter = () => {
-    setIsShowed(true);
-    console.log("enter");
+  const toggleVoice = () => {
+    setIsVoiceVisible(!isVoiceVisible);
   };
 
-  const handleClickLeave = () => {
+  const toggleChatBox = () => {
+    setIsChatBoxVisible(!isChatBoxVisible);
+  };
+
+  const handleEnter = () => {
+    setIsShowed(true);
+  };
+
+  const handleLeave = (event) => {
     setIsShowed(false);
-    console.log("leave");
   };
 
   const handleMicEnter = () => {
@@ -39,8 +50,9 @@ export default function FloatMenuButton() {
   return (
     <div
       className="relative"
-      onMouseLeave={handleClickLeave}
-      onMouseEnter={handleClickEnter}
+      onMouseLeave={handleLeave}
+      onMouseEnter={handleEnter}
+      ref={containerRef}
     >
       <motion.div
         className={`cursor-pointer fixed top-1/2 -left-1 duration-200 opacity-20 hover:opacity-100 ${
@@ -51,7 +63,6 @@ export default function FloatMenuButton() {
       </motion.div>
 
       <motion.div
-      
         initial={false} // Prevent initial animation when component mounts
         animate={{
           x: isShowed ? 0 : -50, // Animate x position based on isShowed
@@ -60,11 +71,7 @@ export default function FloatMenuButton() {
         transition={{ duration: 0.3 }} // Duration of the animation
         className="fixed top-1/2 bottom-1/2 left-6 flex justify-center gap-2 flex-col"
       >
-        <div
-          className="flex flex-col gap-2"
-          onMouseEnter={handleClickEnter}
-          onMouseLeave={handleClickLeave}
-        >
+        <div className="flex flex-col gap-2">
           <motion.div
             onMouseEnter={handleMicEnter}
             onMouseLeave={handleMicLeave}
@@ -78,6 +85,7 @@ export default function FloatMenuButton() {
               type="primary"
               icon={<TiMicrophoneOutline />}
               size="large"
+              onClick={toggleVoice}
             />
           </motion.div>
 
@@ -95,10 +103,25 @@ export default function FloatMenuButton() {
               type="primary"
               icon={<AiOutlineMessage />}
               size="large"
+              onClick={toggleChatBox}
             />
           </motion.div>
         </div>
       </motion.div>
+
+      {isVoiceVisible && (
+        <div>
+          <VoiceCommand isVoiceEnabled={isVoiceVisible}/>
+        </div>
+      )}
+
+      <div onClick={toggleChatBox}>
+        {isChatBoxVisible && (
+          <div>
+            <ChatBox />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
