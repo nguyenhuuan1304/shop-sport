@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useNavigate } from "react-router-dom";
-
+import { useSelector } from "react-redux";
 const VoiceCommand = ({ isVoiceEnabled }) => {
   const [isListening, setIsListening] = useState(false);
   const [recognition, setRecognition] = useState(null);
   const [textVoice, setTextVoice] = useState("");
   const useDebounceSearchTerm = useDebounce(textVoice, 300);
+  const productListByPage = useSelector(
+    (state) => state.products?.combinedProductList
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,6 +36,7 @@ const VoiceCommand = ({ isVoiceEnabled }) => {
         const transcript =
           event.results[event.results.length - 1][0].transcript.trim();
         console.log("Transcript:", transcript);
+
         setTextVoice(transcript);
 
         if (transcript.toLowerCase() === "hey siri") {
@@ -64,7 +68,7 @@ const VoiceCommand = ({ isVoiceEnabled }) => {
     "giá thấp",
     "giá cao",
     "hot",
-    "sale",
+    "giảm giá",
     "mới nhất",
     "tìm kiếm",
     "đăng nhập",
@@ -81,84 +85,101 @@ const VoiceCommand = ({ isVoiceEnabled }) => {
     "vợt cầu lông",
     "giày cầu lông",
     "hàng đang khuyến mãi",
+    "giỏ hàng",
   ];
 
   const handleNavigation = (keyword) => {
-    switch (keyword) {
-      case "danh sách":
-        navigate("/products");
-        break;
-      case "giá thấp":
-        navigate("/products?filter=low-price");
-        break;
-      case "giá cao":
-        navigate("/products?filter=high-price");
-        break;
-      case "hot":
-        navigate("/products?filter=hot");
-        break;
-      case "sale":
-        navigate("/products?filter=sale");
-        break;
-      case "mới nhất":
-        navigate("/products?filter=newest");
-        break;
-      case "tìm kiếm":
-        navigate("/search");
-        break;
-      case "đăng nhập":
-        navigate("/login");
-        break;
-      case "đăng ký":
-        navigate("/register");
-        break;
-      case "thông tin tài khoản":
-        navigate("/account");
-        break;
-      case "sổ địa chỉ":
-        navigate("/account/address-book");
-        break;
-      case "đổi mật khẩu":
-        navigate("/account/change-password");
-        break;
-      case "đơn hàng":
-        navigate("/orders");
-        break;
-      case "liên hệ":
-        navigate("/contact");
-        break;
-      case "trang chủ":
-        navigate("/");
-        break;
-      case "chi tiết sản phẩm":
-        navigate("/product-details");
-        break;
-      case "adidas":
-        navigate("/products?brand=adidas");
-        break;
-      case "nike":
-        navigate("/products?brand=nike");
-        break;
-      case "vợt cầu lông":
-        navigate("/products?category=badminton-rackets");
-        break;
-      case "giày cầu lông":
-        navigate("/products?category=badminton-shoes");
-        break;
-      case "hàng đang khuyến mãi":
-        navigate("/products?filter=sale");
-        break;
-      default:
-        console.log("Không tìm thấy trang tương ứng cho từ khóa:", keyword);
+    if (keyword?.includes("tìm kiếm")) {
+      const keywordSearch = keyword.replace("tìm kiếm", "").trim();
+      console.log("Keyword Search:", keywordSearch);
+      navigate(`/products?search=${keywordSearch}`);
+    } else {
+      switch (keyword) {
+        case "danh sách":
+          navigate("/products");
+          break;
+        case "giá thấp":
+          navigate("/products?title=Giá+Thấp&sort=price%3A1");
+          break;
+        case "giá cao":
+          navigate("/products?title=Giá+cao&sort=price%3A-1");
+          break;
+        case "hot":
+          navigate("/products?title=Hot&sort=true");
+          break;
+        case "giảm giá":
+          navigate("/products?title=Sale&sort=true");
+          break;
+        case "mới nhất" || "mới nhất.":
+          navigate("/products?title=New&sort=created_at%3A1");
+          break;
+        case "đăng nhập":
+          navigate("/login");
+          break;
+        case "đăng ký":
+          navigate("/register");
+          break;
+        case "thông tin tài khoản":
+          navigate("/profile/account-info");
+          break;
+        case "sổ địa chỉ":
+          navigate("/profile/address-book");
+          break;
+        case "đổi mật khẩu":
+          navigate("/profile/change-password");
+          break;
+        case "đơn hàng":
+          navigate("/profile/orders");
+          break;
+        case "liên hệ":
+          navigate("/contact");
+          break;
+        case "trang chủ":
+          navigate("/");
+          break;
+
+        case "chi tiết sản phẩm":
+          navigate("/product-details");
+          break;
+        case "adidas":
+          navigate("/products?brand=adidas");
+          break;
+        case "nike":
+          navigate("/products?brand=nike");
+          break;
+        case "vợt cầu lông":
+          navigate("/products?title=category&sort=vợt%20cầu%20lông");
+          break;
+        case "giày cầu lông":
+          navigate("/products?title=category&sort=giày%20cầu%20lông");
+          break;
+        case "hàng đang khuyến mãi":
+          navigate("/products?title=Sale&sort=true");
+          break;
+        case "giỏ hàng":
+          navigate("/cart");
+          break;
+        default:
+          console.log("Không tìm thấy trang tương ứng cho từ khóa:", keyword);
+      }
     }
   };
 
   useEffect(() => {
     const searchTermLower = useDebounceSearchTerm.toLowerCase();
     const matchKeyword = keywords.find((keyword) =>
-      searchTermLower.includes(keyword)
+      searchTermLower?.includes(keyword)
     );
-    if (matchKeyword) {
+    console.log("   searchTermLower ", searchTermLower);
+    console.log("   matchKeyword ", matchKeyword);
+
+    if (matchKeyword?.includes("tìm kiếm")) {
+      console.log(
+        "Từ khóa phù hợp được phát hiện để tìm kiếm:",
+        searchTermLower
+      );
+      handleNavigation(searchTermLower);
+    } else if (matchKeyword) {
       console.log("Từ khóa phù hợp được phát hiện:", matchKeyword);
       handleNavigation(matchKeyword);
     }

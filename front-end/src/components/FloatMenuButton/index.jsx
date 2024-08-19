@@ -111,7 +111,7 @@ export default function FloatMenuButton() {
 
       {isVoiceVisible && (
         <div>
-          <VoiceCommand isVoiceEnabled={isVoiceVisible}/>
+          <VoiceCommand isVoiceEnabled={isVoiceVisible} />
         </div>
       )}
 

@@ -170,7 +170,6 @@ const productSlice = createSlice({
         const title = state.activeFilter.title;
         switch (title) {
           case "New":
-          case "Mới Nhất":
             state.newProductList = [
               ...state.newProductList,
               ...action.payload.data,

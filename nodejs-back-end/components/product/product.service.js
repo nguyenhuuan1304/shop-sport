@@ -10,6 +10,7 @@ const getProducts = async (dto) => {
       const [key, value] = dto.orderBy.split(":");
       objOrderBy = { [key]: parseInt(value, 10) };
     }
+    console.log(objOrderBy);
 
     const filter = { is_deleted: false };
     if (dto.isHot !== undefined) filter.is_hot = dto.isHot;

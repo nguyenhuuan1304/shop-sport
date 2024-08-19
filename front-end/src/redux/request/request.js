@@ -37,7 +37,7 @@ const request = {
   },
 
   ListSort: async ({ sort, title, currentPage, pageSize }) => {
-    console.log("listsort ", title);
+    // console.log("listsort ", title);
     try {
       let url = "";
       if (
@@ -46,8 +46,13 @@ const request = {
         title != "brand" &&
         title != "category"
       ) {
+        // console.log("1 ", sort);
+
         url += API_ENDPOINTS.LIST_SORT(sort, currentPage, pageSize);
+        // console.log(" ", url);
       } else {
+        // console.log("2");
+
         if (title == "Hot") {
           title = "hot";
         } else if (title == "brand") {

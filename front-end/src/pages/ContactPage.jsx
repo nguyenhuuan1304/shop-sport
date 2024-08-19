@@ -1,4 +1,4 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FaYoutube, FaFacebook } from "react-icons/fa";
 import React from "react";
 import _Breadcrumb from "../components/Breadcrumb";
 
@@ -17,25 +17,25 @@ export default function ContactPage() {
           </p>
           <p>
             Điện thoại: 0985639992
-            <FontAwesomeIcon icon="fa-brands fa-youtube" />
+            {/* <FaYoutube size={40} /> */}
           </p>
           <p>
             E-mail:{" "}
             <a href="mailto:voxuanvuloc@gmail.com">voxuanvuloc@gmail.com</a>
           </p>
           <a
-            href="https://www.facebook.com/yourpage"
+            href="https://www.facebook.com/trung.han.2506/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FontAwesomeIcon icon="fa-brands fa-facebook" />
+            <FaFacebook size={40} />
           </a>
           <a
-            href="https://www.youtube.com/yourchannel"
+            href="https://www.youtube.com/@hanquoctrung3343"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FontAwesomeIcon icon="fa-brands fa-youtube" />
+            <FaYoutube size={40} />
           </a>
           <h1 className="text-xl font-semibold mb-4">Liên hệ với chúng tôi</h1>
           <hr className="ml-0 border-t border-gray-300 my-4 w-16 mx-auto" />{" "}
