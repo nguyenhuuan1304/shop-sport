@@ -56,7 +56,7 @@ const AddressForm = () => {
   ];
 
   const handleEdit = (order_address_id) => {
-    console.log(order_address_id);
+    // console.log(order_address_id);
     dispatch(setDefaultOrderAddress(order_address_id));
   };
   useEffect(() => {

@@ -91,9 +91,9 @@ export default function BottomNavigation({ className }) {
       navigate(to);
     }
   };
-  useEffect(() => {
-    if (currentUser) dispatch(fetchCartData(currentUser?._id));
-  }, [dispatch, currentUser]);
+  // useEffect(() => {
+  //   if (currentUser) dispatch(fetchCartData(currentUser?._id));
+  // }, [dispatch, currentUser]);
   return (
     <div className="border-t border-black p-1 fixed bottom-0 z-50 left-0 right-0 flex flex-row justify-between overflow-hidden bg-white gap-2 sm:hidden">
       {navLinks.map((item, index) => {
