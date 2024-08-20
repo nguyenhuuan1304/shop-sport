@@ -10,7 +10,8 @@ import { lazy, Suspense } from "react";
 const ProductList = lazy(() => import("../components/ProductList"));
 const className =
   "hover:text-blue-500 hover:opacity-100 hover:font-semibold duration-200 border-b-2 hover:border-blue-500 border-transparent p-4";
-
+const activeClassName =
+  "text-blue-500 opacity-100 font-semibold duration-200 border-b-2 border-blue-500 p-4";
 const FilterOption = [
   {
     title: "New",
@@ -61,10 +62,8 @@ export default function ProductPage() {
             <button
               key={index}
               onClick={() => handleFilterChange(item, index)}
-              className={`${className} ${
-                activeButton === index
-                  ? "text-blue-500 border-blue-500 font-semibold border-b"
-                  : "opacity-60"
+              className={`${
+                activeButton === index ? `${activeClassName}` : `${className}`
               }`}
             >
               {item.title}
