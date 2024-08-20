@@ -527,7 +527,7 @@ const request = {
   },
   Register: async (data) => {
     try {
-      console.log("request ", data);
+      // console.log("request ", data);
       const response = await axiosInstance.post(API_ENDPOINTS.RIGISTER, data);
       return response.data;
     } catch (error) {

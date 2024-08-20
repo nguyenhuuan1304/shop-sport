@@ -97,9 +97,9 @@ export default function Header() {
   const products = useSelector((state) => state.cart.products);
 
   //fetch cart data để tính số lượng sản phẩm trong giỏ hàng
-  useEffect(() => {
-    if (currentUser) dispatch(fetchCartData(currentUser?._id));
-  }, [dispatch, currentUser?._id]);
+  // useEffect(() => {
+  //   if (currentUser) dispatch(fetchCartData(currentUser?._id));
+  // }, [dispatch, currentUser?._id]);
 
   return (
     <div className="sm:flex hidden border-b flex-row h-32 w-full gap-10 items-center justify-between">
