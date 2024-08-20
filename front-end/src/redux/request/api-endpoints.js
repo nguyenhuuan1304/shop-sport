@@ -2,8 +2,8 @@ const API_ENDPOINTS = {
   //product endpoint
   GET_LIST_PRODUCTS: (currentPage, pageSize) =>
     `/products?page=${currentPage}&pageSize=${pageSize}`,
-  SEARCH_FIVE_PRODUCTS: (keyWord) =>
-    `/products/search?q=${keyWord}&pageSize=5&page=1`,
+  SEARCH_FIVE_PRODUCTS: (keyWord, currentPage) =>
+    `/products/search?q=${keyWord}&pageSize=4&page=${currentPage}`,
   SEARCH_LIST_PRODUCTS: (keyWord, currentPage, pageSize) =>
     `/products/search?q=${keyWord}&pageSize=${pageSize}&page=${currentPage}`,
   LIST_SORT: (sort, currentPage, pageSize) =>

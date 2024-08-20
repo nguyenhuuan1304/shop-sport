@@ -13,10 +13,10 @@ const request = {
       return errorHandler(error);
     }
   },
-  searchFiveProduct: async (keyWord) => {
+  searchFiveProduct: async (keyWord, currentPage) => {
     try {
       const response = await axiosInstance.get(
-        API_ENDPOINTS.SEARCH_FIVE_PRODUCTS(keyWord)
+        API_ENDPOINTS.SEARCH_FIVE_PRODUCTS(keyWord, currentPage)
       );
       console.log(response);
       return response.data.data;
