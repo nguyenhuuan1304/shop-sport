@@ -63,7 +63,7 @@ export default function ProductPage() {
               onClick={() => handleFilterChange(item, index)}
               className={`${className} ${
                 activeButton === index
-                  ? "text-blue-500 font-semibold"
+                  ? "text-blue-500 border-blue-500 font-semibold border-b"
                   : "opacity-60"
               }`}
             >
