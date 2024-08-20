@@ -9,7 +9,7 @@ import { lazy, Suspense } from "react";
 
 const ProductList = lazy(() => import("../components/ProductList"));
 const className =
-  "hover:text-blue-500 hover:opacity-100 hover:font-semibold hover:text-2xl duration-200 border-b-2 hover:border-blue-500 border-transparent p-4";
+  "hover:text-blue-500 hover:opacity-100 hover:font-semibold duration-200 border-b-2 hover:border-blue-500 border-transparent p-4";
 
 const FilterOption = [
   {
@@ -63,7 +63,7 @@ export default function ProductPage() {
               onClick={() => handleFilterChange(item, index)}
               className={`${className} ${
                 activeButton === index
-                  ? "text-blue-500 border-blue-500 font-semibold text-2xl"
+                  ? "text-blue-500 font-semibold"
                   : "opacity-60"
               }`}
             >

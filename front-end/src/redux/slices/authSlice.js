@@ -87,6 +87,7 @@ const authSlice = createSlice({
       state.jwt = null;
       state.errorMessages = null;
       localStorage.removeItem("jwt");
+      state.success = false;
     },
   },
   extraReducers: (builder) => {
@@ -106,6 +107,7 @@ const authSlice = createSlice({
     });
     builder.addCase(changePassword.pending, (state) => {
       state.isLoading = true;
+      state.success = false;
     });
     builder.addCase(changePassword.fulfilled, (state, action) => {
       state.isLoading = false;
@@ -145,7 +147,8 @@ const authSlice = createSlice({
     });
     builder.addCase(register.rejected, (state, action) => {
       state.isLoading = false;
-      state.errorRegisterMessages = action.payload.errors;
+      state.errorRegisterMessages = action.payload;
+      console.log(action.payload);
       state.registerForm = null;
       state.createdAccountSuccess = false;
     });

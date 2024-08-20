@@ -42,12 +42,13 @@ async function createCheckoutSessionService(
           id: item.product._id,
         },
       },
-      unit_amount: item.product.price,
+      unit_amount: item.product.price * 100,
     },
     quantity: item.count,
   }));
 
   const session = await stripe.checkout.sessions.create({
+    payment_method_types: ["card"],
     mode: "payment",
     line_items,
     customer_email,

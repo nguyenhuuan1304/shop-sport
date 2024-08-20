@@ -1,9 +1,11 @@
 import { Alert, Button, Input } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { changePassword } from "../../redux/slices/authSlice";
+import { changePassword, logout } from "../../redux/slices/authSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function ChangPasswordForm() {
+  const navigate = useNavigate();
   const isLoadingChangePassword = useSelector((state) => state.auth?.isLoading);
   const isErrorChangePassword = useSelector(
     (state) => state.auth?.errorMessages
@@ -30,6 +32,13 @@ export default function ChangPasswordForm() {
       [name]: value,
     });
   };
+
+  useEffect(() => {
+    if (isSuccessChangePassword) {
+      navigate("/login");
+      dispatch(logout());
+    }
+  }, [isSuccessChangePassword]);
   return (
     <>
       <div className="flex flex-col p-4 w-full sm:w-1/3">

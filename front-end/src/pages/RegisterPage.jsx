@@ -490,18 +490,19 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {errorRegisterMessages && errorRegisterMessages?.length > 0 && (
-              <Alert
-                message={
-                  <ul>
-                    {errorRegisterMessages?.map((err, index) => (
-                      <li key={index}>{err}</li>
-                    ))}
-                  </ul>
-                }
-                type="error"
-              />
-            )}
+            {errorRegisterMessages &&
+              errorRegisterMessages?.errors?.length > 0 && (
+                <Alert
+                  message={
+                    <ul>
+                      {errorRegisterMessages?.errors?.map((err, index) => (
+                        <li key={index}>{err}</li>
+                      ))}
+                    </ul>
+                  }
+                  type="error"
+                />
+              )}
 
             <div>
               <button
