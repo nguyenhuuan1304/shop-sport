@@ -7,6 +7,7 @@ import { getProvincesWithDetail } from "vietnam-provinces";
 import Select from "react-select";
 import { Input } from "antd";
 import { register } from "../redux/slices/authSlice";
+import { useRef } from "react";
 
 export default function RegisterPage() {
   const isLoading = useSelector((state) => state.auth.isLoading);
@@ -42,6 +43,23 @@ export default function RegisterPage() {
     dob: "",
     username: "",
   });
+
+  const containerRef = useRef(null);
+
+  const handleFocus = (e) => {
+    const inputTop = e.target.getBoundingClientRect().top;
+    const viewportHeight = window.innerHeight;
+    const keyboardHeight = 300; // điều chỉnh thông số bàn phím nha thầy
+
+    if (inputTop > viewportHeight - keyboardHeight) {
+      const offset = inputTop - (viewportHeight - keyboardHeight) + 20;
+      containerRef.current.style.transform = `translateY(-${offset}px)`;
+    }
+  };
+
+  const handleBlur = () => {
+    containerRef.current.style.transform = "translateY(0)";
+  };
 
   const setValueAddress = () => {
     setPayload((prevState) => ({
@@ -239,6 +257,8 @@ export default function RegisterPage() {
                         email: e.target.value,
                       }));
                     }}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
                     className="block w-full h-12 pl-4 focus:outline-none rounded-md border-2 border-gray-300 py-2 text-gray-900 placeholder:text-gray-400 focus:border-blue-500"
                   />
                   {errorRegisterMessages && (
@@ -271,6 +291,8 @@ export default function RegisterPage() {
                         password: e.target.value,
                       }));
                     }}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
                     className="h-12 rounded-md text-gray-900 placeholder:text-gray-400 text-lg border-2"
                   />
                 </div>
@@ -285,6 +307,8 @@ export default function RegisterPage() {
                 </label>
                 <div className="mt-2">
                   <Input.Password
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
                     id="confirmPassword"
                     name="confirmPassword"
                     type="password"
@@ -340,6 +364,7 @@ export default function RegisterPage() {
                 </label>
                 <div className="mt-2">
                   <input
+                  onFocus={handleFocus} onBlur={handleBlur}
                     id="first_name"
                     name="first_name"
                     type="text"
@@ -367,6 +392,7 @@ export default function RegisterPage() {
                 </label>
                 <div className="mt-2">
                   <input
+                  onFocus={handleFocus} onBlur={handleBlur}
                     id="dob"
                     name="dob"
                     type="date"
@@ -394,6 +420,8 @@ export default function RegisterPage() {
                 </label>
                 <div className="mt-2">
                   <input
+
+onFocus={handleFocus} onBlur={handleBlur}
                     id="number_phone"
                     name="number_phone"
                     type="text"
@@ -421,6 +449,7 @@ export default function RegisterPage() {
                 </label>
                 <div className="mt-2">
                   <input
+                  onFocus={handleFocus} onBlur={handleBlur}
                     id="address"
                     name="address"
                     type="text"
