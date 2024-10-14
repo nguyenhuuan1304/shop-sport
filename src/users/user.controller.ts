@@ -13,6 +13,8 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('register')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.SUPER_ADMIN)
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
@@ -27,9 +29,11 @@ export class UserController {
     return await this.userService.refreshToken(body.refreshToken, res);
   }
 
+  @UseGuards(JwtAuthGuard) 
   @Post('logout')
-  async logout(@Res() res: Response) {
-    return await this.userService.logout(res);
+  async logout(@Req() req: any, @Res() res: Response) {
+    const userId = req.user.id;
+    return await this.userService.logout(userId, res);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -41,29 +45,26 @@ export class UserController {
       return this.userService.changePassword(userId, oldPassword, newPassword);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.userService.findAll();
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.USER)
+  //@Roles(UserRole.ADMIN, UserRole.USER)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(id);

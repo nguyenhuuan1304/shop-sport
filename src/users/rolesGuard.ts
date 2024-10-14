@@ -1,42 +1,38 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, ForbiddenException } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { JwtService } from '@nestjs/jwt';
 import { ROLES_KEY } from './rolesDecorator';
 import { UserRole } from './user.entity';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-    constructor(private reflector: Reflector, private jwtService: JwtService) {}
+    constructor(private reflector: Reflector) {}
 
     canActivate(context: ExecutionContext): boolean {
         const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(ROLES_KEY, [
-        context.getHandler(),
-        context.getClass(),
-    ]);
-    if (!requiredRoles) {
-        return true;
-    }
+            context.getHandler(),
+            context.getClass(),
+        ]);
+        
+        // Nếu không có yêu cầu quyền, cho phép truy cập
+        if (!requiredRoles) {
+            return true;
+        }
 
         const request = context.switchToHttp().getRequest();
-        const authHeader = request.headers.authorization;
+        const user = request.user;
+        //console.log('User in RolesGuard:', user);
 
-    if (!authHeader) {
-        throw new UnauthorizedException('Authorization header is missing');
-    }
+        // Kiểm tra người dùng có tồn tại không
+        if (!user || !user.role) {
+            throw new ForbiddenException('Forbidden resource: User not found or role is missing');
+        }
 
-        const token = authHeader.split(' ')[1];
-        try {
-            const user = this.jwtService.verify(token);
-            request.user = user;
-
-        if (!requiredRoles.includes(user.role)) {
-            throw new ForbiddenException('Forbidden resource');
+        // Kiểm tra quyền của người dùng
+        const hasRole = requiredRoles.includes(user.role);
+        if (!hasRole) {
+            throw new ForbiddenException('Forbidden resource: Insufficient role');
         }
 
         return true;
-        } catch (error) {
-            console.error('Token verification failed:', error);
-            throw new UnauthorizedException('Invalid token');
-        }
     }
 }

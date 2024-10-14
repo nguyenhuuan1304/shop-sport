@@ -1,26 +1,46 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './users/user.module';
-import { Student } from './students/student.entity';  
-import { User } from './users/user.entity';
-import { StudentsModule } from './students/students.module';
+import { AddressModule } from './address/address.module';
+import { CategoryModule } from './category/category.module';
+import { BrandModule } from './brand/brand.module';
+import { ProductModule } from './products/product.module';
+import { SizeModule } from './size/size.module';
+import { ProductImageModule } from './productImage/image.module';
+import { OrderModule } from './order/order.module';
+import { OrderDetailModule } from './order_detail/orderDetail.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '123456789',
-      database: 'testnestjs',
-      entities: [Student, User],  
-      synchronize: true,
+    imports: [
+    ConfigModule.forRoot({
+    isGlobal: true,
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'postgres',
+        host: config.get<string>('DB_HOST'),
+        port: config.get<number>('DB_PORT'),
+        username: config.get<string>('DB_USERNAME'),
+        password: config.get<string>('DB_PASSWORD'),
+        database: config.get<string>('DB_DATABASE'),
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        synchronize: true,
+        }),
     }),
     UserModule,
-    StudentsModule
-  ],
-  controllers: [],
-  providers: [],
+    AddressModule,
+    CategoryModule,
+    BrandModule,
+    ProductModule,
+    SizeModule,
+    ProductImageModule,
+    OrderModule,
+    OrderDetailModule,
+    ],
+    controllers: [],
+    providers: [],
 })
 export class AppModule {}

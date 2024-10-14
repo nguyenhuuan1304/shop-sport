@@ -40,7 +40,7 @@ export class UserService {
   
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      throw new BadRequestException('Invalid credentials');
+      throw new BadRequestException('Username or password Invalid');
     }
   
     // Generate JWT tokens
@@ -55,7 +55,7 @@ export class UserService {
     await this.userRepository.save(user);
   
     // Set access token in cookies (expires in 10 minutes)
-    res.cookie('accessToken', accessToken, { httpOnly: true, maxAge: 10 * 60 * 1000 }); // 10 minutes
+    res.cookie('accessToken', accessToken, { httpOnly: true, maxAge: 10 * 60 * 1000, secure: true, sameSite: 'strict' }); // 10 minutes
   
     return res.status(200).json({ message: 'Login successful' });
   }
@@ -96,13 +96,14 @@ export class UserService {
   }
   
   //Logout
-  async logout(res: Response) {
-    res.clearCookie('accessToken', { httpOnly: true, path: '/' }); 
+  async logout(userId: string, res: Response) {
+    await this.userRepository.update(userId, { refreshToken: null });
+    res.clearCookie('accessToken', { httpOnly: true, path: '/' });
     return res.status(200).json({ message: 'Logout successful' });
-  }
+  }  
 
   async findAll() {
-    return await this.userRepository.find({ relations: ['students'] });
+    return await this.userRepository.find({ relations: ['addresses'] });
   }
 
   //Change Password
@@ -126,10 +127,51 @@ export class UserService {
     return { message: 'Password changed successfully' };
   }
 
+  /**
+   * Cập nhật danh sách sản phẩm đã xem gần đây của người dùng
+   * @param userId ID của người dùng
+   * @param productId ID của sản phẩm đã xem
+   */
+  async updateRecentlyViewed(userId: string, productId: string): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('User không tồn tại');
+    }
+
+    if (!user.recentlyViewed) {
+      user.recentlyViewed = [];
+    }
+
+    // Loại bỏ productId nếu đã tồn tại để tránh trùng lặp
+    user.recentlyViewed = user.recentlyViewed.filter(id => id !== productId);
+
+    user.recentlyViewed.unshift(productId);
+
+    // Giới hạn số lượng sản phẩm đã xem gần đây (ví dụ: chỉ giữ lại 10 sản phẩm gần nhất)
+    if (user.recentlyViewed.length > 10) {
+      user.recentlyViewed = user.recentlyViewed.slice(0, 10);
+    }
+
+    await this.userRepository.save(user);
+  }
+
+  /**
+   * Lấy danh sách productId đã xem gần đây của người dùng
+   * @param userId ID của người dùng
+   * @returns Mảng productId
+   */
+  async getRecentlyViewedProducts(userId: string): Promise<string[]> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user || !user.recentlyViewed) {
+      return [];
+    }
+    return user.recentlyViewed;
+  }
+
   async findOne(id: string) {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['students'],
+      relations: ['addresses'], 
     });
     if (!user) {
       throw new NotFoundException('User not found');
@@ -139,13 +181,13 @@ export class UserService {
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.userRepository.preload({
-      id,
-      ...updateUserDto,
+    id,
+    ...updateUserDto,
     });
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    return await this.userRepository.save(user);
+      return await this.userRepository.save(user);
   }
 
   async remove(id: string) {
