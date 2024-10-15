@@ -10,6 +10,7 @@ import { SizeModule } from './size/size.module';
 import { ProductImageModule } from './productImage/image.module';
 import { OrderModule } from './order/order.module';
 import { OrderDetailModule } from './order_detail/orderDetail.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
     imports: [
@@ -39,6 +40,7 @@ import { OrderDetailModule } from './order_detail/orderDetail.module';
     ProductImageModule,
     OrderModule,
     OrderDetailModule,
+    CartModule,
     ],
     controllers: [],
     providers: [],

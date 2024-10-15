@@ -48,12 +48,11 @@ export class OrderService {
             return await this.orderRepository.find({ relations: ['user', 'orderDetails', 'orderDetails.product'] });
         } else {
             return await this.orderRepository.find({
-                where: { user: { id: userId } },
+                where: { user: { id: userId } }, // Sử dụng _id thay vì id
                 relations: ['user', 'orderDetails', 'orderDetails.product'],
             });
         }
     }
-
 
     async findOne(id: string, userId: string, userRole: UserRole): Promise<Order> {
         const order = await this.orderRepository.findOne({

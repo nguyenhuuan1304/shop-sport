@@ -4,7 +4,7 @@ import { OrderDetail } from './orderDetail.entity';
 import { OrderDetailService } from './orderDetail.service';
 import { OrderDetailController } from './orderDetail.controller';
 import { ProductModule } from '../products/product.module';
-import { Order } from 'src/order/order.entity';
+import { Order } from '../order/order.entity';
 
 @Module({
     imports: [
@@ -15,5 +15,4 @@ import { Order } from 'src/order/order.entity';
     controllers: [OrderDetailController],
     exports: [OrderDetailService],
 })
-
 export class OrderDetailModule {}

@@ -49,7 +49,6 @@ export class OrderController {
         return this.orderService.update(id, updateOrderDto, user._id, user.role);
     }
 
-
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Delete(':id')

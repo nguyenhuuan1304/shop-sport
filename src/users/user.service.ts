@@ -55,7 +55,7 @@ export class UserService {
     await this.userRepository.save(user);
   
     // Set access token in cookies (expires in 10 minutes)
-    res.cookie('accessToken', accessToken, { httpOnly: true, maxAge: 10 * 60 * 1000, secure: true, sameSite: 'strict' }); // 10 minutes
+    res.cookie('accessToken', accessToken, { httpOnly: true, maxAge: 10 * 60 * 1000, secure: true, sameSite: 'strict' });
   
     return res.status(200).json({ message: 'Login successful' });
   }

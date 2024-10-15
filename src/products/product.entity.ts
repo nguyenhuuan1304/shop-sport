@@ -4,7 +4,7 @@ import { Brand } from '../brand/brand.entity';
 import { Size } from '../size/size.entity';
 import { ProductImage } from '../productImage/image.entity';
 import { OrderDetail } from '../order_detail/orderDetail.entity';
-
+import { CartItem } from '../cart_item/cartItem.entity';
 
 @Entity('products')
 export class Product {
@@ -48,5 +48,8 @@ export class Product {
 
     @OneToMany(() => OrderDetail, orderDetail => orderDetail.product)
     orderDetails: OrderDetail[];
+
+    @OneToMany(() => CartItem, cartItem => cartItem.product)
+    cartItems: CartItem[];
 
 }

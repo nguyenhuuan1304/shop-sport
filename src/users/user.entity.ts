@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Address } from '../address/address.entity';
 import { Order } from '../order/order.entity';
+import { Cart } from '../cart/cart.entity';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -60,6 +61,9 @@ export class User {
 
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
+
+  @OneToMany(() => Cart, cart => cart.user)
+  carts: Cart[];
 
   @Column('simple-array', { nullable: true })
   recentlyViewed: string[];

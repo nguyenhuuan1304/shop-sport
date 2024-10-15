@@ -1,7 +1,6 @@
-// src/order-details/order-detail.controller.ts
-import { Controller, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { OrderDetailService } from './orderDetail.service';
-import { CreateOrderDetailDto } from './dto/create-orderDetail.dto';
+import { CreateOrderDetailWithOrderIdDto } from './dto/create-orderDetailWithOrderId.dto';
 import { UpdateOrderDetailDto } from './dto/update-orderDetail.dto';
 import { JwtAuthGuard } from '../users/JwtAuthGuard';
 import { RolesGuard } from '../users/rolesGuard';
@@ -13,19 +12,32 @@ import { OrderDetail } from './orderDetail.entity';
 export class OrderDetailController {
     constructor(private readonly orderDetailService: OrderDetailService) {}
 
-    /**
-     * Tạo chi tiết đơn hàng mới
+    /*
      * URL: POST /order-details
      */
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Post()
-    async create(@Body() createOrderDetailDto: CreateOrderDetailDto): Promise<OrderDetail> {
-        return this.orderDetailService.create(createOrderDetailDto, createOrderDetailDto.order_id);
+    async create(@Body() createOrderDetailWithOrderIdDto: CreateOrderDetailWithOrderIdDto): Promise<OrderDetail> {
+        const { order_id, product_id, quantity } = createOrderDetailWithOrderIdDto;
+        return this.orderDetailService.createWithOrderId({ order_id, product_id, quantity });
     }
 
-    /**
-     * Cập nhật chi tiết đơn hàng
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+    @Get()
+    async findAll(): Promise<OrderDetail[]> {
+        return this.orderDetailService.findAll();
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+    @Get(':id')
+    async findOne(@Param('id') id: string): Promise<OrderDetail> {
+        return this.orderDetailService.findOne(id);
+    }
+
+    /*
      * URL: PATCH /order-details/:id
      */
     @UseGuards(JwtAuthGuard, RolesGuard)
@@ -38,8 +50,7 @@ export class OrderDetailController {
         return this.orderDetailService.update(id, updateOrderDetailDto);
     }
 
-    /**
-     * Xóa chi tiết đơn hàng
+    /*
      * URL: DELETE /order-details/:id
      */
     @UseGuards(JwtAuthGuard, RolesGuard)
