@@ -1,6 +1,11 @@
-import { IsUUID } from 'class-validator';
+import {  ValidateNested, ArrayMinSize, IsArray } from 'class-validator';
+import { Type } from 'class-transformer';
+import { CreateCartItemDto } from '../../cart_item/dto/create-cartItem.dto';
 
 export class CreateCartDto {
-    @IsUUID()
-    user_id: string;
+    @IsArray()
+    @ArrayMinSize(1)
+    @ValidateNested({ each: true })
+    @Type(() => CreateCartItemDto)
+    cartItems: CreateCartItemDto[];
 }

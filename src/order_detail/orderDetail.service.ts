@@ -7,6 +7,7 @@ import { CreateOrderDetailWithOrderIdDto } from './dto/create-orderDetailWithOrd
 import { Order } from '../order/order.entity';
 import { Product } from '../products/product.entity';
 import { UpdateOrderDetailDto } from './dto/update-orderDetail.dto';
+import { Size } from '../size/size.entity';
 
 
 @Injectable()
@@ -20,45 +21,48 @@ export class OrderDetailService {
 
         @InjectRepository(Order)
         private orderRepository: Repository<Order>,
+
+        @InjectRepository(Size)
+        private sizeRepository: Repository<Size>,
     ) {}
 
     async create(createOrderDetailDto: CreateOrderDetailDto, orderId: string): Promise<OrderDetail> {
-        const { product_id, quantity } = createOrderDetailDto;
-
+        const { product_id, size_id, quantity } = createOrderDetailDto;
+    
         // Kiểm tra sản phẩm tồn tại
         const product = await this.productRepository.findOne({ where: { _id: product_id } });
         if (!product) {
             throw new NotFoundException('Product not found');
         }
-
-        // Kiểm tra đơn hàng tồn tại
-        const order = await this.orderRepository.findOne({ where: { _id: orderId }, relations: ['orderDetails'] });
-        if (!order) {
-            throw new NotFoundException('Order not found');
+    
+        // Kiểm tra size tồn tại
+        const size = await this.sizeRepository.findOne({ where: { _id: size_id, product: { _id: product_id } } });
+        if (!size) {
+            throw new NotFoundException('Size not found');
         }
-
-        // Tính tổng giá = price_product * quantity
-        const calculatedPrice = parseFloat(product.price.toString()) * quantity;
-
-        // Kiểm tra nếu sản phẩm đã có trong đơn hàng chưa
+    
+        // Kiểm tra nếu OrderDetail đã tồn tại cho cùng product và size
         const existingDetail = await this.orderDetailRepository.findOne({
-            where: { order: { _id: orderId }, product: { _id: product_id } },
+            where: { order: { _id: orderId }, product: { _id: product_id }, size: { _id: size_id } },
         });
-
+    
         if (existingDetail) {
-            throw new BadRequestException('Product already exists in the order');
+            throw new BadRequestException('Product with this size already exists in the order');
         }
-
+    
+        // Tính giá
+        const calculatedPrice = parseFloat(product.price.toString()) * quantity;
+    
         const orderDetail = this.orderDetailRepository.create({
-            order,
+            order: { _id: orderId },
             product,
+            size,
             quantity,
             price: calculatedPrice,
         });
-
+    
         return await this.orderDetailRepository.save(orderDetail);
     }
-
     async createWithOrderId(createOrderDetailWithOrderIdDto: CreateOrderDetailWithOrderIdDto): Promise<OrderDetail> {
         const { order_id, product_id, quantity } = createOrderDetailWithOrderIdDto;
 

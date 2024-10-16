@@ -5,14 +5,16 @@ import { OrderDetailService } from './orderDetail.service';
 import { OrderDetailController } from './orderDetail.controller';
 import { ProductModule } from '../products/product.module';
 import { Order } from '../order/order.entity';
+import { Size } from '../size/size.entity';
+import { Product } from '../products/product.entity';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([OrderDetail, Order]),
-        ProductModule, 
+        TypeOrmModule.forFeature([OrderDetail, Order, Size, Product]),
+    ProductModule,
     ],
     providers: [OrderDetailService],
-    controllers: [OrderDetailController],
+    controllers: [OrderDetailController],   
     exports: [OrderDetailService],
 })
 export class OrderDetailModule {}

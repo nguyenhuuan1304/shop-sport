@@ -11,6 +11,7 @@ import { ProductImageModule } from './productImage/image.module';
 import { OrderModule } from './order/order.module';
 import { OrderDetailModule } from './order_detail/orderDetail.module';
 import { CartModule } from './cart/cart.module';
+import { CartItemModule } from './cart_item/cartItem.module';
 
 @Module({
     imports: [
@@ -41,6 +42,7 @@ import { CartModule } from './cart/cart.module';
     OrderModule,
     OrderDetailModule,
     CartModule,
+    CartItemModule,
     ],
     controllers: [],
     providers: [],

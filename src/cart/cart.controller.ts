@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
@@ -6,6 +6,8 @@ import { JwtAuthGuard } from '../users/JwtAuthGuard';
 import { RolesGuard } from '../users/rolesGuard';
 import { Roles } from '../users/rolesDecorator';
 import { UserRole } from '../users/user.entity';
+import { Order } from '../order/order.entity'; 
+import { Request } from 'express';
 import { Cart } from './cart.entity';
 
 @Controller('carts')
@@ -14,16 +16,31 @@ export class CartController {
 
     /*
      * URL: POST /carts
+     * Tạo giỏ hàng cùng với các mục giỏ hàng và tạo Order
      */
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Post()
-    async create(@Body() createCartDto: CreateCartDto): Promise<Cart> {
-        return this.cartService.create(createCartDto);
+    async create(@Body() createCartDto: CreateCartDto, @Req() req: Request): Promise<Order> { 
+        const user = req.user as any;
+        return this.cartService.create(createCartDto, user._id);
+    }
+
+    /*
+     * URL: GET /carts/me
+     * Lấy giỏ hàng của người dùng hiện tại
+     */
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN) 
+    @Get('me')
+    async getMyCart(@Req() req: Request): Promise<Cart> {
+        const user = req.user as any;
+        return this.cartService.getUserCart(user._id);
     }
 
     /*
      * URL: GET /carts
+     * Lấy tất cả các giỏ hàng 
      */
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
@@ -34,6 +51,7 @@ export class CartController {
 
     /*
      * URL: GET /carts/:id
+     * Lấy giỏ hàng theo ID
      */
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
@@ -44,6 +62,7 @@ export class CartController {
 
     /*
      * URL: PATCH /carts/:id
+     * Cập nhật giỏ hàng 
      */
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
@@ -57,6 +76,7 @@ export class CartController {
 
     /*
      * URL: DELETE /carts/:id
+     * Xóa giỏ hàng 
      */
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)

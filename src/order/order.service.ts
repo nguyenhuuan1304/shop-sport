@@ -48,7 +48,7 @@ export class OrderService {
             return await this.orderRepository.find({ relations: ['user', 'orderDetails', 'orderDetails.product'] });
         } else {
             return await this.orderRepository.find({
-                where: { user: { id: userId } }, // Sử dụng _id thay vì id
+                where: { user: { id: userId } }, 
                 relations: ['user', 'orderDetails', 'orderDetails.product'],
             });
         }
