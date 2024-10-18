@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Connection } from 'typeorm';
 import { Cart } from './cart.entity';
 import { CreateCartDto } from './dto/create-cart.dto';
-import { UpdateCartDto } from './dto/update-cart.dto';
 import { User } from '../users/user.entity';
 import { CartItem } from '../cart_item/cartItem.entity';
 import { Product } from '../products/product.entity';
@@ -27,25 +26,18 @@ export class CartService {
         private orderService: OrderService, 
     ) {}
 
-    // Tạo giỏ hàng mới cho người dùng
     async createForUser(userId: string): Promise<Cart> {
         const user = await this.userRepository.findOne({ where: { id: userId }, relations: ['carts'] });
 
-        // Kiểm tra xem người dùng đã có giỏ hàng chưa
         let cart = await this.cartRepository.findOne({ where: { user: { id: userId } }, relations: ['cartItems'] });
         if (cart) {
             return cart;
         }
 
-        // Tạo giỏ hàng mới
-        cart = this.cartRepository.create({
-            user,
-        });
-
+        cart = this.cartRepository.create({ user });
         return await this.cartRepository.save(cart);
     }
 
-    // Lấy giỏ hàng của người dùng
     async getUserCart(userId: string): Promise<Cart> {
         let cart = await this.cartRepository.findOne({
             where: { user: { id: userId } },
@@ -57,13 +49,10 @@ export class CartService {
         return cart;
     }
 
-    // Tạo giỏ hàng cùng với các mục giỏ hàng và tạo Order
     async create(createCartDto: CreateCartDto, userId: string): Promise<Order> {
         const { cartItems } = createCartDto;
-    
-        // Gộp cartItems theo product_id và size_id
         const groupedItemsMap = new Map<string, { product_id: string, size_id: string, quantity: number }>();
-    
+        
         for (const item of cartItems) {
             const key = `${item.product_id}_${item.size_id}`;
             if (groupedItemsMap.has(key)) {
@@ -74,42 +63,27 @@ export class CartService {
                 groupedItemsMap.set(key, { ...item });
             }
         }
-    
-        const groupedItems = Array.from(groupedItemsMap.values());
-    
+        
+    const groupedItems = Array.from(groupedItemsMap.values());
+        
         return await this.connection.transaction(async manager => {
-
             const user = await manager.findOne(User, { where: { id: userId } });
-    
             const cart = manager.create(Cart, { user });
             await manager.save(cart);
-    
-            // Thêm các mục giỏ hàng
+        
             for (const item of groupedItems) {
                 const { product_id, size_id, quantity } = item;
-    
-                // Kiểm tra sản phẩm
+        
                 const product = await manager.findOne(Product, { where: { _id: product_id } });
                 if (!product) {
                     throw new NotFoundException(`Product with ID ${product_id} not found`);
                 }
-    
-                // Kiểm tra size
+        
                 const size = await manager.findOne(Size, { where: { _id: size_id, product: { _id: product_id } } });
                 if (!size) {
                     throw new NotFoundException(`Size with ID ${size_id} not found for product ${product_id}`);
                 }
-    
-                // Kiểm tra stock
-                if (quantity > size.stock) {
-                    throw new BadRequestException(`Quantity ${quantity} exceeds available stock for size ${size.size_name}`);
-                }
-    
-                // Giảm stock
-                size.stock -= quantity;
-                await manager.save(size);
-    
-                // Tạo CartItem
+        
                 const cartItem = manager.create(CartItem, {
                     cart,
                     product,
@@ -118,24 +92,58 @@ export class CartService {
                 });
                 await manager.save(cartItem);
             }
-    
-            // Tạo Order dựa trên Cart vừa tạo
+            
+            // Kiểm tra phone và email chỉ khi người dùng tương tác với giỏ hàng (cart)
+            if (!user || !user.phone || !user.phone.trim() || !user.email || !user.email.trim()) {
+                throw new BadRequestException('Please input your phone and email before proceeding to the order.');
+            }
+
             const orderDto: CreateOrderDto = {
                 status: OrderStatus.PENDING, 
                 orderDetails: groupedItems.map(item => ({
-                    product_id: item.product_id,
-                    size_id: item.size_id,
-                    quantity: item.quantity,
+                product_id: item.product_id,
+                size_id: item.size_id,
+                quantity: item.quantity,
                 })),
             };
-    
+        
             const order = await this.orderService.create(orderDto, userId);
-    
             return order;
         });
     }
 
-    // Các phương thức CRUD khác như trước
+    // Xoá giỏ hàng của người dùng
+    async clearCart(userId: string): Promise<void> {
+        await this.cartRepository.delete({ user: { id: userId } });
+    }
+        
+        // // Phương thức xử lý thanh toán
+        // async processPayment(orderId: string): Promise<void> {
+        // return await this.connection.transaction(async manager => {
+        // const order = await manager.findOne(Order, { where: { _id: orderId }, relations: ['orderDetails'] });
+        // if (!order) {
+        // throw new NotFoundException(`Order with ID ${orderId} not found`);
+        // }
+        
+        // for (const detail of order.orderDetails) {
+        // const size = await manager.findOne(Size, { where: { id: detail.size_id, product: { _id: detail.product_id } } });
+        // if (!size) {
+        // throw new NotFoundException(`Size with ID ${detail.size_id} not found for product ${detail.product_id}`);
+        // }
+        
+        // if (detail.quantity > size.stock) {
+        // throw new BadRequestException(`Quantity ${detail.quantity} exceeds available stock for size ${size.size_name}`);
+        // }
+        
+        // size.stock -= detail.quantity;
+        // await manager.save(size);
+        // }
+        
+        // order.status = OrderStatus.COMPLETED;
+        // await manager.save(order);
+        // });
+        // }
+
     async findAll(): Promise<Cart[]> {
         return await this.cartRepository.find({ relations: ['user', 'cartItems'] });
     }
@@ -148,7 +156,7 @@ export class CartService {
         return cart;
     }
 
-    async update(id: string, updateCartDto: UpdateCartDto): Promise<Cart> {
+    async update(id: string, updateCartDto: any): Promise<Cart> {
         const cart = await this.cartRepository.findOne({ where: { _id: id }, relations: ['user'] });
         if (!cart) {
             throw new NotFoundException('Cart not found');
@@ -159,7 +167,6 @@ export class CartService {
             if (!user) {
                 throw new NotFoundException('User not found');
             }
-            // Kiểm tra nếu người dùng đã có giỏ hàng khác
             if (user.carts && user.carts.length > 0) {
                 throw new BadRequestException('User already has a cart');
             }

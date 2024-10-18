@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, OneToMany } from 'typeorm';
 import { User } from '../users/user.entity';
 import { OrderDetail } from '../order_detail/orderDetail.entity';
+import { Payment } from '../payment/payment.entity';
 
 export enum OrderStatus {
     PENDING = 'pending',
@@ -28,5 +29,8 @@ export class Order {
 
     @OneToMany(() => OrderDetail, orderDetail => orderDetail.order, { cascade: true })
     orderDetails: OrderDetail[];
+
+    @OneToMany(() => Payment, payments => payments.order, { cascade: true })
+    payments: Payment[];
 
 }

@@ -28,6 +28,8 @@
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/typeorm": "^10.0.2",
+    "@types/stripe": "^8.0.417",
+    "@types/stripe-v3": "^3.1.33",
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
@@ -35,12 +37,13 @@
     "dayjs": "^1.11.13",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.11.3",
+    "nestjs-stripe": "^1.0.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.13.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
-    "stripe": "^17.1.0",
+    "stripe": "^17.2.0",
     "typeorm": "^0.3.20"
   },
   "devDependencies": {

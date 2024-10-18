@@ -43,6 +43,23 @@ export class OrderService {
         });
     }
 
+    async findOrderById(orderId: string): Promise<Order> {
+        const order = await this.orderRepository.findOne({
+          where: { _id: orderId },
+          relations: ['orderDetails', 'user'], // Ensure orderDetails và user được nạp
+        });
+        if (!order) {
+          throw new NotFoundException(`Order với ID ${orderId} không tồn tại`);
+        }
+        return order;
+    }
+    
+    async updateOrder(orderId: string, updateData: Partial<Order>): Promise<Order> {
+        const order = await this.findOrderById(orderId);
+        Object.assign(order, updateData);
+        return this.orderRepository.save(order);
+    }
+
     async findAll(userId: string, userRole: UserRole): Promise<Order[]> {
         if (userRole === UserRole.SUPER_ADMIN || userRole === UserRole.ADMIN) {
             return await this.orderRepository.find({ relations: ['user', 'orderDetails', 'orderDetails.product'] });
