@@ -1,64 +1,80 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import Stripe from 'stripe';
+import { Repository } from 'typeorm';
+import { Order } from '../order/order.entity';
+import { OrderStatus } from '../order/order.entity';
 import { ConfigService } from '@nestjs/config';
-// import { CreateOrderDto } from 'src/order/dto/create-order.dto';
-// import { Product } from 'src/products/product.entity';
 
 @Injectable()
 export class StripeService {
     private stripe: Stripe;
 
-    constructor(private configService: ConfigService) {
-        this.stripe = new Stripe(this.configService.get<string>('STRIPE_SECRET_KEY'), {
+    constructor(
+    @InjectRepository(Order)
+    private orderRepository: Repository<Order>,
+    private configService: ConfigService,
+    ) {
+        
+        this.stripe = new Stripe(this.configService.get('STRIPE_SECRET_KEY'), {
             apiVersion: '2024-09-30.acacia',
         });
     }
 
-    // async createStripe(OrderData: CreateOrderStripeDto): Promise<any>{
-    //     const session = await iStripe.checkout.sessions.create({
-    //         line_item: [
-    //             {
-    //             price_data: {
-    //                 currency: 'usd',
-    //                 unit_amount: Math.round(OrderData.price * 100),
-    //                 Product_data: {
-    //                     name: 'Sport',
-    //                     description: OrderData.description,
-    //                     images: [OrderData.logo],
-    //                 },
-    //             },
-    //             quantity: 1,
-    //         },
-    //     ],
-    //     mode: 'payment',
-    //     success_url: OrderData.urlSuccess,
-    //     cancel_url: OrderData.urlCancel,
-    //     client_reference_id: OrderData.user_id,
-    //     customer_email: OrderData.email,
-    //     });
-    //     return session;
-    // }
-
-    async createPaymentIntent(amount: number, currency: string, token: string) {
-        const paymentMethod = await this.stripe.paymentMethods.create({
-            type: 'card',
-            card: { token },
+    async createCheckoutSession(orderId: string, amount: number, currency: string) {
+        const amountInCents = Math.round(amount * 100);
+        
+        const session = await this.stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            line_items: [{
+                price_data: {
+                currency,
+                product_data: {
+                    name: `Order ${orderId}`,
+                    
+                },
+                unit_amount: amountInCents,
+            },
+            quantity: 1,
+            },
+        ],
+        mode: 'payment',
+        success_url: `https://www.done.com/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `https://docs.stripe.com/cancel`,
         });
         
-        return await this.stripe.paymentIntents.create({
-            amount,
-            currency,
-            payment_method: paymentMethod.id,
-            confirm: true,
-            return_url: 'https://si-justplay.com/', 
-            automatic_payment_methods: {
-            enabled: true,
-            allow_redirects: 'never',
-            },
-        });
+        return session;
     }
-    async retrievePaymentIntent(paymentIntentId: string) {
-        return await this.stripe.paymentIntents.retrieve(paymentIntentId);
+
+    async handlePaymentSuccess(sessionId: string): Promise<void> {
+        if (!sessionId) {
+            throw new Error('Session ID is required');
+        }
+        
+        // Tìm đơn hàng dựa vào session ID của Stripe
+        const order = await this.orderRepository.findOne({
+            where: { stripeSessionId: sessionId },
+        });
+        
+        if (!order) {
+            throw new NotFoundException('Order not found');
+        }
+        
+        // Cập nhật trạng thái đơn hàng thành 'success'
+        order.status = OrderStatus.SUCCESS;
+        await this.orderRepository.save(order);
+    }
+        
+    async verifyPayment(sessionId: string) {
+        if (!sessionId) {
+            throw new Error('Session ID is required');
+        }
+        
+        const session = await this.stripe.checkout.sessions.retrieve(sessionId);
+        
+        if (session.payment_status === 'paid') {
+            return true;
+        }
+            return false;
     }
 }
-

@@ -36,6 +36,7 @@
     "cookie-parser": "^1.4.6",
     "dayjs": "^1.11.13",
     "jsonwebtoken": "^9.0.2",
+    "moment": "^2.30.1",
     "mysql2": "^3.11.3",
     "nestjs-stripe": "^1.0.0",
     "passport": "^0.7.0",
@@ -43,7 +44,7 @@
     "pg": "^8.13.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
-    "stripe": "^17.2.0",
+    "stripe": "^17.2.1",
     "typeorm": "^0.3.20"
   },
   "devDependencies": {

@@ -7,23 +7,27 @@ import { User } from '../users/user.entity';
 import { CartItem } from '../cart_item/cartItem.entity';
 import { Product } from '../products/product.entity';
 import { Size } from '../size/size.entity';
-import { OrderService } from '../order/order.service';
-import { Order } from '../order/order.entity';
-import { CreateOrderDto } from '../order/dto/create-order.dto';
-import { OrderStatus } from '../order/order.entity';
+
 
 @Injectable()
 export class CartService {
     constructor(
-        @InjectRepository(Cart)
-        private cartRepository: Repository<Cart>,
+    @InjectRepository(Cart)
+    private cartRepository: Repository<Cart>,
 
-        @InjectRepository(User)
-        private userRepository: Repository<User>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
 
-        private connection: Connection,
+    @InjectRepository(Product)
+    private productRepository: Repository<Product>,
 
-        private orderService: OrderService, 
+    @InjectRepository(CartItem)
+    private cartItemRepository: Repository<CartItem>,
+
+    @InjectRepository(Size)
+    private sizeRepository: Repository<Size>,
+
+    private connection: Connection,
     ) {}
 
     async createForUser(userId: string): Promise<Cart> {
@@ -49,100 +53,72 @@ export class CartService {
         return cart;
     }
 
-    async create(createCartDto: CreateCartDto, userId: string): Promise<Order> {
+    async addToCart(userId: string, createCartDto: CreateCartDto): Promise<Cart> {
         const { cartItems } = createCartDto;
         const groupedItemsMap = new Map<string, { product_id: string, size_id: string, quantity: number }>();
-        
+
         for (const item of cartItems) {
             const key = `${item.product_id}_${item.size_id}`;
             if (groupedItemsMap.has(key)) {
-                const existingItem = groupedItemsMap.get(key);
-                existingItem.quantity += item.quantity;
-                groupedItemsMap.set(key, existingItem);
-            } else {
-                groupedItemsMap.set(key, { ...item });
+                    const existingItem = groupedItemsMap.get(key);
+                    existingItem.quantity += item.quantity;
+                    groupedItemsMap.set(key, existingItem);
+                } else {
+                    groupedItemsMap.set(key, { ...item });
             }
         }
-        
-    const groupedItems = Array.from(groupedItemsMap.values());
-        
+
+        const groupedItems = Array.from(groupedItemsMap.values());
+
         return await this.connection.transaction(async manager => {
             const user = await manager.findOne(User, { where: { id: userId } });
-            const cart = manager.create(Cart, { user });
+            let cart = await manager.findOne(Cart, { where: { user: { id: userId } }, relations: ['cartItems'] });
+
+        if (!cart) {
+            cart = manager.create(Cart, { user });
             await manager.save(cart);
-        
-            for (const item of groupedItems) {
-                const { product_id, size_id, quantity } = item;
-        
-                const product = await manager.findOne(Product, { where: { _id: product_id } });
-                if (!product) {
-                    throw new NotFoundException(`Product with ID ${product_id} not found`);
-                }
-        
-                const size = await manager.findOne(Size, { where: { _id: size_id, product: { _id: product_id } } });
-                if (!size) {
-                    throw new NotFoundException(`Size with ID ${size_id} not found for product ${product_id}`);
-                }
-        
-                const cartItem = manager.create(CartItem, {
+        }
+
+        for (const item of groupedItems) {
+            const { product_id, size_id, quantity } = item;
+
+            const product = await manager.findOne(Product, { where: { _id: product_id } });
+            if (!product) {
+                throw new NotFoundException(`Product with ID ${product_id} not found`);
+            }
+
+            const size = await manager.findOne(Size, { where: { _id: size_id, product: { _id: product_id } } });
+            if (!size) {
+                throw new NotFoundException(`Size with ID ${size_id} not found for product ${product_id}`);
+            }
+
+            let cartItem = await manager.findOne(CartItem, {
+                where: { cart: { _id: cart._id }, size: { _id: size_id } },
+            });
+
+            if (cartItem) {
+                cartItem.quantity += quantity;
+                } else {
+                    cartItem = manager.create(CartItem, {
                     cart,
                     product,
                     size,
                     quantity,
                 });
-                await manager.save(cartItem);
-            }
-            
-            // Kiểm tra phone và email chỉ khi người dùng tương tác với giỏ hàng (cart)
-            if (!user || !user.phone || !user.phone.trim() || !user.email || !user.email.trim()) {
-                throw new BadRequestException('Please input your phone and email before proceeding to the order.');
             }
 
-            const orderDto: CreateOrderDto = {
-                status: OrderStatus.PENDING, 
-                orderDetails: groupedItems.map(item => ({
-                product_id: item.product_id,
-                size_id: item.size_id,
-                quantity: item.quantity,
-                })),
-            };
-        
-            const order = await this.orderService.create(orderDto, userId);
-            return order;
-        });
-    }
+            size.stock -= quantity;
+            await manager.save(size);
+            await manager.save(cartItem);
+        }
 
-    // Xoá giỏ hàng của người dùng
+        return cart;
+    });
+}
+
     async clearCart(userId: string): Promise<void> {
         await this.cartRepository.delete({ user: { id: userId } });
     }
-        
-        // // Phương thức xử lý thanh toán
-        // async processPayment(orderId: string): Promise<void> {
-        // return await this.connection.transaction(async manager => {
-        // const order = await manager.findOne(Order, { where: { _id: orderId }, relations: ['orderDetails'] });
-        // if (!order) {
-        // throw new NotFoundException(`Order with ID ${orderId} not found`);
-        // }
-        
-        // for (const detail of order.orderDetails) {
-        // const size = await manager.findOne(Size, { where: { id: detail.size_id, product: { _id: detail.product_id } } });
-        // if (!size) {
-        // throw new NotFoundException(`Size with ID ${detail.size_id} not found for product ${detail.product_id}`);
-        // }
-        
-        // if (detail.quantity > size.stock) {
-        // throw new BadRequestException(`Quantity ${detail.quantity} exceeds available stock for size ${size.size_name}`);
-        // }
-        
-        // size.stock -= detail.quantity;
-        // await manager.save(size);
-        // }
-        
-        // order.status = OrderStatus.COMPLETED;
-        // await manager.save(order);
-        // });
-        // }
 
     async findAll(): Promise<Cart[]> {
         return await this.cartRepository.find({ relations: ['user', 'cartItems'] });
@@ -167,9 +143,9 @@ export class CartService {
             if (!user) {
                 throw new NotFoundException('User not found');
             }
-            if (user.carts && user.carts.length > 0) {
-                throw new BadRequestException('User already has a cart');
-            }
+                if (user.carts && user.carts.length > 0) {
+                    throw new BadRequestException('User already has a cart');
+                }
             cart.user = user;
         }
 

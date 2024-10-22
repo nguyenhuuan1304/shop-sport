@@ -5,16 +5,17 @@ import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
 import { Category } from '../category/category.entity';
 import { Brand } from '../brand/brand.entity';
-import { Size } from 'src/size/size.entity';
-import { ProductImage } from 'src/productImage/image.entity';
+import { Size } from '../size/size.entity';
+import { ProductImage } from '../productImage/image.entity';
 import { UserModule } from '../users/user.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Product, Category, Brand, Size, ProductImage]),
+imports: [
+    TypeOrmModule.forFeature([Product, Category, Brand, Size, ProductImage]),
     UserModule,
-],
+    ],
     providers: [ProductService],
     controllers: [ProductController],
-    exports: [TypeOrmModule],
+    exports: [TypeOrmModule], 
 })
 export class ProductModule {}

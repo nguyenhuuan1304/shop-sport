@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { StripeService } from './stripe.service';
-import { StripeController } from './stripe.controller';
+import { Order } from '../order/order.entity';
 
 @Module({
-  imports: [ConfigModule],
-  controllers: [StripeController],
+  imports: [TypeOrmModule.forFeature([Order])],
   providers: [StripeService],
   exports: [StripeService],
 })
