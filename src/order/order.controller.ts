@@ -34,11 +34,15 @@ export class OrderController {
     @Post(':id/checkout')
     async createCheckoutSession(@Param('id') orderId: string, @Req() req: Request) {
         const user = req.user as any;
-        
+
+        if (!user || !user.id) {
+            throw new Error('User ID is undefined');
+        }
+
         try {
-            return await this.orderService.createCheckoutSession(orderId, user._id);
+            return await this.orderService.createCheckoutSession(orderId, user.id);
         } catch (error) {
-            console.error(`Error creating checkout session for order ID: ${orderId}, user ID: ${user._id}. Error:`, error);
+            console.error(`Error creating checkout session for order ID: ${orderId}, user ID: ${user.id}. Error:`, error);
             throw error;
         }
     }
@@ -51,6 +55,19 @@ export class OrderController {
             return await this.orderService.handlePaymentSuccess(sessionId);
         } catch (error) {
             console.error(`Error handling payment success for session ID: ${sessionId}. Error:`, error);
+            throw error;
+        }
+    }
+
+    @Post('payment-cancel')
+    async handlePaymentCancel(@Body('sessionId') sessionId: string) {
+        console.log(`Payment cancel webhook received for session ID: ${sessionId}`);
+
+        try {
+            await this.orderService.handlePaymentCancel(sessionId);
+            return { message: 'Order cancelled successfully' };
+        } catch (error) {
+            console.error(`Error handling payment cancel for session ID: ${sessionId}. Error:`, error);
             throw error;
         }
     }

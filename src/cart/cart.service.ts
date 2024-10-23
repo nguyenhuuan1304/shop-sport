@@ -56,7 +56,7 @@ export class CartService {
     async addToCart(userId: string, createCartDto: CreateCartDto): Promise<Cart> {
         const { cartItems } = createCartDto;
         const groupedItemsMap = new Map<string, { product_id: string, size_id: string, quantity: number }>();
-
+        
         for (const item of cartItems) {
             const key = `${item.product_id}_${item.size_id}`;
             if (groupedItemsMap.has(key)) {
@@ -67,37 +67,41 @@ export class CartService {
                     groupedItemsMap.set(key, { ...item });
             }
         }
-
+        
         const groupedItems = Array.from(groupedItemsMap.values());
-
+        
         return await this.connection.transaction(async manager => {
             const user = await manager.findOne(User, { where: { id: userId } });
             let cart = await manager.findOne(Cart, { where: { user: { id: userId } }, relations: ['cartItems'] });
-
-        if (!cart) {
-            cart = manager.create(Cart, { user });
-            await manager.save(cart);
-        }
-
-        for (const item of groupedItems) {
-            const { product_id, size_id, quantity } = item;
-
-            const product = await manager.findOne(Product, { where: { _id: product_id } });
-            if (!product) {
-                throw new NotFoundException(`Product with ID ${product_id} not found`);
+            
+            if (!cart) {
+                cart = manager.create(Cart, { user });
+                await manager.save(cart);
             }
-
-            const size = await manager.findOne(Size, { where: { _id: size_id, product: { _id: product_id } } });
-            if (!size) {
-                throw new NotFoundException(`Size with ID ${size_id} not found for product ${product_id}`);
-            }
-
-            let cartItem = await manager.findOne(CartItem, {
-                where: { cart: { _id: cart._id }, size: { _id: size_id } },
-            });
-
-            if (cartItem) {
-                cartItem.quantity += quantity;
+        
+            for (const item of groupedItems) {
+                const { product_id, size_id, quantity } = item;
+                
+                const product = await manager.findOne(Product, { where: { _id: product_id } });
+                if (!product) {
+                    throw new NotFoundException(`Product with ID ${product_id} not found`);
+                }
+                
+                const size = await manager.findOne(Size, { where: { _id: size_id, product: { _id: product_id } } });
+                if (!size) {
+                    throw new NotFoundException(`Size with ID ${size_id} not found for product ${product_id}`);
+                }
+                
+                if (size.stock < quantity) {
+                    throw new Error(`Not enough stock for size ID ${size_id} of product ID ${product_id}`);
+                }
+                
+                let cartItem = await manager.findOne(CartItem, {
+                    where: { cart: { _id: cart._id }, size: { _id: size_id } },
+                });
+                
+                if (cartItem) {
+                    cartItem.quantity += quantity;
                 } else {
                     cartItem = manager.create(CartItem, {
                     cart,
@@ -105,16 +109,16 @@ export class CartService {
                     size,
                     quantity,
                 });
-            }
+                }
+                
+                // Save the cart item without reducing the stock
+                await manager.save(cartItem);
+                }
+            
+            return cart;
+        });
+    }
 
-            size.stock -= quantity;
-            await manager.save(size);
-            await manager.save(cartItem);
-        }
-
-        return cart;
-    });
-}
 
     async clearCart(userId: string): Promise<void> {
         await this.cartRepository.delete({ user: { id: userId } });
