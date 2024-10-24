@@ -14,13 +14,9 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
       transform: true,
     })
-  )
+  );
+
   app.use(cookieParser());
   await app.listen(3000);
 }
 bootstrap();
-
-  
-
-
-

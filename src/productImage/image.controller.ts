@@ -1,17 +1,31 @@
-import { Controller, Post, Body, Get, Param, Patch, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch, Delete, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ProductImageService } from './image.service';
-import { CreateProductImageDto } from './dto/create-image.dto';
 import { UpdateProductImageDto } from './dto/update-image.dto';
 import { ProductImage } from './image.entity';
+import { CreateProductImageDto } from './dto/create-image.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
+// import { multerOptions } from '../cloudinary/multer-config'
 
 @Controller('product-images')
 export class ProductImageController {
     constructor(private readonly productImageService: ProductImageService) {}
 
-    @Post()
-    async create(@Body() createProductImageDto: CreateProductImageDto): Promise<ProductImage> {
-        return this.productImageService.create(createProductImageDto);
+    // @Post()
+    // @UseInterceptors(FileInterceptor('file', multerOptions))
+    // async create(
+    // @Body() createProductImageDto: CreateProductImageDto,
+    // @UploadedFile() file: Express.Multer.File,
+    // ) {
+    // return this.productImageService.create(createProductImageDto, file);
+    // }
+
+    @Post('upload')
+    @UseInterceptors(FileInterceptor('image'))
+    async uploadImage(@UploadedFile() file: Express.Multer.File, @Body() createProductImageDto: CreateProductImageDto): Promise<ProductImage> {
+      return this.productImageService.create(createProductImageDto, file);
     }
+
 
     @Get()
     async findAll(): Promise<ProductImage[]> {
