@@ -16,20 +16,20 @@ export class OrderService {
     private failedAttempts: { [key: string]: number } = {};
 
     constructor(
-    @InjectRepository(Order)
-    private orderRepository: Repository<Order>,
+        @InjectRepository(Order)
+        private orderRepository: Repository<Order>,
         
-    @InjectRepository(Cart)
-    private cartRepository: Repository<Cart>,
+        @InjectRepository(Cart)
+        private cartRepository: Repository<Cart>,
         
-    @InjectRepository(Size)
-    private sizeRepository: Repository<Size>,
+        @InjectRepository(Size)
+        private sizeRepository: Repository<Size>,
         
-    private userService: UserService,
+        private userService: UserService,
         
-    private orderDetailService: OrderDetailService,
+        private orderDetailService: OrderDetailService,
         
-    private stripeService: StripeService,
+        private stripeService: StripeService,
     ) {}
 
     async create(userId: string): Promise<Order> {
@@ -65,32 +65,39 @@ export class OrderService {
         // Clear the cart after creating the order
         await this.cartRepository.remove(cart);
 
-        return await this.orderRepository.findOne({
+        const finalOrder = await this.orderRepository.findOne({
             where: { _id: savedOrder._id },
             relations: ['user', 'orderDetails', 'orderDetails.product'],
         });
+        
+        finalOrder.orderDetails.forEach(orderDetail => {
+            const productImage = orderDetail.product.images?.[0]?.link || 'default-image-url';
+            console.log(productImage);
+        });
+
+        return finalOrder;
     }
 
+    // Checkout with Stripe
     async createCheckoutSession(orderId: string, userId: string): Promise<{ checkoutUrl: string }> {
         const order = await this.orderRepository.findOne({
             where: { _id: orderId, user: { id: userId } },
             relations: ['orderDetails', 'orderDetails.product'],
         });
-    
+
         if (!order) {
             throw new NotFoundException('Order not found');
         }
-    
-        // Kiểm tra orderDetails trước khi gọi StripeService
+
         if (order.orderDetails.length === 0 || order.orderDetails.some(detail => detail.product.price == null || detail.quantity == null)) {
             throw new Error('Invalid product details, price, or quantity');
         }
-    
-        // Tạo session thanh toán Stripe
+
         const session = await this.stripeService.createCheckoutSession(order._id, order.orderDetails, 'usd');
-    
+
         return { checkoutUrl: session.url };
     }
+
 
     async handlePaymentFailure(sessionId: string, reason: string): Promise<void> {
         if (!sessionId) {
@@ -105,7 +112,6 @@ export class OrderService {
 
         if (this.failedAttempts[sessionId] >= 3) {
             console.log(`Payment failed 3 times for session ID: ${sessionId}. Stopping further attempts.`);
-            // Thực hiện các hành động cần thiết khi vượt quá giới hạn thất bại
             return;
         }
 
@@ -114,21 +120,20 @@ export class OrderService {
 
     async handlePaymentSuccess(sessionId: string): Promise<Order> {
         const isPaid = await this.stripeService.verifyPayment(sessionId);
-    
+
         if (!isPaid) {
             throw new BadRequestException('Payment failed or not verified');
         }
-    
+
         const order = await this.orderRepository.findOne({
             where: { stripeSessionId: sessionId },
             relations: ['orderDetails', 'orderDetails.size']
         });
-    
+
         if (!order) {
             throw new NotFoundException('Order not found');
         }
-    
-        // Trừ số lượng sản phẩm khi thanh toán thành công
+
         for (const detail of order.orderDetails) {
             const size = await this.sizeRepository.findOne({ where: { _id: detail.size._id } });
             if (size) {
@@ -136,11 +141,10 @@ export class OrderService {
                 await this.sizeRepository.save(size);
             }
         }
-    
+
         order.status = OrderStatus.SUCCESS;
         return await this.orderRepository.save(order);
     }
-    
 
     async handlePaymentCancel(sessionId: string): Promise<void> {
         if (!sessionId) {
@@ -155,7 +159,6 @@ export class OrderService {
             throw new NotFoundException('Order not found');
         }
 
-    // Cập nhật trạng thái đơn hàng thành 'cancel'
         order.status = OrderStatus.CANCEL;
         await this.orderRepository.save(order);
     }
@@ -184,12 +187,12 @@ export class OrderService {
     async findAll(userId: string, userRole: UserRole): Promise<Order[]> {
         if (userRole === UserRole.SUPER_ADMIN || userRole === UserRole.ADMIN) {
             return this.orderRepository.find({
-            relations: ['user', 'orderDetails', 'orderDetails.product'],
+                relations: ['user', 'orderDetails', 'orderDetails.product'],
             });
         } else {
             return this.orderRepository.find({
-            where: { user: { id: userId } },
-            relations: ['user', 'orderDetails', 'orderDetails.product'],
+                where: { user: { id: userId } },
+                relations: ['user', 'orderDetails', 'orderDetails.product'],
             });
         }
     }
@@ -228,6 +231,7 @@ export class OrderService {
         if (!order) {
             throw new NotFoundException('Order not found');
         }
+
         if (
             userRole !== UserRole.SUPER_ADMIN &&
             userRole !== UserRole.ADMIN &&

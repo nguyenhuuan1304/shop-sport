@@ -19,11 +19,14 @@ export class ProductImageService {
     ) {}
 
     async uploadToCloudinary(file: Express.Multer.File): Promise<string> {
+        console.log('Uploading file to Cloudinary:', file); 
         const result = await cloudinary.uploader.upload(file.path, {
           folder: 'product_images',
         });
-        return result.secure_url; // URL của ảnh sau khi upload lên Cloudinary
+        console.log('Upload result:', result); 
+        return result.secure_url; 
     }
+      
     async create(createProductImageDto: CreateProductImageDto, file: Express.Multer.File): Promise<ProductImage> {
         const { product_id } = createProductImageDto;
     

@@ -55,16 +55,16 @@ export class CartService {
 
     async addToCart(userId: string, createCartDto: CreateCartDto): Promise<Cart> {
         const { cartItems } = createCartDto;
-        const groupedItemsMap = new Map<string, { product_id: string, size_id: string, quantity: number }>();
+        const groupedItemsMap = new Map<string, { product_id: string, size_id: string, quantity: number, link: string }>();
         
         for (const item of cartItems) {
             const key = `${item.product_id}_${item.size_id}`;
             if (groupedItemsMap.has(key)) {
-                    const existingItem = groupedItemsMap.get(key);
-                    existingItem.quantity += item.quantity;
-                    groupedItemsMap.set(key, existingItem);
-                } else {
-                    groupedItemsMap.set(key, { ...item });
+                const existingItem = groupedItemsMap.get(key);
+                existingItem.quantity += item.quantity;
+                groupedItemsMap.set(key, existingItem);
+            } else {
+                groupedItemsMap.set(key, { ...item, link: '' });  // Thêm `link` với giá trị rỗng ban đầu
             }
         }
         
@@ -82,11 +82,20 @@ export class CartService {
             for (const item of groupedItems) {
                 const { product_id, size_id, quantity } = item;
                 
-                const product = await manager.findOne(Product, { where: { _id: product_id } });
+                // Truy vấn sản phẩm và hình ảnh của nó
+                const product = await manager.findOne(Product, { 
+                    where: { _id: product_id }, 
+                    relations: ['images']
+                });
+    
                 if (!product) {
                     throw new NotFoundException(`Product with ID ${product_id} not found`);
                 }
-                
+    
+                // Lấy ảnh đầu tiên của sản phẩm (nếu có)
+                const productImage = product.images?.[0]?.link || '';
+                item.link = productImage;  // Cập nhật link ảnh cho item
+    
                 const size = await manager.findOne(Size, { where: { _id: size_id, product: { _id: product_id } } });
                 if (!size) {
                     throw new NotFoundException(`Size with ID ${size_id} not found for product ${product_id}`);
@@ -104,20 +113,20 @@ export class CartService {
                     cartItem.quantity += quantity;
                 } else {
                     cartItem = manager.create(CartItem, {
-                    cart,
-                    product,
-                    size,
-                    quantity,
-                });
+                        cart,
+                        product,
+                        size,
+                        quantity,
+                    });
                 }
                 
                 // Save the cart item without reducing the stock
                 await manager.save(cartItem);
-                }
-            
+            }
+        
             return cart;
         });
-    }
+    }    
 
 
     async clearCart(userId: string): Promise<void> {

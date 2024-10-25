@@ -4,10 +4,16 @@ import { ProductImage } from './image.entity';
 import { ProductImageService } from './image.service';
 import { ProductImageController } from './image.controller';
 import { Product } from '../products/product.entity';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([ProductImage, Product])],
-    providers: [ProductImageService],
-    controllers: [ProductImageController],
+    imports: [
+        MulterModule.register({
+          dest: './uploads',  
+        }),
+        TypeOrmModule.forFeature([ProductImage, Product]),
+      ],
+      providers: [ProductImageService],
+      controllers: [ProductImageController],
 })
 export class ProductImageModule {}

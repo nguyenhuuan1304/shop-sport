@@ -7,11 +7,13 @@ import { UserRole } from '../users/user.entity';
 import { Request } from 'express';
 import { Order } from './order.entity';
 import { UpdateOrderDto } from './dto/update-order.dto';
-
+import { ZaloPayService } from '../zalopay/zalopay.service';
 
 @Controller('orders')
 export class OrderController {
-    constructor(private readonly orderService: OrderService) {}
+    constructor(private readonly orderService: OrderService,
+        private readonly zaloPayService: ZaloPayService,
+    ) {}
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
@@ -42,7 +44,7 @@ export class OrderController {
         try {
             return await this.orderService.createCheckoutSession(orderId, user.id);
         } catch (error) {
-            console.error(`Error creating checkout session for order ID: ${orderId}, user ID: ${user.id}. Error:`, error);
+            //console.error(`Error creating checkout session for order ID: ${orderId}, user ID: ${user.id}. Error:`, error);
             throw error;
         }
     }
@@ -71,6 +73,33 @@ export class OrderController {
             throw error;
         }
     }
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+    @Post(':id/pay-with-zalopay')
+    async payWithZaloPay(
+        @Param('id') orderId: string,
+        @Req() req: Request,
+    ) {
+        const user = req.user as any;
+
+        if (!user || !user.id) {
+            throw new Error('User ID is undefined');
+        }
+
+        const order = await this.orderService.findOne(orderId, user.id, UserRole.ADMIN);
+        const orderDetails = order.orderDetails;
+        const orderDescription = orderDetails.map(od => od.product.description).join(', ');
+
+        const zaloPayResponse = await this.zaloPayService.createOrder(
+            orderId,
+            orderDetails,
+            orderDescription,
+            user.id,
+        );
+
+        return zaloPayResponse;
+    }
+
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)

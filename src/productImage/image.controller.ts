@@ -1,31 +1,38 @@
-import { Controller, Post, Body, Get, Param, Patch, Delete, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch, Delete, UploadedFile, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { ProductImageService } from './image.service';
 import { UpdateProductImageDto } from './dto/update-image.dto';
 import { ProductImage } from './image.entity';
 import { CreateProductImageDto } from './dto/create-image.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
-// import { multerOptions } from '../cloudinary/multer-config'
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('product-images')
 export class ProductImageController {
     constructor(private readonly productImageService: ProductImageService) {}
 
-    // @Post()
-    // @UseInterceptors(FileInterceptor('file', multerOptions))
-    // async create(
-    // @Body() createProductImageDto: CreateProductImageDto,
-    // @UploadedFile() file: Express.Multer.File,
-    // ) {
-    // return this.productImageService.create(createProductImageDto, file);
-    // }
-
     @Post('upload')
     @UseInterceptors(FileInterceptor('image'))
-    async uploadImage(@UploadedFile() file: Express.Multer.File, @Body() createProductImageDto: CreateProductImageDto): Promise<ProductImage> {
-      return this.productImageService.create(createProductImageDto, file);
+    async uploadImage(
+        @UploadedFile() file: Express.Multer.File, 
+        @Body() createProductImageDto: CreateProductImageDto
+        ): Promise<ProductImage> {
+            console.log(file); 
+            return this.productImageService.create(createProductImageDto, file);
     }
 
+    @Post('upload-multiple')
+    @UseInterceptors(FilesInterceptor('images', 10)) 
+    async uploadMultipleImages(
+        @UploadedFiles() files: Array<Express.Multer.File>,
+        @Body() createProductImageDto: CreateProductImageDto
+        ): Promise<any> {
+            console.log(files); 
+            const uploadResults = await Promise.all(
+            files.map(file => this.productImageService.create(createProductImageDto, file))
+            );
+        return uploadResults; 
+    }
 
     @Get()
     async findAll(): Promise<ProductImage[]> {

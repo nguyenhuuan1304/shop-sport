@@ -13,6 +13,7 @@ import { OrderDetailModule } from './order_detail/orderDetail.module';
 import { CartModule } from './cart/cart.module';
 import { CartItemModule } from './cart_item/cartItem.module';
 import { StripeModule } from './stripe/stripe.module';
+import { ZaloPayModule } from './zalopay/zalopay.module';
 
 @Module({
     imports: [
@@ -45,6 +46,7 @@ import { StripeModule } from './stripe/stripe.module';
     CartModule,
     CartItemModule,
     StripeModule,
+    ZaloPayModule,
     ],
     controllers: [],
     providers: [],
