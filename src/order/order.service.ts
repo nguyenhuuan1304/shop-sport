@@ -242,4 +242,16 @@ export class OrderService {
 
         await this.orderRepository.remove(order);
     }
+
+    // Phương thức để lấy OrderDetails từ Order ID
+    async getOrderDetails(orderId: string) {
+        return this.orderRepository.findOne({
+          where: { _id: orderId },
+          relations: ['orderDetails', 'orderDetails.product'],
+        });
+      }
+    
+    async updateOrderStatus(appTransId: string, status: OrderStatus) {
+        await this.orderRepository.update({ _id: appTransId }, { status });
+    }
 }

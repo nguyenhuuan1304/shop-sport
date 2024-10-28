@@ -73,32 +73,36 @@ export class OrderController {
             throw error;
         }
     }
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
-    @Post(':id/pay-with-zalopay')
-    async payWithZaloPay(
-        @Param('id') orderId: string,
-        @Req() req: Request,
-    ) {
-        const user = req.user as any;
+    // @UseGuards(JwtAuthGuard, RolesGuard)
+    // @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+    // @Post(':id/pay-with-zalopay')
+    // async payWithZaloPay(
+    //   @Param('id') orderId: string,
+    //   @Req() req: Request,
+    //   ) {
+    //     const user = req.user as any;
 
-        if (!user || !user.id) {
-            throw new Error('User ID is undefined');
-        }
+    //     if (!user || !user.id) {
+    //         throw new Error('User ID is undefined');
+    //     }
 
-        const order = await this.orderService.findOne(orderId, user.id, UserRole.ADMIN);
-        const orderDetails = order.orderDetails;
-        const orderDescription = orderDetails.map(od => od.product.description).join(', ');
+    //     const username = user.username; 
 
-        const zaloPayResponse = await this.zaloPayService.createOrder(
-            orderId,
-            orderDetails,
-            orderDescription,
-            user.id,
-        );
+    //     if (!username) {
+    //         throw new Error('username is undefined');
+    //     }
 
-        return zaloPayResponse;
-    }
+    //     const order = await this.orderService.findOne(orderId, user.id, UserRole.ADMIN);
+    //     const orderDetails = order.orderDetails;
+
+    //     const zaloPayResponse = await this.zaloPayService.createOrder(
+    //         orderId,
+    //         orderDetails,
+    //         username, 
+    //     );
+
+    //     return zaloPayResponse;
+    // }
 
 
     @UseGuards(JwtAuthGuard, RolesGuard)
