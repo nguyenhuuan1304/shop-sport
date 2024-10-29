@@ -3,12 +3,11 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 import * as dotenv from 'dotenv';
+
 dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
-  app.setGlobalPrefix("api/v1");
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -19,6 +18,11 @@ async function bootstrap() {
   );
 
   app.use(cookieParser());
-  await app.listen(3000);
+
+  const port = process.env.PORT || 5000; 
+  await app.listen(port, () => {
+    console.log('Server is listening on port: ' + port); 
+  });
 }
+
 bootstrap();

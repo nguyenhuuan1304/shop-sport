@@ -251,7 +251,11 @@ export class OrderService {
         });
       }
     
-    async updateOrderStatus(appTransId: string, status: OrderStatus) {
-        await this.orderRepository.update({ _id: appTransId }, { status });
+    async updateOrderStatus(appTransId: string, status: OrderStatus): Promise<void> {
+        const order = await this.orderRepository.findOne({ where: { stripeSessionId: appTransId } });
+        if (order) {
+            order.status = status;
+            await this.orderRepository.save(order);
+        }
     }
 }
