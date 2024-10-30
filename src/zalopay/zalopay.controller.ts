@@ -1,11 +1,9 @@
-import { Controller, Post, Param, Req, Res, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Post, Param, Req, Res, HttpStatus, UseGuards, Get } from '@nestjs/common';
 import { ZaloPayService } from './zalopay.service';
 import { OrderService } from '../order/order.service';
 import { Response, Request } from 'express';
-import { OrderStatus } from '../order/order.entity';
 import { JwtAuthGuard } from '../users/JwtAuthGuard';
 import { User } from '../users/user.entity';
-import * as crypto from 'crypto';
 
 @Controller('zalopay')
 export class ZaloPayController {
@@ -38,48 +36,46 @@ export class ZaloPayController {
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Order creation failed' });
         }
     }
-    
+
     @Post('/callback')
-    async handleCallback(
-        @Req() req: Request,
+    async handleCallback(@Req() req: Request, @Res() res: Response) {
+        const result = await this.zaloPayService.processCallback(req.body);
+        return res.status(HttpStatus.OK).json(result);
+    }
+
+    @Get('/status/:appTransId')
+    async checkOrderStatus(
+        @Param('appTransId') appTransId: string,
         @Res() res: Response
     ) {
-        const { data: dataStr, mac: reqMac } = req.body;
-
-        const mac = crypto.createHmac('sha256', this.zaloPayService.key2)
-                        .update(dataStr)
-                        .digest('hex');
-
-        // Xác thực tính hợp lệ của callback từ ZaloPay
-        if (reqMac !== mac) {
-        return res.status(HttpStatus.OK).json({
-            return_code: -1,
-            return_message: "Invalid mac",
-        });
-        }
-
-        const data = JSON.parse(dataStr);
-        const { app_trans_id, return_code } = data;
-
         try {
-        // Cập nhật trạng thái đơn hàng
-        if (return_code === 1) {
-            await this.orderService.updateOrderStatus(app_trans_id, OrderStatus.SUCCESS);
-            console.log(`Order ${app_trans_id} marked as SUCCESS.`);
-        } else {
-            await this.orderService.updateOrderStatus(app_trans_id, OrderStatus.CANCEL);
-            console.log(`Order ${app_trans_id} marked as CANCEL.`);
-        }
-        return res.status(HttpStatus.OK).json({
-            return_code: 1,
-            return_message: "Success",
-        });
+            const result = await this.zaloPayService.queryOrderStatus(appTransId);
+
+            if (result.status === 'SUCCESS') {
+                return res.status(HttpStatus.OK).json({
+                    status: 'SUCCESS',
+                    message: 'Order has been successfully paid',
+                    data: result.data,
+                });
+            } else if (result.status === 'PENDING') {
+                return res.status(HttpStatus.OK).json({
+                    status: 'PENDING',
+                    message: 'Order is still pending or being processed',
+                    data: result.data,
+                });
+            } else {
+                return res.status(HttpStatus.OK).json({
+                    status: 'FAILED',
+                    message: 'Order payment failed or was cancelled',
+                    data: result.data,
+                });
+            }
         } catch (error) {
-        console.error("Error updating order status:", error);
-        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-            return_code: 0,
-            return_message: "Internal server error",
-        });
+            console.error('Error checking order status:', error.message);
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                status: 'ERROR',
+                message: 'Failed to check order status',
+            });
         }
     }
 }

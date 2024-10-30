@@ -19,6 +19,9 @@ export class Order {
     @Column({ nullable: true })
     stripeSessionId: string;
 
+    @Column({ nullable: true })
+    appTransId: string;
+
     @Column({
         type: 'enum',
         enum: OrderStatus,

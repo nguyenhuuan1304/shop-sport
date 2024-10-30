@@ -249,7 +249,7 @@ export class OrderService {
           where: { _id: orderId },
           relations: ['orderDetails', 'orderDetails.product'],
         });
-      }
+    }
     
     async updateOrderStatus(appTransId: string, status: OrderStatus): Promise<void> {
         const order = await this.orderRepository.findOne({ where: { stripeSessionId: appTransId } });
@@ -257,5 +257,13 @@ export class OrderService {
             order.status = status;
             await this.orderRepository.save(order);
         }
+    }
+
+    async findOrderByAppTransId(appTransId: string): Promise<Order | undefined> {
+        return this.orderRepository.findOne({ where: { appTransId } });
+    }    
+
+    async saveOrder(order: Order): Promise<Order> {
+        return this.orderRepository.save(order);
     }
 }
