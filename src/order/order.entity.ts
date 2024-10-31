@@ -22,6 +22,9 @@ export class Order {
     @Column({ nullable: true })
     appTransId: string;
 
+    @Column({ default: false })
+    is_processing: boolean;
+
     @Column({
         type: 'enum',
         enum: OrderStatus,

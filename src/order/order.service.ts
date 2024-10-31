@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, BadRequestException} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order } from './order.entity';
@@ -10,6 +10,7 @@ import { OrderDetailService } from '../order_detail/orderDetail.service';
 import { Cart } from '../cart/cart.entity';
 import { StripeService } from '../stripe/stripe.service';
 import { Size } from '../size/size.entity';
+
 
 @Injectable()
 export class OrderService {
@@ -30,30 +31,36 @@ export class OrderService {
         private orderDetailService: OrderDetailService,
         
         private stripeService: StripeService,
+
     ) {}
 
-    async create(userId: string): Promise<Order> {
+    async create(userId: string, appTransId?: string): Promise<Order> {
+        // Kiểm tra xem người dùng có tồn tại không
         const user = await this.userService.findOne(userId);
         if (!user) {
             throw new NotFoundException('User not found');
         }
-
+    
+        // Kiểm tra giỏ hàng của người dùng
         const cart = await this.cartRepository.findOne({
             where: { user: { id: userId } },
             relations: ['cartItems', 'cartItems.product', 'cartItems.size'],
         });
-
+    
         if (!cart || cart.cartItems.length === 0) {
             throw new BadRequestException('Cart is empty');
         }
-
+    
+        // Tạo đơn hàng mới
         const order = this.orderRepository.create({
             user,
+            appTransId: appTransId || null,
             status: OrderStatus.PENDING,
         });
-
+    
         const savedOrder = await this.orderRepository.save(order);
-
+    
+        // Tạo các mục chi tiết đơn hàng dựa trên các mục trong giỏ hàng
         for (const cartItem of cart.cartItems) {
             await this.orderDetailService.create({
                 product_id: cartItem.product._id,
@@ -61,23 +68,25 @@ export class OrderService {
                 quantity: cartItem.quantity,
             }, savedOrder._id);
         }
-
-        // Clear the cart after creating the order
+    
+        // Xóa giỏ hàng sau khi tạo đơn hàng
         await this.cartRepository.remove(cart);
-
+    
+        // Truy xuất đơn hàng cuối cùng với tất cả các thông tin cần thiết
         const finalOrder = await this.orderRepository.findOne({
             where: { _id: savedOrder._id },
             relations: ['user', 'orderDetails', 'orderDetails.product'],
         });
-        
+    
+        // In ra link hình ảnh của từng sản phẩm trong chi tiết đơn hàng
         finalOrder.orderDetails.forEach(orderDetail => {
             const productImage = orderDetail.product.images?.[0]?.link || 'default-image-url';
             console.log(productImage);
         });
-
+    
         return finalOrder;
-    }
-
+    }    
+    
     // Checkout with Stripe
     async createCheckoutSession(orderId: string, userId: string): Promise<{ checkoutUrl: string }> {
         const order = await this.orderRepository.findOne({
@@ -162,6 +171,8 @@ export class OrderService {
         order.status = OrderStatus.CANCEL;
         await this.orderRepository.save(order);
     }
+
+    
 
     async findOne(id: string, userId: string, userRole: UserRole): Promise<Order> {
         const order = await this.orderRepository.findOne({
@@ -250,20 +261,62 @@ export class OrderService {
           relations: ['orderDetails', 'orderDetails.product'],
         });
     }
-    
-    async updateOrderStatus(appTransId: string, status: OrderStatus): Promise<void> {
-        const order = await this.orderRepository.findOne({ where: { stripeSessionId: appTransId } });
-        if (order) {
-            order.status = status;
-            await this.orderRepository.save(order);
-        }
+
+    async findByAppTransId(appTransId: string): Promise<Order> {
+        console.log('Searching for appTransId:', appTransId);
+        const order = await this.orderRepository.findOne({ 
+            where: { appTransId },
+            relations: ['orderDetails', 'orderDetails.product', 'user']
+        });
+        console.log('Query result:', order);
+        return order;
     }
 
-    async findOrderByAppTransId(appTransId: string): Promise<Order | undefined> {
-        return this.orderRepository.findOne({ where: { appTransId } });
-    }    
+    async updateOrderStatus(orderId: string, status: OrderStatus): Promise<Order> {
+        const order = await this.orderRepository.findOne({ where: { _id: orderId } });
+        if (!order) {
+            throw new Error('Order not found');
+        }
+        
+        order.status = status;
+        return this.orderRepository.save(order);
+    }
 
-    async saveOrder(order: Order): Promise<Order> {
+    async updateAppTransId(orderId: string, appTransId: string): Promise<Order> {
+        console.log(`Updating order ${orderId} with appTransId ${appTransId}`);
+        
+        const order = await this.orderRepository.findOne({ 
+          where: { _id: orderId }
+        });
+        
+        if (!order) {
+          console.error(`Order not found with ID: ${orderId}`);
+          throw new NotFoundException('Order not found');
+        }
+        
+        // Cập nhật appTransId
+        order.appTransId = appTransId;
+        
+        // Lưu vào database
+        const savedOrder = await this.orderRepository.save(order);
+        console.log('Saved order:', savedOrder);
+        
+        // Verify the update
+        const verifiedOrder = await this.orderRepository.findOne({
+          where: { _id: orderId }
+        });
+        console.log('Verified saved order:', verifiedOrder);
+        
+        return savedOrder;
+    }
+
+    async updateProcessingStatus(orderId: string, status: boolean): Promise<Order> {
+        const order = await this.orderRepository.findOne({ where: { _id: orderId }});
+        if (!order) {
+            throw new NotFoundException('Order not found');
+        }
+        
+        order.is_processing = status;
         return this.orderRepository.save(order);
     }
 }
