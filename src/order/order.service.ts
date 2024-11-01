@@ -319,4 +319,12 @@ export class OrderService {
         order.is_processing = status;
         return this.orderRepository.save(order);
     }
+
+    async findOrderById(orderId: string): Promise<Order> {
+        const order = await this.orderRepository.findOne({ where: { _id: orderId }, relations: ['orderDetails', 'user'] });
+        if (!order) {
+            throw new NotFoundException('Order not found');
+        }
+        return order;
+    }
 }

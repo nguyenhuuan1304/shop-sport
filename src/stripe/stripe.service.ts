@@ -21,47 +21,6 @@ export class StripeService {
     });
     }
 
-    // async createCheckoutSession(orderId: string, orderDetails: any[], currency: string = 'usd') {
-    //     if (!orderDetails || !Array.isArray(orderDetails) || orderDetails.length === 0) {
-    //         throw new Error('Invalid product details');
-    //     }
-    
-    //     const lineItems = orderDetails.map(detail => ({
-    //         price_data: {
-    //             currency: currency,
-    //             product_data: {
-    //                 name: detail.product.name,
-    //                 description: `Size: ${detail.size ? detail.size.size_name : 'default'}`,
-    //             },
-    //             unit_amount: Math.round(detail.product.price * 100), // Price in cents
-    //         },
-    //         quantity: detail.quantity,
-    //     }));
-    
-    //     const session = await this.stripe.checkout.sessions.create({
-    //         payment_method_types: ['card'],
-    //         line_items: lineItems,
-    //         mode: 'payment',
-    //         payment_intent_data: {
-    //             setup_future_usage: 'off_session', 
-    //         },
-    //         success_url: `https://www.done.com/success?session_id={CHECKOUT_SESSION_ID}`,
-    //         cancel_url: `https://www.done.com/cancel?session_id={CHECKOUT_SESSION_ID}`,
-    //         metadata: {
-    //             order_id: orderId,
-    //         },
-    //     });
-    
-    //     // Cập nhật order thành "pending"
-    //     await this.orderRepository.update(orderId, { 
-    //         stripeSessionId: session.id,
-    //         status: OrderStatus.PENDING,
-    //     });
-    
-    //     return session;
-    // }
-    
-
     async createCheckoutSession(orderId: string, orderDetails: any[], currency: string = 'usd') {
         if (!orderDetails || !Array.isArray(orderDetails) || orderDetails.length === 0) {
             throw new Error('Invalid product details');

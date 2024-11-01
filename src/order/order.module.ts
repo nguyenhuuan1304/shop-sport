@@ -19,10 +19,10 @@ imports: [
     forwardRef(() => CartModule),
     StripeModule,
     SizeModule,
-    forwardRef(() => ZaloPayModule), 
-],
+    forwardRef(() => ZaloPayModule),
+    ],
 providers: [OrderService],
 controllers: [OrderController],
-exports: [OrderService],
+exports: [OrderService], 
 })
 export class OrderModule {}

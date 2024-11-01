@@ -14,6 +14,7 @@ import { CartModule } from './cart/cart.module';
 import { CartItemModule } from './cart_item/cartItem.module';
 import { StripeModule } from './stripe/stripe.module';
 import { ZaloPayModule } from './zalopay/zalopay.module';
+import { VNPayModule } from './vnpay/vnpay.module';
 
 @Module({
     imports: [
@@ -47,6 +48,7 @@ import { ZaloPayModule } from './zalopay/zalopay.module';
     CartItemModule,
     StripeModule,
     ZaloPayModule,
+    VNPayModule,
     ],
     controllers: [],
     providers: [],
