@@ -42,48 +42,39 @@ export class ZaloPayController {
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Order creation failed' });
         }
     }
+
     @Post('/callback')
     async handleCallback(@Req() req: Request, @Res() res: Response) {
         try {
             const { data, mac } = req.body;
-            console.log('Received callback data:', data);
-            console.log('Received MAC:', mac);
-
             const calculatedMac = this.zaloPayService.createMac(data, this.zaloPayService.getKey2());
-            
+
             if (mac !== calculatedMac) {
-                console.error('Invalid MAC');
                 return res.json({
                     return_code: -1,
                     return_message: "Invalid MAC",
-            });
+                });
             }
 
             const callbackData = JSON.parse(data);
-            console.log('Parsed callback data:', callbackData);
-
-            // Tìm order bằng app_trans_id
             const order = await this.orderService.findByAppTransId(callbackData.app_trans_id);
-            
+
             if (!order) {
-                console.error(`Order not found for app_trans_id: ${callbackData.app_trans_id}`);
                 return res.json({
                     return_code: 0,
                     return_message: "Order not found",
-            });
+                });
             }
 
             if (order.status === OrderStatus.SUCCESS) {
-                console.log('Order already processed');
                 return res.json({
                     return_code: 2,
                     return_message: "Order already processed",
                 });
             }
 
-            // Cập nhật trạng thái đơn hàng
             await this.orderService.updateOrderStatus(order._id, OrderStatus.SUCCESS);
-            console.log(`Order ${order._id} status updated to SUCCESS`);
+            await this.orderService.updateSizeStock(order._id); 
 
             return res.json({
                 return_code: 1,
@@ -98,6 +89,8 @@ export class ZaloPayController {
             });
         }
     }
+
+
 
     @Get('/status/:appTransId')
     async checkOrderStatus(

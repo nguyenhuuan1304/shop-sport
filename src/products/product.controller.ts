@@ -8,7 +8,10 @@ import { RolesGuard } from '../users/rolesGuard';
 import { Roles } from '../users/rolesDecorator';
 import { UserRole } from '../users/user.entity';
 import { Request } from 'express';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiParam, ApiQuery } from '@nestjs/swagger';
 
+@ApiTags('products')
+@ApiBearerAuth()
 @Controller('products')
 export class ProductController {
     constructor(private readonly productService: ProductService) {}
@@ -17,6 +20,7 @@ export class ProductController {
      * Tạo sản phẩm mới (Chỉ dành cho ADMIN và SUPER_ADMIN)
      * URL: POST /products
      */
+    @ApiOperation({ summary: 'Create a new product (Admin only)' })
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Post()
@@ -28,6 +32,7 @@ export class ProductController {
      * Lấy danh sách sản phẩm mới nhất
      * URL: GET /products/latest
      */
+    @ApiOperation({ summary: 'Get the latest products' })
     @UseGuards(JwtAuthGuard)
     @Get('latest')
     async getLatestProducts(): Promise<Product[]> {
@@ -38,6 +43,7 @@ export class ProductController {
      * Lấy danh sách sản phẩm theo giá thấp đến cao
      * URL: GET /products/low-price
      */
+    @ApiOperation({ summary: 'Get products sorted by low price' })
     @UseGuards(JwtAuthGuard)
     @Get('low-price')
     async getProductsByLowPrice(): Promise<Product[]> {
@@ -48,6 +54,7 @@ export class ProductController {
      * Lấy danh sách sản phẩm theo giá cao đến thấp
      * URL: GET /products/high-price
      */
+    @ApiOperation({ summary: 'Get products sorted by high price' })
     @UseGuards(JwtAuthGuard)
     @Get('high-price')
     async getProductsByHighPrice(): Promise<Product[]> {
@@ -58,6 +65,7 @@ export class ProductController {
      * Endpoint để lấy các sản phẩm đã xem gần đây
      * URL: GET /products/recently-viewed
      */
+    @ApiOperation({ summary: 'Get recently viewed products' })
     @UseGuards(JwtAuthGuard)
     @Get('recently-viewed')
     async getRecentlyViewedProducts(@Req() req: Request): Promise<Product[]> {
@@ -72,6 +80,8 @@ export class ProductController {
      * Lấy chi tiết sản phẩm theo ID và cập nhật danh sách đã xem
      * URL: GET /products/:id
      */
+    @ApiOperation({ summary: 'Get product details by ID' })
+    @ApiParam({ name: 'id', type: 'string', description: 'Product ID' })
     @UseGuards(JwtAuthGuard)
     @Get(':id')
     async findOne(@Param('id') id: string, @Req() req: Request): Promise<Product> {
@@ -86,6 +96,8 @@ export class ProductController {
      * Cập nhật sản phẩm (Chỉ dành cho ADMIN và SUPER_ADMIN)
      * URL: PATCH /products/:id
      */
+    @ApiOperation({ summary: 'Update a product by ID (Admin only)' })
+    @ApiParam({ name: 'id', type: 'string', description: 'Product ID' })
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Patch(':id')
@@ -97,6 +109,8 @@ export class ProductController {
      * Xóa sản phẩm (Chỉ dành cho SUPER_ADMIN)
      * URL: DELETE /products/:id
      */
+    @ApiOperation({ summary: 'Delete a product by ID (Super Admin only)' })
+    @ApiParam({ name: 'id', type: 'string', description: 'Product ID' })
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.SUPER_ADMIN)
     @Delete(':id')
@@ -108,6 +122,8 @@ export class ProductController {
      * Tùy chọn: Sử dụng query params để xử lý sorting
      * URL: GET /products?sort=latest|low-price|high-price
      */
+    @ApiOperation({ summary: 'Get products with optional sorting' })
+    @ApiQuery({ name: 'sort', required: false, description: 'Sorting criteria: latest, low-price, or high-price' })
     @UseGuards(JwtAuthGuard)
     @Get()
     findAll(@Query('sort') sort: string) {

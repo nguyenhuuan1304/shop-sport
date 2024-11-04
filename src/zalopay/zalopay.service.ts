@@ -56,7 +56,7 @@ export class ZaloPayService {
       amount,
       description: `Sport - Thanh toán đơn hàng #${app_trans_id}`,
       bank_code: 'zalopayapp',
-      callback_url: 'https://30f7-210-245-34-240.ngrok-free.app/zalopay/callback',
+      callback_url: 'https://5bbb-210-245-34-240.ngrok-free.app/zalopay/callback',
     };
   
     const dataString = `${this.appId}|${data.app_trans_id}|${data.app_user}|${data.amount}|${data.app_time}|${data.embed_data}|${data.item}`;

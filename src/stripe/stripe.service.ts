@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Order } from '../order/order.entity';
 import { OrderStatus } from '../order/order.entity';
 import { ConfigService } from '@nestjs/config';
+import { Size } from 'src/size/size.entity';
 
 @Injectable()
 export class StripeService {
@@ -15,6 +16,8 @@ export class StripeService {
     @InjectRepository(Order)
     private orderRepository: Repository<Order>,
     private configService: ConfigService,
+    @InjectRepository(Size)
+    private sizeRepository: Repository<Size>,
     ) {
         this.stripe = new Stripe(this.configService.get('STRIPE_SECRET_KEY'), {
         apiVersion: '2024-09-30.acacia',
@@ -71,22 +74,34 @@ export class StripeService {
         if (!sessionId) {
             throw new Error('Session ID is undefined');
         }
-
+    
         const order = await this.orderRepository.findOne({
             where: { stripeSessionId: sessionId },
+            relations: ['orderDetails', 'orderDetails.size'],
         });
-
+    
         if (!order) {
             throw new NotFoundException('Order not found');
         }
-
+    
         // Cập nhật trạng thái đơn hàng thành 'success'
         order.status = OrderStatus.SUCCESS;
         await this.orderRepository.save(order);
-
+    
+        // Trừ stock cho từng sản phẩm trong orderDetails
+        for (const orderDetail of order.orderDetails) {
+            const size = orderDetail.size;
+    
+            if (size) {
+                size.stock -= orderDetail.quantity;
+                await this.sizeRepository.save(size);
+            }
+        }
+    
         // Reset số lần thất bại sau khi thanh toán thành công
         this.failedAttempts[sessionId] = 0;
     }
+    
 
     async verifyPayment(sessionId: string) {
         const session = await this.stripe.checkout.sessions.retrieve(sessionId);

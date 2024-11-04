@@ -8,8 +8,6 @@ export class WebhookController {
 
   @Post('stripe')
   async handleStripeWebhook(@Req() req: Request, @Res() res: Response) {
-    console.log('Webhook received:', req.body); 
-
     const event = req.body;
     console.log('Received Stripe event:', event);
 

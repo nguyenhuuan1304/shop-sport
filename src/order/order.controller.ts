@@ -8,13 +8,18 @@ import { Request } from 'express';
 import { Order } from './order.entity';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { ZaloPayService } from '../zalopay/zalopay.service';
+import { ApiTags, ApiOperation, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('orders')
+@ApiBearerAuth()
 @Controller('orders')
 export class OrderController {
-    constructor(private readonly orderService: OrderService,
+    constructor(
+        private readonly orderService: OrderService,
         private readonly zaloPayService: ZaloPayService,
     ) {}
 
+    @ApiOperation({ summary: 'Create a new order' })
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Post()
@@ -23,6 +28,7 @@ export class OrderController {
         return this.orderService.create(user._id);
     }
 
+    @ApiOperation({ summary: 'Get all orders' })
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Get()
@@ -31,6 +37,8 @@ export class OrderController {
         return this.orderService.findAll(user._id, user.role);
     }
 
+    @ApiOperation({ summary: 'Create a checkout session for an order' })
+    @ApiParam({ name: 'id', type: 'string', description: 'The ID of the order' })
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Post(':id/checkout')
@@ -44,36 +52,12 @@ export class OrderController {
         try {
             return await this.orderService.createCheckoutSession(orderId, user.id);
         } catch (error) {
-            //console.error(`Error creating checkout session for order ID: ${orderId}, user ID: ${user.id}. Error:`, error);
             throw error;
         }
     }
 
-    @Post('payment-success')
-    async handlePaymentSuccess(@Body('sessionId') sessionId: string) {
-        console.log(`Payment success webhook received for session ID: ${sessionId}`);
-
-        try {
-            return await this.orderService.handlePaymentSuccess(sessionId);
-        } catch (error) {
-            console.error(`Error handling payment success for session ID: ${sessionId}. Error:`, error);
-            throw error;
-        }
-    }
-
-    @Post('payment-cancel')
-    async handlePaymentCancel(@Body('sessionId') sessionId: string) {
-        console.log(`Payment cancel webhook received for session ID: ${sessionId}`);
-
-        try {
-            await this.orderService.handlePaymentCancel(sessionId);
-            return { message: 'Order cancelled successfully' };
-        } catch (error) {
-            console.error(`Error handling payment cancel for session ID: ${sessionId}. Error:`, error);
-            throw error;
-        }
-    }
-
+    @ApiOperation({ summary: 'Get order details by ID' })
+    @ApiParam({ name: 'id', type: 'string', description: 'The ID of the order' })
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Get(':id')
@@ -82,18 +66,22 @@ export class OrderController {
         return this.orderService.findOne(id, user._id, user.role);
     }
 
+    @ApiOperation({ summary: 'Update an order' })
+    @ApiParam({ name: 'id', type: 'string', description: 'The ID of the order' })
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Patch(':id')
     async update(
-    @Param('id') id: string,
-    @Body() updateOrderDto: UpdateOrderDto,
-    @Req() req: Request
+        @Param('id') id: string,
+        @Body() updateOrderDto: UpdateOrderDto,
+        @Req() req: Request
     ): Promise<Order> {
         const user = req.user as any;
         return this.orderService.update(id, updateOrderDto, user._id, user.role);
     }
 
+    @ApiOperation({ summary: 'Delete an order' })
+    @ApiParam({ name: 'id', type: 'string', description: 'The ID of the order' })
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Delete(':id')

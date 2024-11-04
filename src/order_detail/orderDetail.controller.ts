@@ -7,7 +7,10 @@ import { RolesGuard } from '../users/rolesGuard';
 import { Roles } from '../users/rolesDecorator';
 import { UserRole } from '../users/user.entity';
 import { OrderDetail } from './orderDetail.entity';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 
+@ApiTags('order-details')
+@ApiBearerAuth()
 @Controller('order-details')
 export class OrderDetailController {
     constructor(private readonly orderDetailService: OrderDetailService) {}
@@ -15,6 +18,7 @@ export class OrderDetailController {
     /*
      * URL: POST /order-details
      */
+    @ApiOperation({ summary: 'Create a new order detail with order ID' })
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Post()
@@ -23,6 +27,10 @@ export class OrderDetailController {
         return this.orderDetailService.createWithOrderId({ order_id, product_id, quantity });
     }
 
+    /*
+     * URL: GET /order-details
+     */
+    @ApiOperation({ summary: 'Retrieve all order details' })
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Get()
@@ -30,6 +38,11 @@ export class OrderDetailController {
         return this.orderDetailService.findAll();
     }
 
+    /*
+     * URL: GET /order-details/:id
+     */
+    @ApiOperation({ summary: 'Retrieve order detail by ID' })
+    @ApiParam({ name: 'id', type: 'string', description: 'The ID of the order detail' })
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Get(':id')
@@ -40,6 +53,8 @@ export class OrderDetailController {
     /*
      * URL: PATCH /order-details/:id
      */
+    @ApiOperation({ summary: 'Update an order detail by ID' })
+    @ApiParam({ name: 'id', type: 'string', description: 'The ID of the order detail' })
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Patch(':id')
@@ -53,6 +68,8 @@ export class OrderDetailController {
     /*
      * URL: DELETE /order-details/:id
      */
+    @ApiOperation({ summary: 'Delete an order detail by ID' })
+    @ApiParam({ name: 'id', type: 'string', description: 'The ID of the order detail' })
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Delete(':id')

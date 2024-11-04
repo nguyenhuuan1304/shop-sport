@@ -327,4 +327,23 @@ export class OrderService {
         }
         return order;
     }
+
+    async updateSizeStock(orderId: string): Promise<void> {
+        const order = await this.orderRepository.findOne({
+          where: { _id: orderId },
+          relations: ['orderDetails', 'orderDetails.size'],
+        });
+    
+        if (!order) {
+          throw new Error(`Order with ID ${orderId} not found`);
+        }
+    
+        for (const orderDetail of order.orderDetails) {
+          const size = orderDetail.size;
+          size.stock -= orderDetail.quantity;
+          await this.sizeRepository.save(size);
+        }
+    
+        console.log(`Stock updated for order ${orderId}`);
+      }
 }

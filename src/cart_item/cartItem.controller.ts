@@ -8,7 +8,10 @@ import { Roles } from '../users/rolesDecorator';
 import { UserRole } from '../users/user.entity';
 import { CartItem } from './cartItem.entity';
 import { Request } from 'express';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiBody, ApiParam } from '@nestjs/swagger';
 
+@ApiTags('cart-items')
+@ApiBearerAuth()
 @Controller('cart-items')
 export class CartItemController {
     constructor(private readonly cartItemService: CartItemService) {}
@@ -17,6 +20,8 @@ export class CartItemController {
      * URL: POST /cart-items
      * Tạo CartItem mới
      */
+    @ApiOperation({ summary: 'Create a new cart item' })
+    @ApiBody({ type: CreateCartItemDto })
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Post()
@@ -32,6 +37,7 @@ export class CartItemController {
      * URL: GET /cart-items
      * Lấy tất cả CartItems (dành cho Admin và Super Admin)
      */
+    @ApiOperation({ summary: 'Get all cart items' })
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Get()
@@ -43,6 +49,8 @@ export class CartItemController {
      * URL: GET /cart-items/:id
      * Lấy CartItem theo ID
      */
+    @ApiOperation({ summary: 'Get a cart item by ID' })
+    @ApiParam({ name: 'id', type: 'string', description: 'The ID of the cart item' })
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Get(':id')
@@ -58,6 +66,9 @@ export class CartItemController {
      * URL: PATCH /cart-items/:id
      * Cập nhật CartItem
      */
+    @ApiOperation({ summary: 'Update a cart item' })
+    @ApiParam({ name: 'id', type: 'string', description: 'The ID of the cart item' })
+    @ApiBody({ type: UpdateCartItemDto })
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Patch(':id')
@@ -77,6 +88,8 @@ export class CartItemController {
      * URL: DELETE /cart-items/:id
      * Xóa CartItem
      */
+    @ApiOperation({ summary: 'Delete a cart item' })
+    @ApiParam({ name: 'id', type: 'string', description: 'The ID of the cart item' })
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
     @Delete(':id')
