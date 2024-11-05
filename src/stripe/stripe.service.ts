@@ -149,4 +149,19 @@ export class StripeService {
 
         console.log(`Payment failed for session ID: ${sessionId}. Reason: ${reason}. Attempt: ${this.failedAttempts[sessionId]}`);
     }
+
+    async handleInvoicePaymentSuccess(invoiceId: string): Promise<void> {
+        console.log(`Invoice payment succeeded for invoice ID: ${invoiceId}`);
+        
+    }
+    
+    async handlePaymentIntentSuccess(paymentIntentId: string): Promise<void> {
+        console.log(`Payment intent succeeded for payment intent ID: ${paymentIntentId}`);
+       
+    }
+    
+    async handlePaymentIntentFailure(paymentIntentId: string): Promise<void> {
+        console.log(`Payment intent failed for payment intent ID: ${paymentIntentId}`);
+     
+    }
 }
