@@ -15,7 +15,7 @@ import { CartItemModule } from './cart_item/cartItem.module';
 import { StripeModule } from './stripe/stripe.module';
 import { ZaloPayModule } from './zalopay/zalopay.module';
 import { VNPayModule } from './vnpay/vnpay.module';
-
+import { ChatModule } from './chat/chat.module';
 @Module({
     imports: [
     ConfigModule.forRoot({
@@ -49,6 +49,7 @@ import { VNPayModule } from './vnpay/vnpay.module';
     StripeModule,
     ZaloPayModule,
     VNPayModule,
+    ChatModule
     ],
     controllers: [],
     providers: [],

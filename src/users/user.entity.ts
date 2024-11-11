@@ -2,7 +2,8 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Address } from '../address/address.entity';
 import { Order } from '../order/order.entity';
 import { Cart } from '../cart/cart.entity';
-
+import { Chat } from '../chat/chat.entity';
+import { Message } from '../chat/message.entity';
 export enum UserRole {
   ADMIN = 'admin',
   SUPER_ADMIN = 'super_admin',
@@ -67,4 +68,10 @@ export class User {
 
   @Column('simple-array', { nullable: true })
   recentlyViewed: string[];
+
+  @OneToMany(() => Chat, chat => chat.creator)
+  chats: Chat[];
+
+  @OneToMany(() => Message, message => message.sender)
+  messages: Message[];
 }
