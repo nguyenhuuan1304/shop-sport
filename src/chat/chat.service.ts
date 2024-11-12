@@ -2,8 +2,9 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Chat } from './chat.entity';
-import { Message } from './message.entity';
+import { Message } from '../message/message.entity';
 import { User } from '../users/user.entity';
+import { UpdateChatDto } from './dto/update-chat.dto';
 
 @Injectable()
 export class ChatService {
@@ -73,5 +74,29 @@ export class ChatService {
             relations: ['sender'],
             order: { createdAt: 'ASC' },
         });
+    }
+
+    async updateChat(chatId: string, updateChatDto: UpdateChatDto) {
+        const chat = await this.getChatById(chatId);
+        Object.assign(chat, updateChatDto);
+        return this.chatRepository.save(chat);
+    }
+
+    async deleteChat(chatId: string) {
+        const chat = await this.getChatById(chatId);
+        chat.isActive = false;
+        return this.chatRepository.save(chat);
+    }
+
+    async addParticipants(chatId: string, participantIds: string[]) {
+        const chat = await this.getChatById(chatId);
+        chat.participants = [...new Set([...chat.participants, ...participantIds])];
+        return this.chatRepository.save(chat);
+    }
+
+    async removeParticipant(chatId: string, participantId: string) {
+        const chat = await this.getChatById(chatId);
+        chat.participants = chat.participants.filter(id => id !== participantId);
+        return this.chatRepository.save(chat);
     }
 }
