@@ -1,10 +1,4 @@
-import {
-    WebSocketGateway,
-    WebSocketServer,
-    SubscribeMessage,
-    OnGatewayConnection,
-    OnGatewayDisconnect,
-} from '@nestjs/websockets';
+import { WebSocketGateway, WebSocketServer, SubscribeMessage, OnGatewayConnection, OnGatewayDisconnect, } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { ChatService } from './chat.service';
@@ -68,7 +62,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     @SubscribeMessage('send_message')
     async handleMessage(client: Socket, payload: { data?: { chatId: string; content: string } }) {
-        console.log('Received message payload:', JSON.stringify(payload, null, 2)); // Log chi tiết của payload
+        console.log('Received message payload:', JSON.stringify(payload, null, 2));
         console.log('From client:', client.id);
 
         try {

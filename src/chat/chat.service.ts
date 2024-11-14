@@ -20,18 +20,22 @@ export class ChatService {
     async createChat(creatorId: string, participantIds: string[], isGroup = false, name?: string) {
         const creator = await this.userRepository.findOneBy({ id: creatorId });
         if (!creator) throw new NotFoundException('Creator not found');
-
+    
         if (participantIds.length === 0) {
             throw new BadRequestException('Participant IDs must be provided');
         }
-
+    
+        // Tạo mảng participants mới, đảm bảo creatorId chỉ xuất hiện một lần
+        const uniqueParticipants = [creatorId, ...participantIds];
+        const participants = [...new Set(uniqueParticipants)];
+    
         const chat = this.chatRepository.create({
             creator,
-            participants: [creatorId, ...participantIds],
+            participants,
             isGroupChat: isGroup,
             name,
         });
-
+    
         return this.chatRepository.save(chat);
     }
 
